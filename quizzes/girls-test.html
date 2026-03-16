@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Cormorant+Garamond:ital,wght@1,600;1,700&family=Montserrat:wght@300;400;600;800&display=swap');
+
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+* {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+    :root {
+
+        --hot-pink: #ff1493;
+
+        --gold: #d4af37;
+
+        --soft-pink: #ffe4f1;
+
+        --velvet-plum: #2d1b2d;
+
+        --accent: #d4af37; /* Цвет подсветки */
+
+    }
+
+
+
+    html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; }
+
+
+
+    body {
+
+        font-family: 'Montserrat', sans-serif;
+
+        background-color: var(--soft-pink);
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: flex-start;
+
+        padding: 20px 10px;
+
+        min-height: 100vh;
+
+        color: #fff;
+
+        overflow-x: hidden;
+
+    }
+
+
+
+   .main-container {
+        width: 100%; /* Вместо 95% для стабильности */
+        max-width: 750px; 
+        background: linear-gradient(145deg, #3d243d 0%, #1a111a 100%);
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        border-radius: 40px; 
+        padding: 40px 20px; /* Чуть меньше боковые отступы */
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        margin: 0 auto; 
+        overflow: hidden; /* Чтобы внутри ничего не вылезало */
+    }
+
+    .intro-img-large { 
+        width: 100%; 
+        height: auto; 
+        max-width: 100%; /* СТРОГО 100%, чтобы не быть больше экрана */
+        display: block; 
+        margin: 0 auto 35px; 
+        border-radius: 15px; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+    }
+
+
+    h1 { font-family: 'Syncopate', sans-serif; text-align: center; color: var(--gold); letter-spacing: 2px; font-size: 24px; margin-bottom: 25px; }
+
+
+
+    .description-text { font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 30px; color: #e0d5e0; }
+
+    .description-text b { color: var(--gold); }
+
+
+
+    .group-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 40px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 12px; }
+
+    .group-item { font-family: 'Syncopate'; font-size: 10px; color: var(--gold); opacity: 0.9; }
+
+
+
+    #quiz-section, #result-section { display: none; width: 100%; }
+
+
+
+    .question-text { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 24px; text-align: center; margin-bottom: 30px; color: #fff; line-height: 1.3; }
+
+
+
+    /* СТИЛИ ЯЧЕЕК */
+
+    .options-grid {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+        width: 100%;
+
+        max-width: 500px;
+
+        margin: 0 auto;
+
+    }
+
+
+
+    .option-btn {
+
+        display: block;
+
+        width: 100%;
+
+        padding: 14px 20px;
+
+        background: #ffffff;
+
+        border: 2px solid #eeeeee;
+
+        border-radius: 12px;
+
+        font-family: 'Montserrat', sans-serif;
+
+        font-size: 15px;
+
+        font-weight: 600;
+
+        color: #333;
+
+        text-align: left;
+
+        cursor: pointer;
+
+        transition: all 0.25s ease;
+
+        box-sizing: border-box;
+
+        outline: none;
+
+        line-height: 1.4;
+
+    }
+
+
+
+    /* ПОДСВЕТКА */
+
+    .option-btn:hover {
+
+        border-color: var(--gold);
+
+        background-color: #faffff;  
+
+        transform: translateX(5px);
+
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+
+    }
+
+
+
+    .option-btn:active {
+
+        background-color: var(--gold);
+
+        border-color: var(--gold);
+
+        color: white;
+
+        transform: scale(0.98);
+
+    }
+
+
+
+    @media (hover: none) {
+
+        .option-btn:hover { transform: none; box-shadow: none; }
+
+    }
+
+
+
+    /* КНОПКИ УПРАВЛЕНИЯ */
+
+    .btn-main { width: 100%; padding: 22px; background: var(--gold); color: #000; border: none; font-family: 'Syncopate', sans-serif; font-weight: 700; border-radius: 12px; margin-top: 25px; font-size: 15px; letter-spacing: 2px; cursor: pointer; }
+
+
+
+    .btn-abort { display: inline-block; margin-top: 35px; background: transparent; border: 1px solid #ff4444; color: #ff4444; font-family: 'Syncopate'; font-size: 11px; letter-spacing: 2px; cursor: pointer; padding: 10px 20px; text-transform: uppercase; text-decoration: none; border-radius: 50px; }
+
+    .btn-back { display: inline-block; margin-top: 25px; color: var(--gold); font-family: 'Syncopate'; font-size: 11px; text-decoration: none; letter-spacing: 2px; }
+
+
+
+    /* РЕЗУЛЬТАТ */
+
+    .monument { background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 2px solid var(--group-color, var(--gold)); border-radius: 20px; padding: 45px 20px; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 20px var(--group-color, var(--gold)); margin: 25px 0; }
+
+    .res-label { font-family: 'Syncopate'; font-size: 11px; color: var(--gold); letter-spacing: 3px; margin-bottom: 15px; display: block; }
+
+    .res-value-main { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 48px; font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 30px; }
+
+    .analysis-text { font-size: 16px; line-height: 1.8; color: #f0edf0; padding: 25px 0; border-top: 1px solid rgba(212, 175, 55, 0.3); }
+
+.btn-share {
+    width: 100%;
+    padding: 18px;
+    background: transparent;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    font-family: 'Syncopate', sans-serif;
+    font-weight: 700;
+    border-radius: 12px;
+    margin-top: 15px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-share:hover {
+    background: var(--gold);
+    color: #000;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+    @media (max-width: 600px) {
+
+        .main-container { padding: 30px 15px; }
+
+        .res-value-main { font-size: 36px; }
+
+    }
+
+    #quiz-section, #result-section {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+</style>
+
+   
+
+</head>
+
+<body>
+
+
+<div class="main-container">
+
+    <div style="width: 100%; min-height: 550px; display: flex; flex-direction: column;">
+
+        <div id="intro-section" style="text-align: center;">
+            <img src="../images/k-pop women.jpg" class="intro-img-large" alt="K-Pop Queens">
+            <h1>THE ROYAL AUDIT</h1>
+            <p class="description-text">
+                Every superstar carries a unique creative signature. Behind the high-fashion concepts and record-breaking performances lies a specific <b>Aesthetic DNA</b>. 
+                <br><br>
+                By analyzing your artistic instincts, we will determine which reigning K-Pop powerhouse aligns with your vision:
+            </p>
+
+            <div class="group-list">
+                <span class="group-item">BLACKPINK</span>
+                <span class="group-item">NEWJEANS</span>
+                <span class="group-item">AESPA</span>
+                <span class="group-item">TWICE</span>
+                <span class="group-item">IVE</span>
+                <span class="group-item">LE SSERAFIM</span>
+                <span class="group-item">(G)I-DLE</span>
+                <span class="group-item">ITZY</span>
+            </div>
+            
+            <button class="btn-main" onclick="startQuiz()">BEGIN CALIBRATION</button>
+            <br>
+        
+        <a href="../index.html" class="btn-back">← Back to Main Menu</a>
+
+    </div>
+
+<div id="quiz-section" style="display: none;">
+
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+
+    <p id="q-counter" style="text-align: center; font-family: 'Syncopate', sans-serif; color: #b8860b; font-size: 12px; margin-bottom: 20px;"></p>
+
+   
+
+    <div id="question-text" class="question" style="margin-bottom: 25px;"></div>
+
+   
+
+    <div id="options-container" class="options-grid"></div>
+
+    <div style="text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+
+            <a href="../index.html" class="btn-abort">Abort Mission</a>
+
+        </div>
+
+    </div>
+
+
+
+    <div id="result-section" style="text-align: center;">
+
+        <h1 style="font-size: 18px;">REIGN ESTABLISHED</h1>
+
+        <div id="monument" class="monument">
+
+            <span class="res-label">YOUR K-POP COUNTERPART</span>
+
+            <div id="res-group" class="res-value-main"></div>
+
+            <div class="analysis-text" id="res-long-text"></div>
+
+            <div style="margin-top: 10px;">
+
+                <span class="res-label">JOIN THE LINEAGE:</span>
+
+                <span id="res-fandom" style="font-family: 'Syncopate'; font-size: 20px; color: #fff;"></span>
+
+            </div>
+
+        </div>
+        <button class="btn-share" onclick="shareResult()">SHARE YOUR REIGN 👑</button>
+
+        <button class="btn-main" onclick="location.reload()">RE-START AUDIT</button>
+
+        <br>
+
+        <a href="../index.html" class="btn-back">← Back to Main Menu</a>
+
+    </div>
+
+
+
+    <footer style="margin-top: 50px; padding: 20px; text-align: center; opacity: 0.6; font-size: 11px; line-height: 1.6; border-top: 1px solid rgba(212, 175, 55, 0.1); color: #fff;">
+
+        <p>
+
+            <strong>DISCLAIMER:</strong> This website is a fan-made project created for educational and entertainment purposes only.
+
+            All artist names, group names, and trademarks are the property of their respective owners (including but not limited to HYBE Labels, SM Entertainment, JYP Entertainment, YG Entertainment, and KQ Entertainment).
+
+            No copyright infringement is intended.
+
+        </p>
+
+    </footer>
+
+</div>
+
+
+
+<script>
+
+const groupData = [
+
+    { id: "blackpink", name: "Blackpink", fandom: "BLINK", color: "#f4a7bb", analysis: "Your presence is <b>monumental</b>. You possess a rare blend of high-fashion sophistication and raw power. Like Blackpink, you are a global force—born to lead and destined to dominate every room you enter." },
+
+    { id: "newjeans", name: "NewJeans", fandom: "BUNNIES", color: "#87ceeb", analysis: "You are the <b>breath of fresh air</b>. Your aesthetic is effortlessly cool, natural, and timelessly nostalgic. You have a magnetic charm that feels both classic and revolutionary." },
+
+    { id: "aespa", name: "Aespa", fandom: "MY", color: "#9d81ff", analysis: "You are a <b>visionary architect</b> of the future. You embrace tech-driven beauty and hyper-modern aesthetics with a fearless energy that shatters every boundary." },
+
+    { id: "twice", name: "Twice", fandom: "ONCE", color: "#ff8da1", analysis: "You are the <b>ultimate harmonizer</b>. Your soul radiates a vibrant energy that brings people together. Your legendary work ethic and positivity make you a 'One in a Million' icon." },
+
+    { id: "ive", name: "IVE", fandom: "DIVE", color: "#b19cd9", analysis: "You are a <b>masterpiece of self-love</b>. Elegant, poised, and deeply confident, you move through life with a royal grace that commands respect." },
+
+    { id: "lesserafim", name: "Le Sserafim", fandom: "FEARNOT", color: "#ffffff", analysis: "You are <b>unbreakable</b>. Your strength is Antifragile—you thrive under pressure and turn every challenge into a runway moment." },
+
+    { id: "gidle", name: "(G)I-DLE", fandom: "NEVERLAND", color: "#800000", analysis: "You are a <b>fearless creator</b>. You refuse to let anyone write your story, choosing instead to produce your own destiny. Your artistic independence is your greatest power." },
+
+    { id: "itzy", name: "ITZY", fandom: "MIDZY", color: "#ff004f", analysis: "You are an <b>electric spark</b> of individuality. You celebrate your differences with a bold, neon energy. Your infectious confidence is your ultimate win." }
+
+];
+
+
+
+const questions = [
+
+    { q: "Choose your primary visual palette:", o: [{t:"Gold & Obsidian", s:"blackpink"}, {t:"Denim & Pastel Blue", s:"newjeans"}, {t:"Chrome & Neon", s:"aespa"}, {t:"Sunshine & Pink", s:"twice"}]},
+
+    { q: "What defines your stage aura?", o: [{t:"Untouchable Luxury", s:"blackpink"}, {t:"Effortless Cool", s:"newjeans"}, {t:"Hyper-Modern Tech", s:"aespa"}, {t:"Explosive Positivity", s:"twice"}]},
+
+    { q: "Artistic mantra?", o: [{t:"I rule the world", s:"blackpink"}, {t:"I create trends", s:"newjeans"}, {t:"I sync with future", s:"aespa"}, {t:"I share the love", s:"twice"}]},
+
+    { q: "Debut setting?", o: [{t:"Fashion Runway", s:"blackpink"}, {t:"Retro Vinyl Shop", s:"newjeans"}, {t:"Cyber-Desert", s:"aespa"}, {t:"Magical Island", s:"twice"}]},
+
+    { q: "Your fashion sense?", o: [{t:"Custom Couture", s:"ive"}, {t:"Athletic Runway", s:"lesserafim"}, {t:"Experimental Indie", s:"gidle"}, {t:"Street Swag", s:"itzy"}]},
+
+    { q: "Secret power?", o: [{t:"Visual Perfection", s:"ive"}, {t:"Unyielding Discipline", s:"lesserafim"}, {t:"Songwriting", s:"gidle"}, {t:"Sharp Performance", s:"itzy"}]},
+
+    { q: "Fandom energy?", o: [{t:"Elite & Posh", s:"ive"}, {t:"Fearless & Solid", s:"lesserafim"}, {t:"Mystical & Bold", s:"gidle"}, {t:"Energetic", s:"itzy"}]},
+
+    { q: "Dream collaboration?", o: [{t:"Luxury Fashion House", s:"blackpink"}, {t:"Retro Pop Legend", s:"newjeans"}, {t:"Tech Giant", s:"aespa"}, {t:"Disney Soundtrack", s:"twice"}]},
+
+    { q: "The 'killing point'?", o: [{t:"Rap Bridge", s:"blackpink"}, {t:"Sweet Harmony", s:"newjeans"}, {t:"The High Note", s:"aespa"}, {t:"Iconic Hook", s:"twice"}]},
+
+    { q: "Digital aesthetic?", o: [{t:"Instagram Luxury", s:"ive"}, {t:"TikTok Viral", s:"itzy"}, {t:"Pinterest Retro", s:"newjeans"}, {t:"Gaming/VR", s:"aespa"}]},
+
+    { q: "Handling a challenge?", o: [{t:"Rise above it", s:"lesserafim"}, {t:"Change the rules", s:"gidle"}, {t:"Smile through it", s:"twice"}, {t:"Conquer it", s:"blackpink"}]},
+
+    { q: "Signature prop?", o: [{t:"Royal Crown", s:"ive"}, {t:"Gym Equipment", s:"lesserafim"}, {t:"Notebook & Pen", s:"gidle"}, {t:"Skateboard", s:"itzy"}]},
+
+    { q: "Dance style?", o: [{t:"Sultry Elegance", s:"ive"}, {t:"Powerful & Sharp", s:"lesserafim"}, {t:"Theatrical", s:"gidle"}, {t:"Dynamic Energy", s:"itzy"}]},
+
+    { q: "In your bag?", o: [{t:"Expensive Perfume", s:"blackpink"}, {t:"Film Camera", s:"newjeans"}, {t:"Gaming Console", s:"aespa"}, {t:"Fan Letters", s:"twice"}]},
+
+    { q: "Your legacy?", o: [{t:"Innovation", s:"aespa"}, {t:"Authenticity", s:"newjeans"}, {t:"Domination", s:"blackpink"}, {t:"Pure Happiness", s:"twice"}]},
+
+    { q: "Vocal style?", o: [{t:"Deep & Charismatic", s:"blackpink"}, {t:"Soft & Airy", s:"newjeans"}, {t:"Precise", s:"aespa"}, {t:"Stable & Sweet", s:"twice"}]},
+
+    { q: "Tour finale city?", o: [{t:"New York", s:"blackpink"}, {t:"London", s:"lesserafim"}, {t:"Seoul", s:"gidle"}, {t:"Tokyo", s:"twice"}]},
+
+    { q: "Message to haters?", o: [{t:"Look at me now", s:"blackpink"}, {t:"I'm antifragile", s:"lesserafim"}, {t:"I am the queen", s:"gidle"}, {t:"I don't care", s:"itzy"}]},
+
+    { q: "Fan interaction?", o: [{t:"Stadium Concert", s:"twice"}, {t:"Fashion Event", s:"ive"}, {t:"Pop-up Surprise", s:"newjeans"}, {t:"Digital Meet", s:"aespa"}]},
+
+    { q: "Final mission?", o: [{t:"Be an Icon", s:"blackpink"}, {t:"Be a Muse", s:"ive"}, {t:"Be a Creator", s:"gidle"}, {t:"Be a Legend", s:"twice"}]}
+
+];
+
+
+
+let currentQuestion = 0;
+
+let scores = { blackpink:0, newjeans:0, aespa:0, twice:0, ive:0, lesserafim:0, gidle:0, itzy:0 };
+
+
+
+function startQuiz() {
+
+    document.getElementById('intro-section').style.display = 'none';
+
+    document.getElementById('quiz-section').style.display = 'block';
+
+    renderQuestion();
+
+}
+
+
+
+function renderQuestion() {
+
+    const q = questions[currentQuestion];
+
+    document.getElementById('q-counter').innerText = `STEP ${currentQuestion + 1} OF 20`;
+
+    document.getElementById('question-text').innerText = q.q;
+
+    const container = document.getElementById('options-container');
+
+    container.innerHTML = '';
+
+   
+
+    q.o.forEach(opt => {
+
+        // ИЗМЕНЕНО: создаем 'button' и даем класс 'option-btn', чтобы работал CSS
+
+        const btn = document.createElement('button');
+
+        btn.className = 'option-btn';
+
+        btn.innerText = opt.t;
+
+       
+
+        btn.onclick = () => {
+
+            scores[opt.s]++;
+
+            currentQuestion++;
+
+            if(currentQuestion < 20) renderQuestion();
+
+            else finishQuiz();
+
+        };
+
+        container.appendChild(btn);
+
+    });
+
+}
+
+   
+
+
+
+
+
+function finishQuiz() {
+
+    document.getElementById('quiz-section').style.display = 'none';
+
+    document.getElementById('result-section').style.display = 'block';
+
+    let max = Math.max(...Object.values(scores));
+
+    let winnerId = Object.keys(scores).find(key => scores[key] === max);
+
+    let data = groupData.find(g => g.id === winnerId);
+
+    const monument = document.getElementById('monument');
+
+    monument.style.setProperty('--group-color', data.color);
+
+    document.getElementById('res-group').innerText = data.name;
+
+    document.getElementById('res-fandom').innerText = data.fandom;
+
+    document.getElementById('res-long-text').innerHTML = data.analysis;
+
+}
+function shareResult() {
+    const resultName = document.getElementById('res-group').innerText;
+    const shareText = `I just took The Royal Audit and my K-Pop counterpart is ${resultName}! Find your aesthetic DNA here:`;
+    const shareUrl = window.location.href; // Автоматически берет ссылку на текущий тест
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'My K-Pop Result',
+            text: shareText,
+            url: shareUrl,
+        })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing', error));
+    } else {
+        // Фоллбек: если браузер не поддерживает Share API (старые ПК)
+        alert(`Copy this to share: ${shareText} ${shareUrl}`);
+    }
+}
+
+</script>
+
+</body>
+
+</html>

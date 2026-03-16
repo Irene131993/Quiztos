@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introvert vs Extrovert | QUIZTOS</title>
+    <style>
+        :root {
+            --primary: #1a2a6c;
+            --accent: #f2a900;
+            --bg: #0f0c29;
+            --white: #ffffff;
+            --text: #333;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(to right, #0f0c29, #302b63, #24243e); 
+            color: var(--white); 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+
+        .quiz-container { 
+            max-width: 800px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 20px; 
+            color: var(--text); 
+            overflow: hidden; 
+            padding: 40px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+        }
+
+        #intro-section { text-align: left; line-height: 1.7; }
+        
+        /* УМЕНЬШЕННАЯ КАРТИНКА */
+        .main-img { 
+            width: 100%; 
+            max-width: 400px; 
+            border-radius: 15px; 
+            margin: 0 auto 25px auto; 
+            display: block; 
+        }
+
+        h1 { text-align: center; color: var(--primary); font-size: 34px; margin-bottom: 20px; }
+        h2 { text-align: center; color: var(--primary); margin: 40px 0 20px; }
+        
+        .info-block { 
+            background: #f8f9fa; 
+            border-left: 5px solid var(--primary); 
+            padding: 20px; 
+            margin-bottom: 25px; 
+            border-radius: 0 10px 10px 0; 
+        }
+        .info-block h3 { margin-top: 0; color: var(--primary); border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .info-block p { margin: 10px 0; font-size: 15px; line-height: 1.6; }
+        .info-block b { color: #444; }
+
+        #quiz-section, #result-section { display: none; }
+        .question { font-size: 24px; font-weight: 800; margin: 30px 0; color: var(--primary); text-align: center; }
+        
+        .options { display: grid; gap: 12px; }
+        .option-btn { 
+            padding: 18px; 
+            border: 2px solid #eee; 
+            border-radius: 10px; 
+            background: white; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: 0.3s; 
+            text-align: left; 
+            font-family: inherit;
+        }
+        .option-btn:hover { border-color: var(--primary); background: #f0f4ff; transform: translateX(5px); }
+        .option-btn:active { background: var(--primary); color: white; }
+
+        .result-header { font-size: 32px; font-weight: 900; color: var(--primary); text-align: center; }
+        .result-description { line-height: 1.8; background: #f9fbff; padding: 25px; border-radius: 12px; border: 1px solid #e0e6ed; margin-top: 20px; }
+
+        .btn-main { 
+            display: block; 
+            width: fit-content; 
+            background: var(--primary); 
+            color: white; 
+            padding: 18px 50px; 
+            border: none; 
+            border-radius: 50px; 
+            font-size: 18px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            margin: 30px auto; 
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-main:hover { background: #2a48ad; transform: scale(1.05); }
+        
+        .progress-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+
+        .btn-secondary { display: block; text-align: center; color: #999; text-decoration: none; margin-top: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    
+    <div id="intro-section">
+        <img src="../images/introvert.jpg" alt="Energy Types" class="main-img">
+        <h1>Introvert vs Extrovert</h1>
+        
+        <p style="text-align: center; font-style: italic;">Where do you truly get your energy from? Discover your social temperament and the science behind your personality.</p>
+
+        <button class="btn-main" onclick="startQuiz()">Start the Quiz</button>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 40px 0;">
+
+        <h2>⚡ 5 Fascinating Facts About Extroverts</h2>
+        
+        <div class="info-block">
+            
+            <p><b>1. The Dopamine Reward System:</b> Extroverts have a more active dopamine reward system. Their brains are chemically wired to feel a "rush" of pleasure from social interaction, taking risks, and exploring new environments. For an extrovert, a crowded room isn't just a place—it’s a source of energy!</p>
+            <p><b>2. The "Solar Panel" Effect:</b> While introverts are like rechargeable batteries that need "plugging in" alone, extroverts are like solar panels. They gain their mental and emotional power directly from the "sunlight" of other people. Being alone for too long can actually make an extrovert feel physically and mentally drained.</p>
+            <p><b>3. Rapid Information Processing:</b> Studies show that extroverts process sensory information (sights and sounds) much faster than introverts. This makes them excellent at thinking on their feet, multitasking in loud environments, and reacting quickly to sudden changes.</p>
+            <p><b>4. Natural-Born Risk Takers:</b> Because of their brain chemistry, extroverts are more likely to take big leaps. Whether it’s starting a new business, traveling to a foreign country, or being the first to speak up in a meeting, they are driven by the potential for a big payoff rather than the fear of a small mistake.</p>
+            <p><b>5. The "Fire and Air" Influence:</b> In astrology, extroversion is strongly linked to the Fire (Aries, Leo, Sagittarius) and Air (Gemini, Libra, Aquarius) signs. These signs are considered "extroverted" or "active" because their energy flows outward toward the world, seeking to influence and communicate with others.</p>
+        </div>
+
+        <h2>🧠 5 Fascinating Facts About Introverts</h2>
+
+        <div class="info-block">
+            <p><b>1. Dopamine vs. Acetylcholine:</b> While extroverts get a "high" from dopamine (the chemical released during social excitement), introverts prefer acetylcholine. This neurotransmitter is linked to the pleasure we feel when we turn inward, think deeply, or focus on a single task for a long time.</p>
+            <p><b>2. The "Battery" Metaphor:</b>Introverts aren't antisocial; they just have a finite social battery. Every social interaction—even with people they love—costs energy. To "recharge," they must retreat into solitude to process their experiences and regain their mental strength.</p>
+            <p><b>3. Highly Sensitive Processors:</b> The introvert's brain has a thicker prefrontal cortex, the area associated with deep planning and thought. This means they don't just "see" the world; they analyze it. They are often the first to notice small details, subtle shifts in mood, or hidden patterns that others miss.</p>
+            <p><b>4. The Power of "Observation First":</b> Introverts tend to use a "listen and observe" strategy. In a new environment, their brains are busy mapping out the room and understanding the social dynamics before they ever say a word. This makes them incredibly thoughtful leaders and strategic problem-solvers.</p>
+            <p><b>5. The "Earth and Water" Connection:</b> In astrology, introversion is traditionally linked to the Passive/Feminine elements: Earth (Taurus, Virgo, Capricorn) and Water (Cancer, Scorpio, Pisces).</p> - Earth Signs internalize energy through grounding and stability.
+<p> - Water Signs internalize it through empathy and deep emotion.</p>
+        </div>
+
+        <h2>⚖️ 5 Fascinating Facts About Ambiverts</h2>
+
+        <div class="info-block">
+            <p><b>1. The "Social Chameleon":</b> Ambiverts have a unique ability to adjust their energy based on the person they are with. They can be the life of the party with an extrovert or a deep, quiet listener with an introvert. They act as a "bridge" between the two extremes.</p>
+            <p><b>2.The Balanced Reward System:</b> While extroverts are driven by dopamine (excitement) and introverts by acetylcholine (calm), ambiverts have a balanced sensitivity to both. This means they enjoy a night out just as much as a night in, provided they have a good mix of both throughout the week.</p>
+            <p><b>3. The "Stability" Advantage:</b> Because they don't lean too far in one direction, ambiverts are often more emotionally stable. They aren't as easily overwhelmed by silence as extroverts, and they aren't as easily drained by crowds as introverts. This makes them highly adaptable in high-pressure environments.</p>
+            <p><b>4. Masters of Persuasion:</b> Research (notably from Wharton School) suggests that ambiverts make the best salespeople and leaders. Why? Because they know when to speak (extroverted) and when to listen (introverted). They don't overwhelm people with talk, but they aren't too shy to close a deal.</p>
+            <p><b>5. The "Dual Element" Connection:</b> In astrology, ambiversion is often found in people with a balanced birth chart.</p> - For example, someone might have a Fire Sign (Extroverted) sun but a Water Sign (Introverted) moon. </p> - This creates a "Steam" effect—powerful, moving, and capable of filling any container. They represent the Equilibrium of the zodiac.</p>
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">Start the Quiz</button>
+        <a href="../index.html" class="btn-secondary">← Back to Home</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span id="q-counter" style="font-size: 12px; color: #999; display: block; text-align: center; margin-bottom: 10px;"></span>
+        <div id="question-text" class="question"></div>
+        <div id="options-container" class="options"></div>
+        <div style="text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+            <a href="javascript:location.reload()" class="btn-secondary" style="color: #ff4444;">Abort Test</a>
+        </div>
+    </div>
+
+    <div id="result-section">
+        <div class="result-header" id="result-name"></div>
+        <div class="result-description" id="result-desc"></div>
+        <button class="btn-main" onclick="location.reload()">Retake Quiz</button>
+        <a href="../index.html" class="btn-secondary">← Back to Home</a>
+    </div>
+
+</div>
+
+<script>
+    const questions = [
+        { q: "How do you feel after spending a few hours at a loud party?", options: [{t: "Exhausted. I need to be alone to recharge.", s: "A"}, {t: "Energized! I feel excited and ready for more.", s: "B"}] },
+        { q: "When you have a problem, what do you usually do?", options: [{t: "I process it internally on my own first.", s: "A"}, {t: "I call a friend to process thoughts out loud.", s: "B"}] },
+        { q: "What is your ideal way to spend a Friday night?", options: [{t: "A quiet hobby or a book at home.", s: "A"}, {t: "Going out or meeting new people.", s: "B"}] },
+        { q: "How do you feel about small talk with strangers?", options: [{t: "It's awkward or tiring for me.", s: "A"}, {t: "I enjoy it; it's easy to start a conversation.", s: "B"}] },
+        { q: "In a group discussion, you usually:", options: [{t: "Listen more and speak only when asked.", s: "A"}, {t: "Share ideas immediately and enjoy the debate.", s: "B"}] },
+        { q: "How do you prefer to work on a big project?", options: [{t: "Independently in a quiet space.", s: "A"}, {t: "In a team where we can brainstorm together.", s: "B"}] },
+        { q: "When the phone rings unexpectedly, your first thought is:", options: [{t: "Why are they calling? I'd prefer a text.", s: "A"}, {t: "Cool! I wonder what's up.", s: "B"}] },
+        { q: "How many close friends do you have?", options: [{t: "A few, but with very deep connections.", s: "A"}, {t: "A large circle and many acquaintances.", s: "B"}] },
+        { q: "After a long, busy work week, you prefer:", options: [{t: "Staying at home in total peace.", s: "A"}, {t: "Meeting up with friends to celebrate.", s: "B"}] },
+        { q: "How do you react to unexpected changes in plans?", options: [{t: "It stresses me out; I need preparation.", s: "A"}, {t: "I'm fine with it; I like spontaneity.", s: "B"}] },
+        { q: "When you enter a room full of strangers, you:", options: [{t: "Stay near the edges or find someone you know.", s: "A"}, {t: "Walk in and start introducing yourself.", s: "B"}] },
+        { q: "Which of these sounds more like you?", options: [{t: "I think before I speak.", s: "A"}, {t: "I think while I am speaking.", s: "B"}] },
+        { q: "Do you enjoy being the center of attention?", options: [{t: "No, it makes me feel uncomfortable.", s: "A"}, {t: "Yes, I feel comfortable when people focus on me.", s: "B"}] },
+        { q: "What is more draining for you?", options: [{t: "A full day of social interaction without breaks.", s: "A"}, {t: "A full day of being alone without any talk.", s: "B"}] },
+        { q: "People often describe you as:", options: [{t: "Quiet, calm, or a good listener.", s: "A"}, {t: "Outgoing, friendly, or energetic.", s: "B"}] }
+    ];
+
+    let cur = 0, scoreA = 0, scoreB = 0;
+
+    function startQuiz() {
+        document.getElementById('intro-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        window.scrollTo(0,0);
+        updateQ();
+    }
+
+    function updateQ() {
+        const qData = questions[cur];
+        document.getElementById('q-counter').innerText = `Question ${cur + 1} of 15`;
+        document.getElementById('question-text').innerText = qData.q;
+        document.getElementById('progress-fill').style.width = ((cur) / 15 * 100) + '%';
+        const optCont = document.getElementById('options-container');
+        optCont.innerHTML = '';
+        qData.options.forEach(o => {
+            const b = document.createElement('button');
+            b.className = 'option-btn'; b.innerText = o.t;
+            b.onclick = () => { if(o.s === "A") scoreA++; else scoreB++; cur++; if(cur < 15) updateQ(); else showRes(); };
+            optCont.appendChild(b);
+        });
+    }
+
+    function showRes() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo(0,0);
+        let title, desc;
+        if (scoreA > scoreB + 2) {
+            title = "🌙 You are an INTROVERT";
+            desc = "You gain energy from your internal world. Being alone is your way of 'recharging your batteries.' You value deep connections, meaningful conversations, and personal space.";
+        } else if (scoreB > scoreA + 2) {
+            title = "☀️ You are an EXTROVERT";
+            desc = "You gain energy from the outside world. Socializing 'recharges' you. You are likely expressive, outgoing, and comfortable in crowds, feeling most alive when interacting with others.";
+        } else {
+            title = "🌗 You are an AMBIVERT";
+            desc = "You have a balance of both introverted and extroverted traits. You can be the life of the party, but you also deeply cherish your alone time. You are flexible and adapt to any situation.";
+        }
+        document.getElementById('result-name').innerText = title;
+        document.getElementById('result-desc').innerHTML = desc;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Guardian Planet | QUIZTOS</title>
+    <style>
+        :root {
+            --primary: #1a2a6c;
+            --accent: #f2a900;
+            --bg: #0f0c29;
+            --white: #ffffff;
+            --text: #333;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(to right, #0f0c29, #302b63, #24243e); color: var(--white); display: flex; justify-content: center; padding: 20px; }
+        .quiz-container { max-width: 800px; width: 100%; background: var(--white); border-radius: 20px; color: var(--text); overflow: hidden; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+
+        /* INTRO */
+        #intro-section { text-align: left; line-height: 1.7; }
+        .main-img { width: 100%; border-radius: 15px; margin-bottom: 25px; display: block; }
+        #intro-section h1 { text-align: center; color: var(--primary); font-size: 34px; margin-bottom: 20px; }
+        
+        .planet-block { background: #f8f9fa; border-left: 5px solid var(--primary); padding: 20px; margin-bottom: 20px; border-radius: 0 10px 10px 0; }
+        .planet-block h3 { margin-top: 0; color: var(--primary); border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .planet-block p { margin: 10px 0; font-size: 15px; }
+
+        /* QUIZ */
+        #quiz-section, #result-section { display: none; }
+        .question { font-size: 24px; font-weight: 800; margin: 30px 0; color: var(--primary); text-align: center; }
+        .options { display: grid; gap: 12px; }
+        .option-btn { padding: 18px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer; font-size: 16px; transition: 0.3s; text-align: left; }
+        .option-btn:hover { border-color: var(--primary); background: #f0f4ff; }
+
+        /* RESULTS */
+        .result-header { font-size: 32px; font-weight: 900; color: var(--primary); text-align: center; }
+        #result-img { width: 100%; max-width: 400px; border-radius: 50%; margin: 30px auto; display: block; border: 8px solid #f0f4f8; }
+        .result-description { line-height: 1.8; background: #f9fbff; padding: 25px; border-radius: 12px; border: 1px solid #e0e6ed; }
+
+        /* UI */
+        .btn-main { display: block; width: fit-content; background: var(--primary); color: white; padding: 20px 60px; border: none; border-radius: 50px; font-size: 20px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin: 30px auto; }
+        .btn-main:hover { background: #2a48ad; transform: scale(1.05); }
+        .progress-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+   
+   .btn-share {
+    display: block;        /* Делаем блочной */
+    margin: 20px auto;     /* Центрируем (сверху/снизу 20px, по бокам авто) */
+    width: fit-content;    /* Ширина подстраивается под текст */
+    min-width: 280px;      /* Чтобы она не была слишком узкой */
+    background: transparent;
+    color: var(--primary);
+    padding: 15px 30px;
+    border: 2px solid var(--primary);
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-share:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.05);
+}
+   </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    
+    <div id="intro-section">
+        <img src="../images/planeta.jpg" alt="Guardian Planet Header" class="main-img">
+        <h1>Who Is Your Guardian Planet?</h1>
+        
+        <p>Since ancient times, humanity has looked to the stars for guidance. In astrology and cosmic philosophy, each person is connected to a specific celestial body that acts as their silent protector.</p>
+
+        <button class="btn-main" onclick="startQuiz()">Start the Quiz</button>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 40px 0;">
+
+        <h2 style="text-align: center; color: var(--primary); margin: 40px 0 25px;">🚀 Fascinating Facts About the Solar System</h2>
+        
+        <div class="planet-block">
+            <h3>1. Mercury </h3>
+            <p><b>The Shrinking Planet:</b> Mercury is slowly shrinking! As its iron core cools, its surface wrinkles like a raisin.</p>
+            <p><b>Extreme Temperatures:</b> Swings from 430°C by day to -180°C at night.</p>
+    
+        </div>
+
+        <div class="planet-block">
+            <h3>2. Venus </h3>
+            <p><b>The Backward Spinner:</b> Rotates clockwise (east to west). This is called retrograde rotation.</p>
+            <p><b>A Long Day:</b> A day on Venus is longer than its entire year!</p>
+        </div>
+
+        <div class="planet-block">
+            <h3>3. Earth </h3>
+            <p><b>The Goldilocks Zone:</b> Earth is the only planet known to have liquid water on its surface.</p>
+            <p><b>A Protective Shield:</b> Our magnetic field protects us from solar radiation.</p>
+        </div>
+
+        <div class="planet-block">
+            <h3>4. Mars </h3>
+            <p><b>The Home of Giants:</b> Mars hosts Olympus Mons, a volcano 3x taller than Mount Everest!</p>
+            <p><b>Blue Sunsets:</b> Dust in the atmosphere makes sunsets appear blue.</p>
+        </div>
+
+        <div class="planet-block">
+            <h3>5. Jupiter </h3>
+            <p><b>The Vacuum Cleaner:</b> Its massive gravity acts like a shield, protecting Earth from asteroids.</p>
+            <p><b>The Great Red Spot:</b> A storm bigger than Earth itself, raging for 150+ years.</p>
+        </div>
+
+        <div class="planet-block">
+            <h3>6. Saturn </h3>
+            <p><b>The Floater:</b> It is less dense than water. In a giant bathtub, Saturn would actually float!</p>
+            <p><b>Extreme Rings:</b> Made of billions of chunks of ice and rock.</p>
+        </div>
+
+        <div class="planet-block">
+            <h3>7. Uranus </h3>
+            <p><b>The Tilted Planet:</b> Uranus is the only planet that rotates on its side like a rolling ball.</p>
+            <p><b>Ice Giant:</b> The coldest planet in the solar system, reaching -224°C.</p>
+        </div>
+
+        <div class="planet-block">
+            <h3>8. Neptune </h3>
+            <p><b>Supersonic Winds:</b> Winds reach 2,000 km/h—faster than the speed of sound!</p>
+            <p><b>Methane Blue:</b> Its deep blue color comes from methane absorbing red light.</p>
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">Start the Quiz</button>
+        <a href="../index.html" style="display: block; text-align: center; color: #999; text-decoration: none; margin-bottom: 20px;">← Back to Home</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span id="q-counter" style="font-size: 12px; color: #999; display: block; text-align: center; margin-bottom: 10px;">Question 1 of 15</span>
+        <div id="question-text" class="question"></div>
+        <div id="options-container" class="options"></div>
+         <div style="text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+            <a href="../index.html" class="btn-abort">Finish the test</a>
+        </div>
+    </div>
+    
+
+    <div id="result-section">
+        <div class="result-header" id="result-name"></div>
+        <img id="result-img" src="" alt="Result Image">
+        <div class="result-description" id="result-desc"></div>
+        <button class="btn-share" onclick="shareResult()">SHARE YOUR RESULT 👑</button>
+        <button class="btn-main" onclick="location.reload()">Retake Quiz</button>
+        <a href="../index.html" style="display: block; text-align: center; color: #999; text-decoration: none;">← Back to Home</a>
+    </div>
+
+</div>
+
+<script>
+    const questions = [
+        { q: "What is your greatest strength in a crisis?", options: [
+            { t: "Quick thinking and speed.", s: "mercury" }, { t: "Inner peace and calmness.", s: "earth" },
+            { t: "Pure courage and action.", s: "mars" }, { t: "Analyzing the big picture.", s: "jupiter" }
+        ]},
+        { q: "Choose a landscape that feels like home:", options: [
+            { t: "A high-tech futuristic city.", s: "uranos" }, { t: "A lush, green mountain valley.", s: "earth" },
+            { t: "A mysterious, foggy coastline.", s: "neptune" }, { t: "A structured stone library.", s: "saturn" }
+        ]},
+        { q: "How do you prefer to spend your energy?", options: [
+            { t: "Building long-term stability.", s: "earth" }, { t: "Competing and winning.", s: "mars" },
+            { t: "Learning and communicating.", s: "mercury" }, { t: "Creating art and harmony.", s: "venus" }
+        ]},
+        { q: "What do you value most in others?", options: [
+            { t: "Loyalty and kindness.", s: "earth" }, { t: "Intelligence and wit.", s: "mercury" },
+            { t: "Ambition and discipline.", s: "saturn" }, { t: "Spirituality and empathy.", s: "neptune" }
+        ]},
+        { q: "In a game of chess, which piece are you?", options: [
+            { t: "The Knight - unpredictable.", s: "uranos" }, { t: "The King - central.", s: "earth" },
+            { t: "The Queen - powerful.", s: "mars" }, { t: "The Bishop - strategic.", s: "saturn" }
+        ]},
+        { q: "What is your biggest personal goal?", options: [
+            { t: "To achieve ultimate freedom.", s: "uranos" }, { t: "To find true love.", s: "venus" },
+            { t: "To gain wisdom.", s: "jupiter" }, { t: "To build a legacy.", s: "saturn" }
+        ]},
+        { q: "How do you handle secrets?", options: [
+            { t: "I forget them quickly.", s: "mercury" }, { t: "I keep them in a vault.", s: "saturn" },
+            { t: "I intuitively understand them.", s: "neptune" }, { t: "I share them to help.", s: "jupiter" }
+        ]},
+        { q: "What is your favorite time of day?", options: [
+            { t: "Sunrise.", s: "mars" }, { t: "High noon.", s: "jupiter" },
+            { t: "Golden hour.", s: "venus" }, { t: "Midnight.", s: "neptune" }
+        ]},
+        { q: "Pick a superpower:", options: [
+            { t: "Teleportation.", s: "mercury" }, { t: "Invulnerability.", s: "earth" },
+            { t: "Time manipulation.", s: "saturn" }, { t: "Mind reading.", s: "neptune" }
+        ]},
+        { q: "How do you react to injustice?", options: [
+            { t: "I fight it immediately.", s: "mars" }, { t: "I find a compromise.", s: "venus" },
+            { t: "I organize a movement.", s: "uranos" }, { t: "I help the suffering.", s: "neptune" }
+        ]},
+        { q: "What kind of books do you read?", options: [
+            { t: "Biographies.", s: "saturn" }, { t: "Action and adventure.", s: "mars" },
+            { t: "Philosophy.", s: "jupiter" }, { t: "Fantasy and poetry.", s: "neptune" }
+        ]},
+        { q: "What is your role in a team?", options: [
+            { t: "The anchor.", s: "earth" }, { t: "The innovator.", s: "uranos" },
+            { t: "The decision maker.", s: "saturn" }, { t: "The diplomat.", s: "venus" }
+        ]},
+        { q: "Choose a material that attracts you:", options: [
+            { t: "Iron and Metal.", s: "mars" }, { t: "Glass and Crystal.", s: "uranos" },
+            { t: "Gold and Silk.", s: "venus" }, { t: "Soil and Wood.", s: "earth" }
+        ]},
+        { q: "What do you do when you fail?", options: [
+            { t: "Try again instantly.", s: "mars" }, { t: "Analyze why.", s: "mercury" },
+            { t: "Accept it as a lesson.", s: "jupiter" }, { t: "Take time to heal.", s: "neptune" }
+        ]},
+        { q: "Your life motto is:", options: [
+            { t: "Knowledge is power.", s: "mercury" }, { t: "Love conquers all.", s: "venus" },
+            { t: "Growth is essential.", s: "jupiter" }, { t: "Integrity is everything.", s: "saturn" }
+        ]}
+    ];
+
+    const results = {
+        mercury: { n: "Mercury", i: "../images/mercury.jpg", d: "Guided by the messenger of the gods, you are quick-witted, curious, and an amazing communicator. You adapt to change easily and use your intellect to navigate through life's challenges." },
+        venus: { n: "Venus", i: "../images/venus.jpg", d: "Guided by the planet of beauty, you seek harmony, art, and connection. You have a natural charm that draws people to you. You believe kindness can save the world." },
+        earth: { n: "Earth", i: "../images/earth1.jpg", d: "You are grounded, nurturing, and reliable. As a child of Earth, you are the anchor for everyone around you. You value stability and deep, lasting bonds." },
+        mars: { n: "Mars", i: "../images/mars.jpg", d: "The warrior planet gives you unstoppable energy. You are brave, ambitious, and energetic. You lead where others follow, driven by passion and action." },
+        jupiter: { n: "Jupiter", i: "../images/jupiter.jpg", d: "Guided by the king of planets, you have a grand vision. You are optimistic and seek wisdom. Fortune favors you because you approach life with an open heart." },
+        saturn: { n: "Saturn", i: "../images/saturn.jpg", d: "You are the master of discipline. Saturn gives you the patience to build a legacy. You are responsible, wise, and respected for your integrity." },
+        uranos: { n: "Uranus", i: "../images/uranos.jpg", d: "You are a true original. Guided by the planet of revolution, you think outside the box and hate being restricted. You are here to bring change." },
+        neptune: { n: "Neptune", i: "../images/neptune.jpg", d: "The planet of dreams makes you highly intuitive. You feel the world through your soul and see the magic in everyday things. You are a natural visionary." }
+    };
+
+    let cur = 0, sc = { mercury: 0, venus: 0, earth: 0, mars: 0, jupiter: 0, saturn: 0, uranos: 0, neptune: 0 };
+    function startQuiz() { document.getElementById('intro-section').style.display = 'none'; document.getElementById('quiz-section').style.display = 'block'; window.scrollTo(0,0); updateQ(); }
+    function updateQ() {
+        const qData = questions[cur];
+        document.getElementById('q-counter').innerText = `Question ${cur + 1} of 15`;
+        document.getElementById('question-text').innerText = qData.q;
+        const optCont = document.getElementById('options-container');
+        optCont.innerHTML = '';
+        document.getElementById('progress-fill').style.width = ((cur) / 15 * 100) + '%';
+        qData.options.forEach(o => {
+            const b = document.createElement('button'); b.className = 'option-btn'; b.innerText = o.t;
+            b.onclick = () => { sc[o.s]++; cur++; cur < 15 ? updateQ() : showRes(); };
+            optCont.appendChild(b);
+        });
+    }
+    function showRes() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo(0,0);
+        const win = Object.keys(sc).reduce((a, b) => sc[a] > sc[b] ? a : b);
+        document.getElementById('result-name').innerText = `Your Guardian is ${results[win].n}`;
+        document.getElementById('result-img').src = results[win].i;
+        document.getElementById('result-desc').innerText = results[win].d;
+    }
+    function shareResult() {
+    // 1. Исправленный поиск имени результата (теперь берем из id="result-name")
+    const resultElement = document.getElementById('result-name');
+    const resultName = resultElement ? resultElement.innerText : "My Guardian Planet";
+    
+    // 2. Указываем название теста вручную, так как h1 может быть скрыт
+    const quizTitle = "Your Guardian Planet";
+
+    // 3. Формируем текст
+    const shareText = `I found my cosmic protector! ${resultName}. Discover yours at QUIZTOS:`;
+    
+    // 4. Ссылка
+    const shareUrl = window.location.href;
+
+    if (navigator.share) {
+        navigator.share({
+            title: quizTitle,
+            text: shareText,
+            url: shareUrl,
+        })
+        .then(() => console.log('Successful share'))
+        .catch((err) => console.log('Error:', err));
+    } else {
+        // Копирование для ПК
+        const fullText = `${shareText} ${shareUrl}`;
+        navigator.clipboard.writeText(fullText).then(() => {
+            alert("Result copied to clipboard! Paste it to your friends.");
+        });
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Ghibli World Quiz | QUIZTOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Салатовая палитра */
+            --accent: #2ecc71; 
+            --accent-hover: #27ae60;
+            --bg-gradient: linear-gradient(135deg, #2ecc71 0%, #00b894 100%);
+            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --white: #ffffff;
+            --text-dark: #2d3436;
+            --text-gray: #636e72;
+            --light-bg: #f1fcf4;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Poppins', sans-serif; 
+            background: #f0f7f2; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            padding: 20px; 
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .quiz-container { 
+            max-width: 800px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 30px; 
+            padding: 50px; 
+            box-shadow: 0 20px 60px rgba(46, 204, 113, 0.15); 
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-img { 
+            width: 100%; 
+            max-width: 600px; 
+            border-radius: 20px; 
+            margin: 0 auto 30px auto; 
+            display: block;
+            object-fit: cover;
+            max-height: 350px;
+        }
+
+        h1 { color: var(--accent); font-size: 38px; font-weight: 800; margin-bottom: 10px; }
+        .intro-text { line-height: 1.8; color: var(--text-gray); font-size: 17px; margin-bottom: 30px; text-align: left; }
+
+        .btn-main { 
+            display: block; 
+            width: 100%; 
+            max-width: 350px; 
+            margin: 25px auto; 
+            padding: 20px; 
+            border: none; 
+            border-radius: 15px; 
+            background: var(--bg-gradient); 
+            color: white; 
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+        }
+        .btn-main:hover { transform: scale(1.03); filter: brightness(1.1); }
+
+        .btn-secondary { 
+            display: inline-block; 
+            margin: 10px auto; 
+            color: var(--text-gray); 
+            text-decoration: none; 
+            font-weight: 600; 
+            cursor: pointer;
+        }
+
+        /* QUIZ ELEMENTS */
+        #quiz-section, #result-section { display: none; }
+        .question-box { border-bottom: 2px solid #f1f2f6; padding-bottom: 30px; margin-bottom: 30px; }
+        .question { font-size: 24px; font-weight: 700; line-height: 1.3; color: var(--text-dark); }
+        .options { display: grid; gap: 15px; max-width: 500px; margin: 0 auto; }
+        
+        .option-btn { 
+            padding: 16px; 
+            border: 2px solid #f1f2f6; 
+            border-radius: 15px; 
+            background: white; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: 0.3s; 
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+        }
+        .option-btn:hover { border-color: var(--accent); background: #f0fff4; transform: translateY(-2px); }
+        
+        .progress-bar { height: 10px; background: #eee; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--bg-gradient); width: 0%; transition: 0.4s; }
+
+        /* RESULT STAGE */
+        .cartoon-stage {
+            background: var(--bg-gradient);
+            border-radius: 25px;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .result-img-container {
+            width: 140px; height: 140px;
+            background: white; border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 60px;
+            border: 5px solid rgba(255,255,255,0.5);
+        }
+
+        #world-name { font-size: 32px; font-weight: 900; margin-bottom: 15px; }
+
+        /* FOOTER & DISCLAMER */
+        .disclaimer { font-size: 11px; color: #b2bec3; margin-top: 30px; text-align: center; max-width: 600px; }
+        
+        /* Расстояние для кнопки выхода */
+        .abort-zone { margin-top: 80px; border-top: 1px dashed #eee; padding-top: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="intro-section">
+        <img src="../images/ghibli.jpg" alt="Ghibli World" class="main-img">
+        <h1>Your Ghibli Sanctuary</h1>
+        
+        <button class="btn-main" onclick="startQuiz()">Start the Adventure</button>
+
+        <div class="intro-text">
+            <p>Welcome, traveler! Have you ever felt like you belong in a world where the wind speaks, cats can talk, and magic is hidden in every blade of grass? Studio Ghibli isn't just animation—it's a feeling of nostalgia for a place we've never been.</p>
+            
+            <p>Hayao Miyazaki and Isao Takahata created worlds that celebrate the harmony between nature, hard work, and the human spirit. Whether it's the bustling streets of a seaside town, a silent forest guarded by ancient gods, or a house that walks on metal legs, there is a place that matches the rhythm of your heart.</p>
+            
+            <p><strong>This quiz will analyze your choices across 15 mystical questions to determine which Ghibli world is truly yours. Answer with your intuition, not your logic.</strong></p>
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">I'm Ready! Begin Test</button>
+        <a href="../index.html" class="btn-secondary">← Back to Main Menu</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span id="q-counter" style="color: var(--text-gray); font-size: 14px; font-weight: 600;">Stage 1 of 15</span>
+        <div class="question-box"><div id="question-text" class="question"></div></div>
+        <div id="options-container" class="options"></div>
+        
+        <div class="abort-zone">
+            <a onclick="location.reload()" class="btn-secondary" style="color: #eb4d4b; font-size: 13px;">✖ Abort mission and return to start</a>
+        </div>
+    </div>
+
+    <div id="result-section">
+        <div class="cartoon-stage">
+            <div class="result-img-container" id="world-icon">✨</div>
+            <div id="rank-title" style="text-transform: uppercase; font-size: 13px; letter-spacing: 2px;">Soul Analysis Complete...</div>
+            <div id="world-name">Ghibli World</div>
+            <p id="world-description" style="line-height: 1.6; font-size: 17px; max-width: 550px; margin: 0 auto;"></p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button class="btn-main" onclick="location.reload()">Re-Enter the Portal</button>
+            <button class="btn-main" style="background: #fff; color: var(--accent); border: 2px solid var(--accent);" onclick="shareResult()">🚀 Share Your World</button>
+            <a href="../index.html" class="btn-secondary">← Back to Main Menu</a>
+        </div>
+    </div>
+</div>
+
+<div class="disclaimer">
+    Legal Disclaimer: This fan-made quiz is for entertainment purposes only. "Studio Ghibli" and all associated titles are property of their respective owners. No copyright infringement intended.
+</div>
+
+<script>
+    const questions = [
+        { q: "Where would you like to spend your Sunday afternoon?", 
+          options: [
+            {t: "In a hidden bakery with fresh bread", s: "E"},
+            {t: "At a mystical bathhouse for spirits", s: "D"},
+            {t: "Flying through the clouds in a castle", s: "F"},
+            {t: "In a cozy house by the sea", s: "A"}
+          ]
+        },
+        { q: "Choose a magical companion:", 
+          options: [
+            {t: "A soot sprite (Susuwatari)", s: "D"},
+            {t: "A giant fluffy forest spirit", s: "C"},
+            {t: "A sassy talking black cat", s: "E"},
+            {t: "A small fire demon in a hearth", s: "F"}
+          ]
+        },
+        { q: "What is your favorite sound in nature?", 
+          options: [
+            {t: "Waves crashing against the cliffs", s: "A"},
+            {t: "The wind rustling through tall trees", s: "C"},
+            {t: "Soft rain on a tin roof", s: "B"},
+            {t: "The crackle of a magical fire", s: "F"}
+          ]
+        },
+        { q: "Pick a legendary Ghibli meal to eat:", 
+          options: [
+            {t: "Ham ramen in a rainy house", s: "A"},
+            {t: "Thick bacon and eggs over a fire", s: "F"},
+            {t: "A giant steaming bun from a spirit", s: "D"},
+            {t: "Fresh vegetables from a garden", s: "C"}
+          ]
+        },
+        { q: "How do you handle a difficult situation?", 
+          options: [
+            {t: "I work hard until it's solved", s: "D"},
+            {t: "I follow my heart and intuition", s: "E"},
+            {t: "I find a creative or magical way out", s: "F"},
+            {t: "I stay calm and trust nature", s: "C"}
+          ]
+        },
+        { q: "What kind of magic would you like to possess?", 
+          options: [
+            {t: "The ability to fly on a broom", s: "E"},
+            {t: "Transforming into a sea creature", s: "A"},
+            {t: "Talking to ancient forest spirits", s: "C"},
+            {t: "Powerful spells and alchemy", s: "F"}
+          ]
+        },
+        { q: "Pick a secret place to hide from the world:", 
+          options: [
+            {t: "A field of flowers in the mountains", s: "F"},
+            {t: "An overgrown garden under a floorboard", s: "B"},
+            {t: "A mysterious island in the ocean", s: "A"},
+            {t: "An old tree trunk in a deep forest", s: "C"}
+          ]
+        },
+        { q: "What color reflects your personality?", 
+          options: [
+            {t: "Ocean Blue", s: "A"},
+            {t: "Forest Green", s: "C"},
+            {t: "Sunset Orange", s: "F"},
+            {t: "Lavender Purple", s: "E"}
+          ]
+        },
+        { q: "Choose an object with special meaning:", 
+          options: [
+            {t: "A glowing blue crystal pendant", s: "F"},
+            {t: "A hand-delivered letter", s: "E"},
+            {t: "A smooth stone from the beach", s: "A"},
+            {t: "A tiny umbrella for the rain", s: "C"}
+          ]
+        },
+        { q: "What is your dream home?", 
+          options: [
+            {t: "A house that can walk or move", s: "F"},
+            {t: "A quiet cottage in a seaside village", s: "E"},
+            {t: "A secret tunnel under the roots", s: "C"},
+            {t: "A luxury suite in a spirit hotel", s: "D"}
+          ]
+        },
+        { q: "Which Ghibli 'vibe' do you love most?", 
+          options: [
+            {t: "Summer nostalgia and childhood", s: "A"},
+            {t: "Epic magic and ancient secrets", s: "F"},
+            {t: "The beauty of everyday hard work", s: "D"},
+            {t: "Cozy nature and friendly spirits", s: "C"}
+          ]
+        },
+        { q: "What would you do on a rainy day?", 
+          options: [
+            {t: "Bake fresh bread and pastries", s: "E"},
+            {t: "Wait at a bus stop with a spirit", s: "C"},
+            {t: "Explore the house for secret doors", s: "B"},
+            {t: "Watch the water level rise outside", s: "A"}
+          ]
+        },
+        { q: "Pick a way to travel:", 
+          options: [
+            {t: "A train that runs on top of water", s: "D"},
+            {t: "A giant Cat-Bus", s: "C"},
+            {t: "Flying on a magical glider", s: "F"},
+            {t: "Biking through a hilly town", s: "E"}
+          ]
+        },
+        { q: "What is your greatest wish?", 
+          options: [
+            {t: "To find my true purpose", s: "E"},
+            {t: "To protect the environment", s: "C"},
+            {t: "To break a mysterious curse", s: "F"},
+            {t: "To live a simple life with family", s: "A"}
+          ]
+        },
+        { q: "Finally, choose a Ghibli flower:", 
+          options: [
+            {t: "Vibrant poppies on a hill", s: "E"},
+            {t: "Floating lilies on a pond", s: "A"},
+            {t: "Ancient forest moss and ferns", s: "C"},
+            {t: "Magic roses in a secret garden", s: "F"}
+          ]
+        }
+    ];
+
+    const results = {
+        "A": { name: "Ponyo's Ocean", icon: "🌊", desc: "Your soul belongs to the vibrant blue sea. You are brave, full of joy, and find magic in the smallest waves of life. You believe in love that can change the world." },
+        "B": { name: "Arrietty's World", icon: "🌿", desc: "You belong to the quiet world of small wonders. Your heart appreciates the hidden beauty and resilience of the earth. You find peace in secret, cozy places." },
+        "C": { name: "Totoro's Forest", icon: "🐾", desc: "A pure and gentle heart like yours is at home in the deep forest where ancient spirits sleep. You understand that the best things in life are often invisible." },
+        "D": { name: "The Spirit Realm", icon: "🏮", desc: "You are strong and resilient. You belong in the mysterious bathhouse, a place of hard work, ancient gods, and deep honor. You never forget your true name." },
+        "E": { name: "Kiki's Seaside Town", icon: "🧹", desc: "You belong to a hilly town where tradition meets magic. Independent and creative, you are ready to find your own flight path and serve your community." },
+        "F": { name: "Howl's Moving Castle", icon: "🏰", desc: "You belong to a world of high magic, falling stars, and complex hearts. Your soul values freedom and inner beauty above all else. You believe in fire demons and fate." }
+    };
+
+    let currentIdx = 0;
+    let scores = { A:0, B:0, C:0, D:0, E:0, F:0 };
+
+    function startQuiz() {
+        document.getElementById('intro-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        showQuestion();
+    }
+
+    function showQuestion() {
+        if (currentIdx >= questions.length) { return showResult(); }
+        const q = questions[currentIdx];
+        document.getElementById('q-counter').innerText = `Step ${currentIdx + 1} of 15`;
+        document.getElementById('progress-fill').style.width = ((currentIdx / questions.length) * 100) + '%';
+        document.getElementById('question-text').innerText = q.q;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = () => { 
+                scores[opt.s]++; 
+                currentIdx++; 
+                showQuestion(); 
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function showResult() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo(0,0);
+        
+        let winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        document.getElementById('world-name').innerText = results[winner].name;
+        document.getElementById('world-icon').innerText = results[winner].icon;
+        document.getElementById('world-description').innerText = results[winner].desc;
+    }
+
+    function shareResult() {
+        const text = `I belong in ${document.getElementById('world-name').innerText}! Discover your Ghibli world on QUIZTOS 🌸`;
+        if (navigator.share) {
+            navigator.share({ title: 'Ghibli World Quiz', text: text, url: window.location.href });
+        } else {
+            navigator.clipboard.writeText(text);
+            alert('Score copied to clipboard!');
+        }
+    }
+</script>
+</body>
+</html>

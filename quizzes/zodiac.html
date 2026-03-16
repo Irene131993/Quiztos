@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Zodiac Element | QUIZTOS</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --text: #333;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        .quiz-container { max-width: 850px; width: 100%; background: var(--white); border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; padding: 40px; text-align: center; }
+
+        /* INTRO SECTION */
+        #intro-section { text-align: left; line-height: 1.7; }
+        #intro-section img { width: 100%; border-radius: 15px; margin-bottom: 30px; }
+        #intro-section h1 { text-align: center; color: var(--primary); font-size: 32px; }
+        
+        .section-block { margin-bottom: 25px; padding: 10px 0; }
+        .element-info { background: #f9f9f9; padding: 20px; border-radius: 10px; margin: 15px 0; border-left: 4px solid var(--accent); }
+        .element-info h4 { margin: 0 0 10px 0; color: var(--primary); font-size: 18px; }
+        .idiom-box { background: #fff5f4; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 14px; color: var(--accent); display: inline-block; margin-top: 10px; }
+        
+        /* QUIZ & RESULTS (Styles stay the same) */
+        #quiz-section, #result-section { display: none; }
+        .question { font-size: 24px; font-weight: 800; margin: 30px 0; color: var(--primary); text-align: center; }
+        .options { display: grid; gap: 12px; }
+        .option-btn { padding: 18px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer; font-size: 16px; transition: 0.3s; text-align: left; }
+        .option-btn:hover { border-color: var(--accent); background: #fff5f4; }
+        .btn-main { display: block; width: fit-content; background: var(--primary); color: white; padding: 20px 60px; border: none; border-radius: 50px; font-size: 20px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin: 40px auto; }
+        .btn-main:hover { background: var(--accent); transform: scale(1.05); }
+        #result-img { width: 100%; max-width: 500px; border-radius: 15px; margin: 25px auto; display: block; }
+        .progress-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+        #progress-fill { height: 100%; background: var(--accent); width: 0%; transition: 0.4s; }
+
+           @media (max-width: 767px) {
+  body {
+    padding: 15px;
+  }
+
+  .quiz-container {
+    padding: 30px 20px;
+  }
+
+  #intro-section img {
+    margin-bottom: 20px;
+  }
+
+  #intro-section h1 {
+    font-size: 26px;
+  }
+
+  .section-block {
+    margin-bottom: 20px;
+  }
+
+  .element-info {
+    padding: 15px;
+  }
+
+  .element-info h4 {
+    font-size: 16px;
+  }
+
+  .question {
+    font-size: 20px;
+    margin: 20px 0;
+  }
+
+  .option-btn {
+    padding: 14px;
+    font-size: 15px;
+  }
+
+  .btn-main {
+    padding: 16px 40px;
+    font-size: 16px;
+  }
+
+  #result-img {
+    margin: 20px auto;
+  }
+}
+    </style>
+ 
+</head>
+<body>
+
+<div class="quiz-container">
+    
+    <div id="intro-section">
+        <img src="../images/zodiac.jpg" alt="Zodiac Header">
+        <h1>Your Zodiac Element Analysis</h1>
+        
+        <div class="section-block">
+            <p>In the ancient world, philosophers believed that everything in the universe was composed of four root elements: <b>Fire, Earth, Air, and Water</b>. These forces don't just exist in nature; they exist within us, shaping our temperament, our reactions, and our destiny.</p>
+            <p>While your Sun sign gives you a hint, your true dominant element is determined by your soul's deepest inclinations. Are you a flickering flame of inspiration or a deep, silent ocean of emotion? This 12-question psychological analysis will reveal the core energy that drives your life.</p>
+        </div>
+<button class="btn-main" onclick="startQuiz()">Start the Quiz</button>
+        <div class="section-block">
+            <h2>🌌 The Four Elements of the Zodiac</h2>
+            <p>In astrology, the 12 signs are categorized into four elemental groups. Each element represents a specific vibe or energy type.</p>
+
+            <div class="element-info">
+                <h4>♈ ♌ ♐ Fire Signs: The Creators (Aries, Leo, Sagittarius)</h4>
+                <p><b>Key traits:</b> Passionate, dynamic, and temperamental.</p>
+                <p><b>Description:</b> Fire signs are known for their high energy and enthusiasm. They are natural-born leaders who act on instinct. Like a physical fire, they can provide warmth and light, but they can also burn out if they don't pace themselves.</p>
+                <div class="idiom-box">English idiom: "A real go-getter"</div>
+            </div>
+
+            <div class="element-info">
+                <h4>♉ ♍ ♑ Earth Signs: The Doers (Taurus, Virgo, Capricorn)</h4>
+                <p><b>Key traits:</b> Grounded, practical, and disciplined.</p>
+                <p><b>Description:</b> Earth signs are the "builders" of the zodiac. They value stability, hard work, and material results. You can always count on an Earth sign to have a plan and keep things organized.</p>
+                <div class="idiom-box">English idiom: "Down-to-earth"</div>
+            </div>
+
+            <div class="element-info">
+                <h4>♊ ♎ ♒ Air Signs: The Thinkers (Gemini, Libra, Aquarius)</h4>
+                <p><b>Key traits:</b> Intellectual, social, and analytical.</p>
+                <p><b>Description:</b> Air signs are all about communication and ideas. They love to analyze, synthesize, and investigate. For them, the world is a giant puzzle to be solved through dialogue and logic.</p>
+                <div class="idiom-box">English phrase: "To have one's head in the clouds"</div>
+            </div>
+
+            <div class="element-info">
+                <h4>♋ ♏ ♓ Water Signs: The Feelers (Cancer, Scorpio, Pisces)</h4>
+                <p><b>Key traits:</b> Intuitive, emotional, and sensitive.</p>
+                <p><b>Description:</b> Water signs are the most mysterious and deep. They are highly empathetic and often pick up on "vibes" that others miss. They prioritize emotional connection and security above all else.</p>
+                <div class="idiom-box">English idiom: "Still waters run deep"</div>
+            </div>
+        </div>
+
+        <div class="section-block" style="background: #eef2f3; padding: 20px; border-radius: 12px;">
+            <h3>💡 Fun Fact: Element Compatibility</h3>
+            <p>When people talk about compatibility (совместимость) in English, they often use these elemental pairings:</p>
+            <p><b>Fire + Air:</b> Air "feeds" Fire, making it grow. This is a very energetic and creative match.</p>
+            <p><b>Earth + Water:</b> Water "nourishes" the Earth, making things grow. This is considered a very stable and supportive pairing.</p>
+        </div>
+
+                <button class="btn-main" onclick="startQuiz()">Start the Quiz</button>
+        <a href="../index.html" style="display: block; text-align: center; color: #999; text-decoration: none; margin-bottom: 20px;">← Back to Home</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span id="q-counter" style="font-size: 12px; color: #999; display: block; margin-bottom: 10px;">Question 1 of 12</span>
+        <div id="question-text" class="question"></div>
+        <div id="options-container" class="options"></div>
+        <div style="text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+            <a href="../index.html" class="btn-abort">Finish the test</a>
+        </div>
+    </div>
+
+    <div id="result-section">
+        <div style="font-size: 32px; font-weight: 900; color: var(--accent);" id="result-name"></div>
+        <img id="result-img" src="" alt="Result">
+        <div style="text-align: left; line-height: 1.8; background: #f9f9f9; padding: 25px; border-radius: 12px;" id="result-desc"></div>
+        <button class="btn-main" onclick="location.reload()">Retake Test</button>
+        <a href="../index.html" style="display: block; color: #999; text-decoration: none; margin-top: 20px;">← Back to Home</a>
+    </div>
+
+</div>
+
+<script>
+    // Массив вопросов и логика из прошлого сообщения
+    const questions = [
+        { q: "You have a completely free weekend. What is your ideal way to spend it?", options: [
+            { t: "Starting a new exciting project or going on an adventure.", s: "fire" },
+            { t: "Organizing my home and finishing practical tasks.", s: "earth" },
+            { t: "Meeting friends for coffee and long conversations.", s: "air" },
+            { t: "Relaxing near water or getting lost in my thoughts.", s: "water" }
+        ]},
+        { q: "How do you react to sudden, unexpected changes?", options: [
+            { t: "I get fired up and take immediate action.", s: "fire" },
+            { t: "I stay calm and try to find a logical solution.", s: "air" },
+            { t: "I feel stressed but focus on maintaining stability.", s: "earth" },
+            { t: "I process my emotions before doing anything else.", s: "water" }
+        ]},
+        { q: "Which of these qualities do people admire in you most?", options: [
+            { t: "My unstoppable energy and passion.", s: "fire" },
+            { t: "My reliability and common sense.", s: "earth" },
+            { t: "My intelligence and communication skills.", s: "air" },
+            { t: "My empathy and deep understanding.", s: "water" }
+        ]},
+        { q: "In a conflict, what is your typical behavior?", options: [
+            { t: "I express my anger quickly but cool down fast.", s: "fire" },
+            { t: "I try to talk it out and see all perspectives.", s: "air" },
+            { t: "I stand my ground firmly like a rock.", s: "earth" },
+            { t: "I feel hurt and might withdraw emotionally.", s: "water" }
+        ]},
+        { q: "What is your relationship with your workspace?", options: [
+            { t: "It's messy but full of creative energy.", s: "fire" },
+            { t: "Extremely organized and functional.", s: "earth" },
+            { t: "Open, bright, and full of books or tech.", s: "air" },
+            { t: "Cozy, private, and filled with memories.", s: "water" }
+        ]},
+        { q: "What drives you more in life?", options: [
+            { t: "The desire for success and recognition.", s: "fire" },
+            { t: "The need for security and comfort.", s: "earth" },
+            { t: "The search for truth and knowledge.", s: "air" },
+            { t: "The longing for deep emotional connection.", s: "water" }
+        ]},
+        { q: "Pick a color palette that speaks to your soul:", options: [
+            { t: "Brave reds, oranges, and golds.", s: "fire" },
+            { t: "Natural greens, browns, and deep greys.", s: "earth" },
+            { t: "Light blues, whites, and shimmering silver.", s: "air" },
+            { t: "Deep teals, purples, and midnight blue.", s: "water" }
+        ]},
+        { q: "How do you handle a large amount of new information?", options: [
+            { t: "I skim it quickly to find the most exciting parts.", s: "fire" },
+            { t: "I categorize it and store it for future use.", s: "earth" },
+            { t: "I discuss it with others to understand it better.", s: "air" },
+            { t: "I try to feel if the information 'vibrates' with me.", s: "water" }
+        ]},
+        { q: "What is your biggest fear?", options: [
+            { t: "Being bored or restricted.", s: "fire" },
+            { t: "Instability or financial chaos.", s: "earth" },
+            { t: "Being misunderstood or silenced.", s: "air" },
+            { t: "Being alone or emotionally abandoned.", s: "water" }
+        ]},
+        { q: "How do you show love to others?", options: [
+            { t: "Through grand gestures and excitement.", s: "fire" },
+            { t: "Through practical help and being present.", s: "earth" },
+            { t: "Through stimulating talk and shared ideas.", s: "air" },
+            { t: "Through deep listening and emotional support.", s: "water" }
+        ]},
+        { q: "Which element of nature do you feel most connected to?", options: [
+            { t: "A crackling fireplace or the hot sun.", s: "fire" },
+            { t: "A dense forest or a rocky mountain.", s: "earth" },
+            { t: "The wind in the trees or a clear sky.", s: "air" },
+            { t: "A flowing river or the vast ocean.", s: "water" }
+        ]},
+        { q: "When you look at the future, you see:", options: [
+            { t: "A series of battles to win.", s: "fire" },
+            { t: "A garden to grow and tend to.", s: "earth" },
+            { t: "A horizon full of endless possibilities.", s: "air" },
+            { t: "A journey of personal evolution.", s: "water" }
+        ]}
+    ];
+
+    const results = {
+        fire: { n: "Spirit of Fire", i: "../images/fire.jpg", d: "You are a radiant source of energy! The Fire element makes you spontaneous, brave, and incredibly passionate. Like a flame, you are always moving upward, seeking new heights. You inspire others with your enthusiasm, but remember that fire needs fuel and boundaries to keep burning steadily." },
+        earth: { n: "Essence of Earth", i: "../images/earth.jpg", d: "You are the bedrock of reality. Reliable, grounded, and incredibly strong. You have a unique ability to turn dreams into tangible results. While others get lost in the clouds, you know exactly where you stand. You value quality, tradition, and physical comfort." },
+        air: { n: "Whisper of Air", i: "../images/air.jpg", d: "You are the intellectual breeze that clears the fog. You live in the world of ideas, communication, and social connections. Your mind is your greatest tool—fast, objective, and curious. You possess the gift of perspective, seeing the world from a bird's-eye view." },
+        water: { n: "Depth of Water", i: "../images/water.jpg", d: "You are a soul of deep mystery and immense empathy. Your intuition is your compass, allowing you to sense things that others miss. You feel the world deeply, and your compassion knows no bounds. Like a river, you are adaptable but possess the power to shape mountains over time." }
+    };
+
+    let cur = 0, sc = { fire: 0, earth: 0, air: 0, water: 0 };
+    function startQuiz() { document.getElementById('intro-section').style.display = 'none'; document.getElementById('quiz-section').style.display = 'block'; updateQ(); }
+    function updateQ() {
+        const qData = questions[cur];
+        document.getElementById('q-counter').innerText = `Question ${cur + 1} of 12`;
+        document.getElementById('question-text').innerText = qData.q;
+        const optCont = document.getElementById('options-container');
+        optCont.innerHTML = '';
+        document.getElementById('progress-fill').style.width = ((cur) / 12 * 100) + '%';
+        qData.options.forEach(o => {
+            const b = document.createElement('button'); b.className = 'option-btn'; b.innerText = o.t;
+            b.onclick = () => { sc[o.s]++; cur++; cur < 12 ? updateQ() : showRes(); };
+            optCont.appendChild(b);
+        });
+    }
+    function showRes() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        const win = Object.keys(sc).reduce((a, b) => sc[a] > sc[b] ? a : b);
+        document.getElementById('result-name').innerText = results[win].n;
+        document.getElementById('result-img').src = results[win].i;
+        document.getElementById('result-desc').innerText = results[win].d;
+    }
+</script>
+
+</body>
+</html>

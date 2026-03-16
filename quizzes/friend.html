@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-site.com/quizzes/friend-quiz.html"> <meta property="og:title" content="What Kind of Friend Are You? Listener, Leader, or Joker?">
+    <meta property="og:description" content="Discover your unique social role with this fascinating personality test. Find your friend archetype!">
+    <meta property="og:image" content="https://your-site.com/images/friendship-preview.jpg"> <title>Friendship Archetype Quiz | QUIZTOS</title>
+    
+    <style>
+        /* --- CORE STYLES (MATCHING QUIZTOS AESTHETIC) --- */
+        :root {
+            --primary: #4a148c; /* Deep Purple for Friendship/Psychology */
+            --accent: #ffb300;  /* Gold Accent */
+            --bg: #f3e5f5;      /* Light Lavender */
+            --white: #ffffff;
+            --text: #333;
+            --success: #66bb6a;
+            --joker: #ff7043;
+            --leader: #42a5f5;
+            --listener: #ab47bc;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+
+        .quiz-container { 
+            max-width: 800px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 20px; 
+            overflow: hidden; 
+            padding: 40px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+            box-sizing: border-box;
+        }
+
+        /* --- INTRO SECTION --- */
+        #intro-section { text-align: left; }
+        #intro-section h1 { 
+            text-align: center; 
+            color: var(--primary); 
+            font-size: 38px; 
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+        
+        .description-text { 
+            font-size: 17px; 
+            line-height: 1.8; 
+            color: #555; 
+            margin-bottom: 30px; 
+            text-align: center;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .archetype-intro {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid #eee;
+        }
+
+        .arch-badge {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-transform: uppercase;
+        }
+
+        .arch-listener { background-color: var(--listener); }
+        .arch-leader { background-color: var(--leader); }
+        .arch-joker { background-color: var(--joker); }
+
+        /* --- QUIZ SECTION --- */
+        #quiz-section, #result-section { display: none; }
+        .question { 
+            font-size: 26px; 
+            font-weight: 800; 
+            margin: 40px 0 30px; 
+            color: var(--primary); 
+            text-align: center; 
+            line-height: 1.3;
+        }
+        .options { display: grid; gap: 15px; }
+        .option-btn { 
+            padding: 22px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            background: var(--white); 
+            cursor: pointer; 
+            font-size: 17px; 
+            transition: 0.3s cubic-bezier(0.2, 1, 0.3, 1); 
+            text-align: left; 
+            color: #444;
+            font-weight: 500;
+        }
+        .option-btn:hover { 
+            border-color: var(--primary); 
+            background: #f3e5f5; 
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 20, 140, 0.1);
+        }
+
+        /* --- RESULTS SECTION --- */
+        .result-header { font-size: 36px; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 30px; }
+        
+        .percentage-container {
+            margin-bottom: 40px;
+        }
+
+        .percentage-row {
+            margin-bottom: 25px;
+        }
+
+        .percentage-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .percentage-bar-bg {
+            height: 15px;
+            background: #eee;
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .percentage-bar-fill {
+            height: 100%;
+            border-radius: 50px;
+            width: 0%; /* Dynamic */
+            transition: width 1s ease-out;
+        }
+
+        /* Filling Colors */
+        .fill-listener { background-color: var(--listener); }
+        .fill-leader { background-color: var(--leader); }
+        .fill-joker { background-color: var(--joker); }
+
+        /* --- UI COMPONENTS --- */
+        .btn-main { 
+            display: block; 
+            width: fit-content; 
+            background: var(--primary); 
+            color: white; 
+            padding: 18px 50px; 
+            border: none; 
+            border-radius: 50px; 
+            font-size: 19px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            margin: 30px auto; 
+            letter-spacing: 1px;
+        }
+        .btn-main:hover { background: #310d63; transform: scale(1.05); box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        
+        .progress-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1); }
+
+        .main-img { 
+            width: 100%; 
+            border-radius: 15px; 
+            margin-bottom: 25px; 
+            display: block; 
+            object-fit: cover; 
+            height: 350px; /* Force height for header look */
+        }
+        
+        .btn-abort { display: inline-block; color: #999; text-decoration: none; font-size: 14px; margin-bottom: 20px; transition: 0.3s; }
+        .btn-abort:hover { color: #f44336; }
+
+        .btn-share {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            background: transparent;
+            color: var(--primary);
+            padding: 15px 30px;
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .btn-share:hover { background: var(--primary); color: white; transform: scale(1.05); }
+
+        /* --- MOBILE ADAPTATION --- */
+        @media (max-width: 600px) {
+            .quiz-container { padding: 25px; }
+            #intro-section h1 { font-size: 30px; }
+            .question { font-size: 22px; }
+            .option-btn { padding: 18px; font-size: 15px; }
+            .btn-main { padding: 16px 40px; font-size: 16px; }
+            .main-img { height: 250px; }
+            .arch-badge { padding: 8px 15px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    
+    <div id="intro-section">
+        <img src="../images/test1.jpg" alt="Friendship Archetype Quiz Header" class="main-img"> <h1>What Kind of Friend Are You?</h1>
+        
+        <p class="description-text">
+            Ever wondered why your friends call you first when they have a problem? Or why you're always the one organizing the next getaway? Or perhaps, why you're expected to crack the joke that diffuses the tension? 
+            <br><br>
+            In every social circle, we instinctively adopt unique roles. By analyzing your friendship dynamics and reactions, this deep-dive test will reveal your dominant archetype.
+        </p>
+
+        <div class="archetype-intro">
+            <span class="arch-badge arch-listener">The Listener</span>
+            <span class="arch-badge arch-leader">The Leader</span>
+            <span class="arch-badge arch-joker">The Joker</span>
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">Begin Discovery</button>
+        <a href="../index.html" style="display: block; text-align: center; color: #999; text-decoration: none; margin-top: 20px;">← Back to Home</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span id="q-counter" style="font-size: 12px; color: #999; display: block; text-align: center; margin-bottom: 10px;">Question 1 of 20</span>
+        <div id="question-text" class="question"></div>
+        <div id="options-container" class="options"></div>
+        
+        <div style="text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+            <a href="../index.html" class="btn-abort">Finish the test (results won't be saved)</a>
+        </div>
+    </div>
+    
+    <div id="result-section">
+        <div class="result-header">Your Friendship Archetype</div>
+        
+        <p class="description-text">Your social dynamics are a unique blend. Here is how you connect with your closest friends:</p>
+
+        <div class="percentage-container">
+            <div class="percentage-row">
+                <div class="percentage-label"><span>THE LISTENER</span> <span id="listener-perc">0%</span></div>
+                <div class="percentage-bar-bg"><div id="listener-fill" class="percentage-bar-fill fill-listener"></div></div>
+            </div>
+
+            <div class="percentage-row">
+                <div class="percentage-label"><span>THE LEADER</span> <span id="leader-perc">0%</span></div>
+                <div class="percentage-bar-bg"><div id="leader-fill" class="percentage-bar-fill fill-leader"></div></div>
+            </div>
+
+            <div class="percentage-row">
+                <div class="percentage-label"><span>THE JOKER</span> <span id="joker-perc">0%</span></div>
+                <div class="percentage-bar-bg"><div id="joker-fill" class="percentage-bar-fill fill-joker"></div></div>
+            </div>
+        </div>
+
+        <button class="btn-share" onclick="shareFriendResult()">SHARE YOUR ROLE 👑</button>
+        <button class="btn-main" onclick="location.reload()">Retake Quiz</button>
+        <a href="../index.html" style="display: block; text-align: center; color: #999; text-decoration: none;">← Back to Home</a>
+    </div>
+
+</div>
+
+<script>
+    // --- 1. QUESTIONS AND POINT ALLOCATION ---
+    // Mapping answers to specific archetype points
+    const questions = [
+        { q: "A friend calls you at 11:00 PM crying after a breakup. Your immediate reaction is to:", options: [
+            { t: "Let them talk as long as they need, asking supportive questions.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Help them make a plan: packing their ex's stuff, finding new hobbies.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "Make a dark but funny joke about the ex to make them laugh through the tears.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Gently change the subject to something positive after a few minutes.", s: { listener: 5, leader: 3, joker: 2 } }
+        ]},
+        { q: "You and your group of friends can't decide where to go for dinner. What do you do?", options: [
+            { t: "Wait for someone else to make a suggestion that everyone agrees with.", s: { listener: 8, leader: 0, joker: 2 } },
+            { t: "Suggest one or two options and then say, 'Let's just vote!'", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "Suggest the craziest restaurant you know just to see their reactions.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Ask, 'What is everyone in the mood for? Let's analyze our cravings.'", s: { listener: 3, leader: 7, joker: 0 } }
+        ]},
+        { q: "When you receive good news (like a promotion), how do you tell your friends?", options: [
+            { t: "I usually wait until it comes up in conversation; I don't want to brag.", s: { listener: 9, leader: 0, joker: 1 } },
+            { t: "I immediately set up a group chat to organize a celebration dinner.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "I make a funny post about 'finally getting paid what I'm worth' with a meme.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "I tell my best friend privately first, then tell the others casually.", s: { listener: 6, leader: 4, joker: 0 } }
+        ]},
+        { q: "A friend is telling a long story about a boring coworker. You are:", options: [
+            { t: "Fully engaged, asking detailed questions and showing empathy.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Nodding along but mentally planning your week or checking your phone.", s: { listener: 2, leader: 8, joker: 0 } },
+            { t: "Trying to interrupt with a funny story that relates to their situation.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Smiling and laughing at their coworkers' mistakes.", s: { listener: 5, leader: 0, joker: 5 } }
+        ]},
+        { q: "What's your typical role in organizing a friend's birthday party?", options: [
+            { t: "The one who listens to what the birthday person *really* wants.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "The one who creates the spreadsheet, invites everyone, and handles the budget.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "The one who prepares the funny roast speech and creates the 'bad' photo album.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "The one who shows up early to help decorate and clean up afterward.", s: { listener: 7, leader: 3, joker: 0 } }
+        ]},
+        { q: "You find out your friend's partner is cheating on them. How do you approach this?", options: [
+            { t: "I'll tell them privately, then hold them while they cry without judgment.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "I'll immediately get all the details and plan the confrontation.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "I'll gently test the waters by making a slight joke about fidelity to see how they react.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "I'll consult another friend first to figure out the best course of action.", s: { listener: 5, leader: 5, joker: 0 } }
+        ]},
+        { q: "You're at a crowded party and your friends are starting to separate. What is your impulse?", options: [
+            { t: "I find one person to have a deep conversation with for the rest of the night.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "I actively try to round everyone back up into a tight group.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "I start a fun party game or introduce everyone to a crazy person I just met.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "I stay with the main 'anchor' of the group and see where the night takes us.", s: { listener: 7, leader: 3, joker: 0 } }
+        ]},
+        { q: "Your friend has started a new hobby that they are terrible at, but they love it. You say:", options: [
+            { t: "Wow, it's so inspiring that you're trying something new! You look so happy.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Maybe we can find some classes for you to get a bit better?", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "I'm not going to lie, you look ridiculous, but I love the confidence!", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "That's great, just keep practicing.", s: { listener: 6, leader: 4, joker: 0 } }
+        ]},
+        { q: "You and a friend have a small disagreement. What is your normal conflict resolution?", options: [
+            { t: "I wait until they are ready to talk, then I apologize first and ask how they feel.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "I clearly explain my position and expect them to understand my logic.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "I break the tension by making a self-deprecating joke or changing the subject.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "I avoid the topic completely until it's forgotten.", s: { listener: 8, leader: 0, joker: 2 } }
+        ]},
+        { q: "When watching a sad movie with friends, you are:", options: [
+            { t: "Comforting the friend who is crying the most.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Analyzing the plot holes and directing quality out loud.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "The one trying not to laugh at the ridiculous drama.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Quietly crying without drawing attention.", s: { listener: 8, leader: 0, joker: 2 } }
+        ]},
+        { q: "When your friend circle expands (new people join), how do you react?", options: [
+            { t: "I make a point to talk to the new person privately to make them feel comfortable.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "I assess their compatibility with the existing group dynamics.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "I tell my best inside jokes to see if the new person gets them.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "I stick close to my original friends until I know the new person better.", s: { listener: 7, leader: 3, joker: 0 } }
+        ]},
+        { q: "How does your group usually handle planning a weekend trip?", options: [
+            { t: "They ask everyone what activities they prefer, making sure everyone is happy.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "They immediately take charge of booking the Airbnb and finalizing the itinerary.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "They suggest the weirdest possible destination and plan all the fun, late-night activities.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "They just show up when told and help pay the bills on time.", s: { listener: 8, leader: 2, joker: 0 } }
+        ]},
+        { q: "A friend is telling you about their serious medical diagnosis. You are:", options: [
+            { t: "Listening silently, holding their hand if appropriate, and offering silent support.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Immediately researching specialists and alternative treatments on your phone.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "Making a small joke to try and keep their spirits up, if you think they'd appreciate it.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Saying 'Everything will be fine' and trying to stay positive.", s: { listener: 6, leader: 4, joker: 0 } }
+        ]},
+        { q: "What is your typical energy level in a group conversation?", options: [
+            { t: "I am mostly calm, absorbing the conversation and observing reactions.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "I often find myself directing the flow, asking clarifying questions.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "I am constantly making quick comments, puns, or jokes to keep it lively.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "My energy matches the most vocal person in the group.", s: { listener: 4, leader: 4, joker: 2 } }
+        ]},
+        { q: "Which compliment from a friend means the most to you?", options: [
+            { t: "'I always feel so safe and heard when I'm around you.'", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "'You're the most reliable and capable person I know; I can always depend on you.'", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "'You always make me laugh so hard I forget about my problems.'", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "'You're just a wonderful person and a good friend.'", s: { listener: 6, leader: 4, joker: 0 } }
+        ]},
+        { q: "A friend is venting about their family drama for the third time this week. You feel:", options: [
+            { t: "Endlessly patient—this is what friends are for.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Frustrated that they haven't followed any of your previous advice.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "Anxious to change the subject or crack a joke because it's too heavy.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Tired, but I'll still listen because I love them.", s: { listener: 7, leader: 0, joker: 3 } }
+        ]},
+        { q: "What's your preferred style of hanging out?", options: [
+            { t: "One-on-one deep chat at a quiet cafe.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Participating in a group activity or sport.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "A casual gathering with music, food, and plenty of banter.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "A structured game night.", s: { listener: 5, leader: 5, joker: 0 } }
+        ]},
+        { q: "Your friends are complaining about the slow service in a restaurant. You are:", options: [
+            { t: "Making empathetic comments like, 'They must be understaffed tonight.'", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Actively looking for the manager to discuss the issue.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "The one loudly making jokes about the food arriving in the next century.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Silent, just waiting patiently.", s: { listener: 8, leader: 0, joker: 2 } }
+        ]},
+        { q: "How do you define 'good advice' to a friend?", options: [
+            { t: "Whatever validates their feelings and makes them feel understood.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "The most logical, actionable solution to their specific problem.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "Whatever distracts them and makes them laugh at the absurdity of it.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Whatever I think their parents or mentor would say.", s: { listener: 5, leader: 5, joker: 0 } }
+        ]},
+        { q: "Your ultimate goal within your friendship group is to:", options: [
+            { t: "Create a safe, supportive space for everyone.", s: { listener: 10, leader: 0, joker: 0 } },
+            { t: "Achieve shared goals and maintain stability.", s: { listener: 0, leader: 10, joker: 0 } },
+            { t: "Ensure everyone is having fun and laughing.", s: { listener: 0, leader: 0, joker: 10 } },
+            { t: "Avoid drama and be reliable.", s: { listener: 8, leader: 2, joker: 0 } }
+        ]}
+    ];
+
+    // --- 2. QUIZ VARIABLES AND INITIALIZATION ---
+    let currentQuestion = 0;
+    let scores = { listener: 0, leader: 0, joker: 0 };
+    const TOTAL_QUESTIONS = questions.length;
+
+    // --- 3. FUNCTIONS FOR QUIZ LOGIC ---
+
+    function startQuiz() {
+        document.getElementById('intro-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        window.scrollTo(0,0);
+        updateQuestion();
+    }
+
+    function updateQuestion() {
+        const qData = questions[currentQuestion];
+        
+        // Update Counter
+        document.getElementById('q-counter').innerText = `Question ${currentQuestion + 1} of ${TOTAL_QUESTIONS}`;
+        
+        // Update Text
+        document.getElementById('question-text').innerText = qData.q;
+        
+        // Update Progress Bar
+        const progressPercent = (currentQuestion / TOTAL_QUESTIONS) * 100;
+        document.getElementById('progress-fill').style.width = progressPercent + '%';
+        
+        // Update Options
+        const optCont = document.getElementById('options-container');
+        optCont.innerHTML = ''; // Clear old buttons
+        
+        qData.options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'option-btn';
+            button.innerText = option.t;
+            button.onclick = () => handleAnswer(option.s);
+            optCont.appendChild(button);
+        });
+    }
+
+    function handleAnswer(score) {
+        // Add points to each archetype
+        scores.listener += score.listener;
+        scores.leader += score.leader;
+        scores.joker += score.joker;
+        
+        currentQuestion++;
+        
+        if (currentQuestion < TOTAL_QUESTIONS) {
+            updateQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    // --- 4. RESULTS CALCULATION AND ANIMATION ---
+
+    function showResults() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo(0,0);
+        
+        // Calculate Percentages
+        const totalScore = scores.listener + scores.leader + scores.joker;
+        
+        const listenerPerc = Math.round((scores.listener / totalScore) * 100);
+        const leaderPerc = Math.round((scores.leader / totalScore) * 100);
+        const jokerPerc = Math.round((scores.joker / totalScore) * 100);
+
+        // --- Animate the Results ---
+        // (Wait a small moment before animating to ensure section is visible)
+        setTimeout(() => {
+            // Update Text Percentages
+            document.getElementById('listener-perc').innerText = listenerPerc + '%';
+            document.getElementById('leader-perc').innerText = leaderPerc + '%';
+            document.getElementById('joker-perc').innerText = jokerPerc + '%';
+
+            // Update Fill Widths
+            document.getElementById('listener-fill').style.width = listenerPerc + '%';
+            document.getElementById('leader-fill').style.width = leaderPerc + '%';
+            document.getElementById('joker-fill').style.width = jokerPerc + '%';
+        }, 300);
+    }
+
+    // --- 5. SHARE FUNCTION ---
+    function shareFriendResult() {
+        // Calculate the dominant archetype
+        const listenerPerc = parseInt(document.getElementById('listener-perc').innerText);
+        const leaderPerc = parseInt(document.getElementById('leader-perc').innerText);
+        const jokerPerc = parseInt(document.getElementById('joker-perc').innerText);
+
+        let dominant = "Social Mix";
+        let perc = 0;
+        if(listenerPerc >= leaderPerc && listenerPerc >= jokerPerc) { dominant = "Listener"; perc = listenerPerc; }
+        else if(leaderPerc >= listenerPerc && leaderPerc >= jokerPerc) { dominant = "Leader"; perc = leaderPerc; }
+        else if(jokerPerc >= listenerPerc && jokerPerc >= leaderPerc) { dominant = "Joker"; perc = jokerPerc; }
+
+        const quizTitle = "Friend Archetype Quiz";
+        const shareText = `I found my unique social role! I'm ${perc}% a ${dominant}. Discover your friendship archetype at QUIZTOS:`;
+        const shareUrl = window.location.href;
+
+        if (navigator.share) {
+            navigator.share({
+                title: quizTitle,
+                text: shareText,
+                url: shareUrl,
+            }).then(() => console.log('Successful share'))
+            .catch((err) => console.log('Error:', err));
+        } else {
+            // Copy to clipboard for PC
+            const fullText = `${shareText} ${shareUrl}`;
+            navigator.clipboard.writeText(fullText).then(() => {
+                alert("Result copied to clipboard! Paste it to your friends.");
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

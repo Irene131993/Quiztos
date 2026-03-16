@@ -1,0 +1,120 @@
+:root {
+    --gold: #ffde59;
+    --bg: #050505;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 222, 89, 0.2);
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    color: white;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+header {
+    padding: 20px 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--gold);
+    text-decoration: none;
+    letter-spacing: 2px;
+}
+
+nav a {
+    color: #aaa;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+nav a:hover { color: var(--gold); }
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: radial-gradient(circle at center, #111 0%, #050505 100%);
+}
+
+.hero h1 { font-size: 48px; margin: 0; letter-spacing: -1px; }
+.hero p { color: #888; font-size: 18px; margin-top: 10px; }
+
+/* Quiz Grid */
+.quiz-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 50px 0;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: 0.4s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+.card-img {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+}
+
+.card-info { padding: 20px; }
+
+.badge {
+    background: var(--gold);
+    color: black;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.card h3 { margin: 15px 0 10px; font-size: 20px; }
+.card p { font-size: 14px; color: #aaa; line-height: 1.5; }
+
+footer {
+    text-align: center;
+    padding: 40px;
+    color: #444;
+    border-top: 1px solid var(--card-bg);
+}
+
+footer a { color: #666; text-decoration: none; }

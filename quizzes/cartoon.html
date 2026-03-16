@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True Cartoon Fan Quiz | QUIZTOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --accent: #ff9f43; 
+            --accent-hover: #ffb142;
+            --bg-gradient: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%);
+            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --white: #ffffff;
+            --text-dark: #2d3436;
+            --text-gray: #636e72;
+            --light-bg: #f8f9fa;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Poppins', sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            padding: 20px; 
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .quiz-container { 
+            max-width: 800px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 30px; 
+            padding: 50px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-img { 
+            width: 100%; 
+            max-width: 600px; 
+            border-radius: 20px; 
+            margin: 0 auto 30px auto; 
+            display: block;
+            object-fit: contain;
+            max-height: 350px;
+        }
+
+        h1 { color: var(--accent); font-size: 38px; font-weight: 800; margin-bottom: 10px; }
+        .intro-text { line-height: 1.8; color: var(--text-gray); font-size: 18px; margin-bottom: 30px; }
+
+        .facts-section { text-align: left; margin: 40px 0; }
+        .fact-item { 
+            background: var(--light-bg); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            border-right: 5px solid var(--accent); 
+        }
+        .fact-item h4 { margin: 0 0 5px 0; color: var(--accent); }
+
+        .btn-main { 
+            display: block; 
+            width: 100%; 
+            max-width: 350px; 
+            margin: 20px auto; 
+            padding: 20px; 
+            border: none; 
+            border-radius: 15px; 
+            background: var(--bg-gradient); 
+            color: white; 
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            box-shadow: 0 10px 20px rgba(255, 159, 67, 0.3);
+        }
+        .btn-main:hover { transform: scale(1.03); }
+
+        .btn-secondary { 
+            display: inline-block; 
+            margin: 10px auto; 
+            color: var(--text-gray); 
+            text-decoration: none; 
+            font-weight: 600; 
+            cursor: pointer;
+        }
+
+        #quiz-section, #result-section { display: none; }
+        .question-box { border-bottom: 2px solid #f1f2f6; padding-bottom: 30px; margin-bottom: 30px; }
+        .question { font-size: 26px; font-weight: 700; line-height: 1.3; }
+        .options { display: grid; gap: 15px; max-width: 500px; margin: 0 auto; }
+        
+        .option-btn { 
+            padding: 18px; 
+            border: 2px solid #f1f2f6; 
+            border-radius: 15px; 
+            background: white; 
+            cursor: pointer; 
+            font-size: 17px; 
+            transition: 0.3s; 
+            width: 100%;
+        }
+        .option-btn:hover { border-color: var(--accent); background: #fffaf5; }
+        
+        .progress-bar { height: 10px; background: #eee; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--bg-gradient); width: 0%; transition: 0.4s; }
+
+        /* --- CARTOON RESULT SECTION (BRIGHT & FUN) --- */
+        .cartoon-stage {
+            background: var(--bg-gradient);
+            border-radius: 25px;
+            padding: 60px 20px 80px 20px;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Эффект Конфетти (Задний план) */
+        .cartoon-stage::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 10%, #fff 5px, transparent 5px),
+                radial-gradient(circle at 90% 10%, #fff 3px, transparent 3px),
+                radial-gradient(circle at 50% 90%, #fff 7px, transparent 7px),
+                radial-gradient(circle at 20% 80%, #fab1a0 4px, transparent 4px),
+                radial-gradient(circle at 80% 20%, #74b9ff 6px, transparent 6px),
+                radial-gradient(circle at 40% 50%, #55efc4 5px, transparent 5px);
+            opacity: 0.3;
+            animation: confetti-rain 8s infinite linear;
+        }
+
+        @keyframes confetti-rain { 0% { background-position: 0 0; } 100% { background-position: 0 500px; } }
+
+        .bright-award-card {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+        }
+
+        #rank-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .gold-shine-text {
+            font-size: 36px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(252, 246, 186, 0.8), 0 0 5px #fff;
+            position: relative;
+            display: inline-block;
+        }
+
+        .shine-effect {
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            animation: shine 5s infinite;
+        }
+
+        @keyframes shine { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
+
+        .score-badge {
+            display: inline-block;
+            padding: 20px 40px;
+            border: 4px solid #763fbf;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.9);
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(191, 149, 63, 0.4);
+        }
+
+        #score-val {
+            font-size: 60px;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 2px rgba(170, 119, 28, 0.8));
+        }
+
+        /* --- GRAFFITI --- */
+        .graffiti-wall {
+            margin-top: 40px;
+            padding: 30px 20px;
+            background: #1e272e;
+            border-radius: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            border: 4px solid #000;
+        }
+        .char-tag {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 24px;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        .tag-green { color: #55efc4; transform: rotate(-5deg); text-shadow: 2px 2px #000; }
+        .tag-pink { color: #fd79a8; transform: rotate(10deg); text-shadow: 2px 2px #000; }
+        .tag-yellow { color: #f1c40f; transform: rotate(-8deg); text-shadow: 2px 2px #000; }
+        .tag-blue { color: #74b9ff; transform: rotate(5deg); text-shadow: 2px 2px #000; }
+
+        .disclaimer {
+            font-size: 12px;
+            color: #b2bec3;
+            margin-top: 40px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        #result-section { animation: fadeInUp 0.7s ease-out; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="intro-section">
+        <img src="../images/mult.jpg" alt="Animated Heroes" class="main-img">
+        <h1>True Cartoon Fan Quiz</h1>
+        <div class="intro-text">
+            Relive your childhood and test your memory of classic animated masterpieces. Only a true fan knows these 20 details!
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">Start Journey</button>
+
+        <div class="facts-section">
+            <h2 style="text-align: center; color: var(--text-dark);">🍿 Fun Animation Facts</h2>
+            <div class="fact-item">
+                <h4>Shrek’s "Mud" Physics</h4>
+                <p>In the first Shrek (2001), the animation of Shrek taking a mud shower was a huge technical milestone. At the time, "fluid and particle simulation" (like mud or water) was one of the hardest things to do in 3D animation.</p>
+            </div>
+            <div class="fact-item">
+                <h4>Real Roars</h4>
+                <p>The lions in 'The Lion King' don't actually roar. Since real lion roars were too quiet, the producers used tiger roars instead.</p>
+            </div>
+            <div class="fact-item">
+                <h4>First Oscar</h4>
+                <p>'Snow White and the Seven Dwarfs' was the first animated feature. Walt Disney received one full-size Oscar and seven mini-ones for it!</p>
+            </div>
+            <div class="fact-item">
+                <h4>The Pizza Planet Truck</h4>
+                <p>First appearing in Toy Story, the yellow Gyoza Mark VII Lite Hauler (the Pizza Planet truck) has been hidden in nearly every Pixar movie since, including Brave (as a wood carving) and WALL-E (as a piece of junk).</p>
+            </div>
+            <div class="fact-item">
+                <h4>The Snow Physics of 'Frozen'</h4>
+                <p>To make the snow in Frozen look real, Disney engineers actually created a new software called "Matterhorn." They studied how snow packs and breaks by consulting with real-world avalanche experts and physicists.</p>
+            </div>
+            <div class="fact-item">
+                <h4>The 'Zootopia' Fur Tech</h4>
+                <p>In Zootopia, there are 64 different species of animals. Instead of using the same "digital fur" for all of them, animators studied hair under a microscope. A polar bear's fur is actually clear and hollow, while a fox’s fur is dark at the root—and they replicated this exactly in the code.</p>
+            </div>
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">I'm Ready! Start Now</button>
+        <a href="../index.html" class="btn-secondary">← Back to Main Menu</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span class="q-counter" id="q-counter" style="color: var(--text-gray); font-size: 14px;">Step 1 of 20</span>
+        <div class="question-box"><div id="question-text" class="question"></div></div>
+        <div id="options-container" class="options"></div>
+        
+        <div style="margin-top: 40px; border-top: 1px dashed #eee; padding-top: 20px;">
+            <a onclick="location.reload()" class="btn-secondary" style="color: #eb4d4b; font-size: 14px;">✖ Abort mission (lose progress)</a>
+        </div>
+    </div>
+
+    <div id="result-section">
+        <div class="cartoon-stage">
+            <div class="bright-award-card">
+                <div id="rank-title">Your Final Level</div>
+                <div class="gold-shine-text">
+                    <div class="shine-effect"></div>
+                    Fan Status
+                </div>
+                <div class="score-badge">
+                    <div id="score-val">0/20</div>
+                </div>
+                <div id="result-description" style="line-height: 1.6; font-size: 18px; margin: 20px auto 0 auto; max-width: 500px; color: #fff; font-weight: 600;"></div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button class="btn-main" onclick="location.reload()">Play Again</button>
+            <button class="btn-main" style="background: #fff; color: var(--accent); border: 2px solid var(--accent);" onclick="shareResult()">🚀 Share Score</button>
+            <a href="../index.html" class="btn-secondary">← Back to Main Menu</a>
+        </div>
+
+        <div class="graffiti-wall">
+            <div class="char-tag tag-green">🐢 MIKIE</div>
+            <div class="char-tag tag-pink">🐷 PIGGY</div>
+            <div class="char-tag tag-yellow">🐭 MICKY</div>
+            <div class="char-tag tag-blue">🤖 WALL-E</div>
+            <div class="char-tag tag-pink">🧚 Tinker Bell</div>
+            <div class="char-tag tag-green">🦖 RECCE</div>
+        </div>
+    </div>
+</div>
+
+<div class="disclaimer">
+    Legal Disclaimer: This quiz is for entertainment purposes only. All movie titles, characters, and related indicia are trademarks of their respective owners (Disney, Pixar, DreamWorks, etc.). No copyright infringement is intended.
+</div>
+
+<script>
+    const questions = [
+        { q: "What is the name of the lion prince in 'The Lion King'?", a: "Simba", b: "Mufasa", correct: "a" },
+        { q: "Which princess has the longest hair?", a: "Rapunzel", b: "Cinderella", correct: "a" },
+        { q: "What is the name of the toy cowboy in 'Toy Story'?", a: "Buzz", b: "Woody", correct: "b" },
+        { q: "Who is the 'trash-compactor' robot from Pixar?", a: "WALL-E", b: "Baymax", correct: "a" },
+        { q: "What is the name of Shrek's talkative companion?", a: "Puss in Boots", b: "Donkey", correct: "b" },
+        { q: "Which city do Mike and Sulley live in?", a: "Monstropolis", b: "Metroville", correct: "a" },
+        { q: "What is the name of the girl who visits Wonderland?", a: "Alice", b: "Wendy", correct: "a" },
+        { q: "Who is the villain in 'The Little Mermaid'?", a: "Ursula", b: "Maleficent", correct: "a" },
+        { q: "What does Lightning McQueen say as a catchphrase?", a: "Kachow!", b: "Zoom!", correct: "a" },
+        { q: "In 'Frozen', what is the name of the snowman?", a: "Olaf", b: "Sven", correct: "a" },
+        { q: "Which movie features a flying house with balloons?", a: "Up", b: "Coco", correct: "a" },
+        { q: "What is the name of the rat who can cook?", a: "Remy", b: "Emile", correct: "a" },
+        { q: "Who is the hero in 'Kung Fu Panda'?", a: "Po", b: "Tai Lung", correct: "a" },
+        { q: "What is the name of the island in 'Moana'?", a: "Motunui", b: "Te Fiti", correct: "a" },
+        { q: "In 'Despicable Me', what are Gru's yellow helpers called?", a: "Minions", b: "Umpa Lumpas", correct: "a" },
+        { q: "Which movie is about the Mexican Day of the Dead?", a: "Coco", b: "Encanto", correct: "a" },
+        { q: "What is the name of the dragon in 'How to Train Your Dragon'?", a: "Toothless", b: "Smaug", correct: "a" },
+        { q: "Which princess eats a poisoned apple?", a: "Snow White", b: "Aurora", correct: "a" },
+        { q: "Who is the fashion designer in 'The Incredibles'?", a: "Edna Mode", b: "Mirage", correct: "a" },
+        { q: "What kind of animal is Judy Hopps in 'Zootopia'?", a: "Rabbit", b: "Fox", correct: "a" }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    function startQuiz() {
+        document.getElementById('intro-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        updateQ();
+    }
+
+    function updateQ() {
+        const qData = questions[currentQ];
+        document.getElementById('q-counter').innerText = `Step ${currentQ + 1} of ${questions.length}`;
+        document.getElementById('question-text').innerText = qData.q;
+        document.getElementById('progress-fill').style.width = (currentQ / questions.length * 100) + '%';
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        [ {t: qData.a, v: 'a'}, {t: qData.b, v: 'b'} ].forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = () => {
+                if(opt.v === qData.correct) score++;
+                currentQ++;
+                if (currentQ < questions.length) updateQ(); else showResults();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+   function showResults() {
+    document.getElementById('quiz-section').style.display = 'none';
+    document.getElementById('result-section').style.display = 'block';
+    window.scrollTo(0,0);
+    document.getElementById('score-val').innerText = `${score}/${questions.length}`;
+    
+    let rank = ""; 
+    let desc = "";
+
+    if (score === 20) { 
+        rank = "Ultimate Movie Expert"; 
+        desc = "Pure Genius! You have the eagle eyes of a lead animator. You’ve spotted every hidden detail and mastered every trivia challenge we threw at you. You are to movies what Walt Disney was to imagination—a total pioneer. Grab the popcorn and take a bow, you’ve earned the top spot in the hall of fame!";
+    } 
+    else if (score > 15) { 
+        rank = "Movie Expert"; 
+        desc = "Impressive work! You have a sharp eye for detail and a deep love for stories. You’re not just a casual viewer—you’re the kind of person who notices the subtle animation styles and remembers the best lines. You’ve mastered the world of feature films, and only a few tricky details kept you from a perfect score. You're definitely ready for the big screen!"; 
+    } 
+    else if (score > 10) { 
+        rank = "Movie Buff"; 
+        desc = "Solid performance! You definitely know your way around the popcorn bucket. You remember the big hits and the famous characters, but some of the behind-the-scenes secrets tripped you up. It’s time for a movie marathon! Re-watch a few classics, and you’ll be a pro in no time. Not a bad start for a rising star!"; 
+    } 
+    else { 
+        rank = "Casual Fan"; 
+        desc = "Don't worry, every hero has a beginning. It just means you have an excuse for a full-scale movie night!"; 
+    }
+
+    document.getElementById('rank-title').innerText = rank;
+    document.getElementById('result-description').innerHTML = desc;
+}
+
+    function shareResult() {
+        const text = `I'm an ${document.getElementById('rank-title').innerText} in the Cartoon Quiz! Score: ${document.getElementById('score-val').innerText} 🍿🎨`;
+        if (navigator.share) navigator.share({ title: 'Cartoon Quiz', text: text, url: window.location.href });
+        else { navigator.clipboard.writeText(text); alert('Score copied to clipboard!'); }
+    }
+</script>
+
+</body>
+</html>

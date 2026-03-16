@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | QUIZTOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          // Твой проверенный Public Key
+          emailjs.init("TsJZtV_eKcDvhP8nK"); 
+       })();
+    </script>
+
+    <style>
+        :root {
+            --accent: #2ecc71; 
+            --accent-hover: #27ae60;
+            --bg-gradient: linear-gradient(135deg, #2ecc71 0%, #00b894 100%);
+            --white: #ffffff;
+            --text-dark: #2d3436;
+            --text-gray: #636e72;
+        }
+
+        body { 
+            margin: 0; font-family: 'Poppins', sans-serif; 
+            background: #f0f2f5; display: flex; justify-content: center; 
+            align-items: center; padding: 20px; min-height: 100vh;
+        }
+
+        .contact-container { 
+            max-width: 600px; width: 100%; background: var(--white); 
+            border-radius: 30px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); 
+            box-sizing: border-box; text-align: center;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 20px; }
+        label { font-weight: 600; font-size: 14px; color: var(--text-dark); margin-left: 5px; }
+
+        input, textarea, .static-input {
+            padding: 15px; border: 2px solid #f1f2f6; border-radius: 12px;
+            font-family: 'Poppins', sans-serif; font-size: 15px; outline: none; transition: 0.3s;
+        }
+
+        input:focus, textarea:focus { border-color: var(--accent); background: #f0fff4; }
+        .static-input { background: #f8f9fa; color: var(--text-gray); border-style: dashed; cursor: default; }
+
+        .btn-send {
+            background: var(--bg-gradient); color: white; padding: 18px; width: 100%;
+            border: none; border-radius: 12px; font-weight: 700; font-size: 16px;
+            cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px;
+        }
+
+        .btn-send:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(46, 204, 113, 0.2); }
+        .btn-send:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+        .partnership-box {
+            margin-top: 30px; padding: 20px; background: #f1fcf4; 
+            border-radius: 15px; border-left: 5px solid var(--accent);
+        }
+
+        .status-msg { margin-top: 20px; font-weight: 600; display: none; padding: 15px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="contact-container">
+    <h1 style="margin-top: 0;">Contact Us</h1>
+    <p style="color: var(--text-gray); margin-bottom: 30px;">Direct line to the QUIZTOS hotline!</p>
+
+    <form id="contact-form">
+        <div class="input-group">
+            <label>Your Name</label>
+            <input type="text" id="user_name" placeholder="What is your name?" required>
+        </div>
+
+        <div class="input-group">
+            <label>To (Support Team)</label>
+            <div class="static-input">quiztos.hotline@gmail.com</div>
+        </div>
+
+        <div class="input-group">
+            <label>Your Email Address</label>
+            <input type="email" id="user_email" placeholder="Where should we reply?" required>
+        </div>
+
+        <div class="input-group">
+            <label>Message</label>
+            <textarea id="message" rows="5" placeholder="How can we help you?" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-send" id="submit-btn">Send Message</button>
+        <div id="status" class="status-msg"></div>
+    </form>
+
+    <div class="partnership-box">
+        <h4 style="color: var(--accent); margin: 0 0 5px 0;">🤝 Partnership</h4>
+        <a href="mailto:contact.quiztos@gmail.com" style="color: var(--text-dark); text-decoration: none; font-weight: 700;">contact.quiztos@gmail.com</a>
+    </div>
+
+    <a href="index.html" style="display: block; margin-top: 25px; color: var(--text-gray); text-decoration: none; font-size: 14px; font-weight: 600;">← Back to Home</a>
+</div>
+
+<script>
+    const btn = document.getElementById('submit-btn');
+    const statusMsg = document.getElementById('status');
+    const form = document.getElementById('contact-form');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // 1. Блокируем кнопку, чтобы избежать повторных нажатий во время отправки
+        btn.disabled = true;
+        btn.innerText = "Sending...";
+        statusMsg.style.display = "none";
+
+        const params = {
+            user_name: document.getElementById("user_name").value,
+            user_email: document.getElementById("user_email").value,
+            message: document.getElementById("message").value
+        };
+
+        // 2. Отправка данных
+        emailjs.send("service_j308sok", "template_5jitdb5", params)
+            .then(function() {
+                // Успешная отправка
+                statusMsg.style.display = "block";
+                statusMsg.style.background = "#e8f5e9";
+                statusMsg.style.color = "#2ecc71";
+                statusMsg.innerText = "✓ Success! Your message has been sent.";
+                
+                // 3. Разблокируем кнопку для следующего письма
+                btn.disabled = false;
+                btn.innerText = "Send Another Message";
+                
+                // Очищаем форму
+                form.reset();
+            }, function(error) {
+                // Ошибка
+                statusMsg.style.display = "block";
+                statusMsg.style.background = "#ffebee";
+                statusMsg.style.color = "#e74c3c";
+                statusMsg.innerText = "Oops! Error: " + error.text;
+                
+                // Возвращаем кнопку в рабочее состояние
+                btn.disabled = false;
+                btn.innerText = "Try Again";
+                console.log('FAILED...', error);
+            });
+    });
+</script>
+
+</body>
+</html>

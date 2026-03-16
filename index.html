@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QUIZTOS | Free Online Quizzes & Games</title>
+<style>
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+* {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Плавный скролл для iPhone */
+}
+    :root {
+        --primary: #2c3e50;
+        --accent: #e74c3c;
+        --bg: #f4f7f6;
+        --text: #333;
+        --white: #ffffff;
+    }
+
+    /* --- ТВОЙ ОРИГИНАЛЬНЫЙ КОД (БЕЗ ИЗМЕНЕНИЙ) --- */
+ html, body { 
+    margin: 0; 
+    padding: 0; 
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden; /* Только один раз */
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px; /* Это ключевое изменение: МАКСИМАЛЬНАЯ, а не фиксированная */
+    margin: 0 auto;
+    padding: 0 15px; /* Защитные поля, чтобы текст не лип к краям экрана */
+    box-sizing: border-box;
+}
+
+.main-container {
+    width: 95%; 
+    max-width: 750px; 
+    /* ... твои остальные стили ... */
+    margin: 0 auto; 
+    overflow: hidden; /* Добавь это, чтобы внутренние элементы не распирали его */
+min-height: 600px; /* Подбери высоту, чтобы влезал самый длинный вопрос */
+    display: flex;
+    flex-direction: column;
+}
+
+
+    header {
+        background: var(--white);
+        border-bottom: 1px solid #ddd;
+        padding: 20px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+        font-size: 38px;
+        font-weight: 900;
+        color: var(--primary);
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .logo span {
+        color: var(--accent);
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        color: #555;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 8px 18px;
+        border-radius: 25px;
+        background: #f0f0f0;
+        transition: 0.3s ease;
+        cursor: pointer;
+        border: 1px solid transparent;
+    }
+
+    .nav-link:hover, .nav-link.active {
+        background: var(--accent);
+        color: var(--white);
+        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    .hero {
+        background: var(--white);
+        padding: 50px 0;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 40px;
+    }
+
+    .hero h1 { margin: 0; font-size: 28px; color: #222; font-weight: 300; }
+    .hero h1 b { font-weight: 800; color: var(--primary); }
+
+    .quiz-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 30px;
+        padding-bottom: 60px;
+    }
+
+    .quiz-card {
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #eee;
+    }
+
+    .quiz-card:hover { 
+        transform: translateY(-8px); 
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1); 
+        border-color: #ddd;
+    }
+    #quiz-section, #intro-section, #result-section {
+    width: 100% !important;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .card-img-wrap { height: 210px; overflow: hidden; }
+    .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+    .quiz-card:hover .card-img { transform: scale(1.08); }
+    
+    .card-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
+    .card-tag { 
+        font-size: 10px; 
+        background: var(--primary); 
+        color: white; 
+        padding: 4px 12px; 
+        border-radius: 4px; 
+        text-transform: uppercase; 
+        font-weight: 800;
+        align-self: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .quiz-card h3 { margin: 0 0 10px 0; font-size: 22px; color: #111; line-height: 1.2; }
+    .quiz-card p { font-size: 15px; color: #666; margin-bottom: 25px; flex-grow: 1; }
+
+    .btn-take {
+        background: var(--primary);
+        color: white;
+        text-align: center;
+        padding: 14px;
+        text-decoration: none;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 13px;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+    .btn-take:hover { background: var(--accent); }
+
+    footer { background: #1a1a1a; color: #888; padding: 60px 0; text-align: center; }
+    .footer-logo { font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 20px; display: block; text-decoration: none; }
+    .footer-links { margin-top: 25px; }
+    .footer-links a { color: #555; text-decoration: none; margin: 0 15px; font-size: 14px; transition: 0.3s; }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* --- ИСПРАВЛЕНИЕ ДЛЯ ПЕРЕХОДА (ВЫПОЛНЕНО ХИРУРГИЧЕСКИ ТОЧНО) --- */
+    /* Эти 4 строки CSS включаются ТОЛЬКО на мобильных и НЕ МЕНЯЮТ дизайн */
+    @media (max-width: 768px) {
+        html, body {
+            overflow-x: hidden; /* Запрещает странице "гулять" влево-вправо */
+            position: relative;
+            width: 100%;
+        }
+    }
+    @media (max-width: 767px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .logo {
+    font-size: 28px;
+  }
+
+  .nav-link {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  .hero h1 {
+    font-size: 24px;
+  }
+
+  .quiz-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .quiz-card {
+    border-radius: 10px;
+  }
+
+  .card-img-wrap {
+    height: 180px;
+  }
+
+  .card-content {
+    padding: 20px;
+  }
+
+  .quiz-card h3 {
+    font-size: 18px;
+  }
+
+  .quiz-card p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .btn-take {
+    padding: 12px;
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="index.html" class="logo">QUIZ<span>TOS</span></a>
+        <nav>
+            <button class="nav-link active" onclick="filterQuizzes('all')">All Quizzes</button>
+            <button class="nav-link" onclick="filterQuizzes('astrology')">Astrology</button>
+            <button class="nav-link" onclick="filterQuizzes('personality')">Personality</button>
+            <button class="nav-link" onclick="filterQuizzes('kpop')">K-Pop</button>
+            <button class="nav-link" onclick="filterQuizzes('movies')">Movies</button>
+            <button class="nav-link" onclick="filterQuizzes('anime')">Anime</button>
+        </nav>
+    </div>
+</header>
+
+<div class="hero">
+    <div class="container">
+        <h1>Welcome to <b>QUIZTOS</b> — Discover Your Inner World</h1>
+    </div>
+</div>
+
+<main class="container">
+    <div class="quiz-grid" id="quiz-grid">
+        
+        <div class="quiz-card" data-category="astrology">
+            <div class="card-img-wrap"><img src="images/zodiac.jpg" class="card-img" alt="Zodiac"></div>
+            <div class="card-content">
+                <span class="card-tag">Astrology</span>
+                <h3>Your Zodiac Element</h3>
+                <p>Are you Fire, Water, Air, or Earth? Discover the core of your star sign energy.</p>
+                <a href="quizzes/zodiac.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="astrology">
+            <div class="card-img-wrap"><img src="images/kosmos.jpg" class="card-img" alt="Planet"></div>
+            <div class="card-content">
+                <span class="card-tag">Astrology</span>
+                <h3>Your Guardian Planet</h3>
+                <p>Which celestial body guides your destiny across the infinite solar system?</p>
+                <a href="quizzes/guardian.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+          <div class="quiz-card" data-category="personality">
+            <div class="card-img-wrap"><img src="images/mind.jpg" class="card-img" alt="Planet"></div>
+            <div class="card-content">
+                <span class="card-tag">Personality</span>
+                <h3>Your Creative Mind</h3>
+                <p>Are you a Thinker, a Maker, or a Dreamer?</p>
+                <a href="quizzes/mind.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+          <div class="quiz-card" data-category="personality">
+            <div class="card-img-wrap"><img src="images/mbti.jpg" class="card-img" alt="MBTI"></div>
+            <div class="card-content">
+                <span class="card-tag">Personality</span>
+                <h3>Official MBTI Test</h3>
+                <p>Discover your 16-type personality profile with this deep psychological analysis.</p>
+                <a href="quizzes/mbti.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+         <div class="quiz-card" data-category="personality">
+            <div class="card-img-wrap"><img src="images/test1.jpg" class="card-img" alt="Friendship"></div>
+            <div class="card-content">
+                <span class="card-tag">Personality</span>
+                <h3>What Kind of Friend Are You?</h3>
+                <p>Are you the listener, the leader, or the joker? Discover your unique social role.</p>
+                <a href="quizzes/friend.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="kpop">
+            <div class="card-img-wrap"><img src="images/k-pop.jpg" class="card-img" alt="Kpop Soul"></div>
+            <div class="card-content">
+                <span class="card-tag">K-Pop</span>
+                <h3>Are you ready to debut?</h3>
+                <p>Step into the shoes of a trainee and find your ultimate K-pop home.</p>
+                <a href="quizzes/kpop-soulmatch.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="kpop">
+            <div class="card-img-wrap"><img src="images/k-pop men.jpg" class="card-img" alt="Kpop Men"></div>
+            <div class="card-content">
+                <span class="card-tag">K-Pop</span>
+                <h3>Which Male K-Pop Group Suits You?</h3>
+                <p>In this roleplay simulation, you will walk the path of a debut artist.</p>
+                <a href="quizzes/kpop-men.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="kpop">
+            <div class="card-img-wrap"><img src="images/k-pop women.jpg" class="card-img" alt="Kpop Women"></div>
+            <div class="card-content">
+                <span class="card-tag">K-Pop</span>
+                <h3>Girl Groups Expert Quiz</h3>
+                <p>How well do you know the queens of K-Pop? Take the ultimate fandom test.</p>
+                <a href="quizzes/girls-test.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="personality">
+            <div class="card-img-wrap"><img src="images/introvert.jpg" class="card-img" alt="Introvert"></div>
+            <div class="card-content">
+                <span class="card-tag">Personality</span>
+                <h3>Introvert vs Extrovert</h3>
+                <p>Where do you get your energy from? Find out your true social battery type.</p>
+                <a href="quizzes/introvert.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="movies">
+            <div class="card-img-wrap"><img src="images/marvel.jpg" class="card-img" alt="Marvel"></div>
+            <div class="card-content">
+                <span class="card-tag">Movies</span>
+                <h3>Marvel Movies Knowledge</h3>
+                <p>Only a true Avenger can answer all these tough MCU questions correctly!</p>
+                <a href="quizzes/marvel.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="movies">
+            <div class="card-img-wrap"><img src="images/mult.jpg" class="card-img" alt="Cartoon"></div>
+            <div class="card-content">
+                <span class="card-tag">Movies</span>
+                <h3>True Cartoon Fan Quiz</h3>
+                <p>Relive your childhood and test your memory of classic animated masterpieces.</p>
+                <a href="quizzes/cartoon.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-category="anime">
+            <div class="card-img-wrap"><img src="images/ghibli.jpg" class="card-img" alt="Ghibli"></div>
+            <div class="card-content">
+                <span class="card-tag">Anime</span>
+                <h3>Studio Ghibli World Quiz</h3>
+                <p>Journey through Miyazaki's masterpieces and find your magical spirit home.</p>
+                <a href="quizzes/ghibli.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <a href="index.html" class="footer-logo">QUIZ<span>TOS</span></a>
+        <p>Interactive entertainment for curious minds. Discover yourself every day.</p>
+        <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <p style="font-size: 12px; margin-top: 30px;">&copy; 2026 QUIZTOS. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    function filterQuizzes(category) {
+        const cards = document.querySelectorAll('.quiz-card');
+        const buttons = document.querySelectorAll('.nav-link');
+
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+            // Check innerText to handle "All Quizzes" vs "all"
+            if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
+            if(category === 'all' && btn.innerText.includes('All')) btn.classList.add('active');
+        });
+
+        cards.forEach(card => {
+            if (category === 'all' || card.getAttribute('data-category') === category) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

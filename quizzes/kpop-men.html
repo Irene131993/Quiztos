@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which Male K-Pop Group Suits You?| QUIZTOS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --dark-blue: #0a0e17;
+            --glass: rgba(255, 255, 255, 0.05);
+            --white: #ffffff;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background: var(--dark-blue); 
+            color: var(--white); 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+
+        .quiz-container { 
+            max-width: 850px; 
+            width: 100%; 
+            background: linear-gradient(145deg, #111827, #05070a);
+            border-radius: 40px; 
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 40px; 
+            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+        }
+
+        .header-box { 
+            width: 100%; 
+            height: 350px; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            margin-bottom: 30px; 
+            border: 2px solid var(--gold);
+        }
+        .header-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        h1 { 
+            font-family: 'Syncopate', sans-serif; 
+            text-align: center; 
+            font-size: 26px; 
+            color: var(--gold); 
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .immersion-text { 
+            text-align: center; 
+            line-height: 1.8; 
+            color: #ccc; 
+            margin-bottom: 40px; 
+            font-size: 16px;
+            padding: 0 10px;
+        }
+        .possible-results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.group-tag {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'Syncopate', sans-serif;
+    color: var(--gold);
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.group-tag:hover {
+    background: var(--gold);
+    color: #000;
+}
+
+        .immersion-text b { color: var(--gold); }
+
+        #quiz-section, #result-section { display: none; }
+        .question { font-size: 22px; font-weight: 800; margin: 40px 0; text-align: center; color: var(--gold); }
+        
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-btn { 
+            padding: 20px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px; 
+            background: rgba(255,255,255,0.02); 
+            color: #fff;
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-size: 14px;
+            text-align: left;
+        }
+        .option-btn:hover { background: var(--gold); color: #000; font-weight: 800; }
+
+        .btn-main { 
+            display: block; width: fit-content; background: var(--gold); color: #000; 
+            padding: 20px 60px; border: none; border-radius: 50px; font-size: 18px; 
+            font-weight: 900; cursor: pointer; text-transform: uppercase; 
+            margin: 20px auto; transition: 0.4s;
+        }
+        .btn-main:hover { box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
+
+        /* Стиль для кнопки "На главную" (чуть менее яркая) */
+        .btn-secondary {
+            display: block; width: fit-content; background: transparent; color: var(--gold); 
+            padding: 15px 40px; border: 1px solid var(--gold); border-radius: 50px; font-size: 14px; 
+            font-weight: 600; cursor: pointer; text-transform: uppercase; 
+            margin: 10px auto; transition: 0.4s;
+        }
+        .btn-secondary:hover { background: rgba(212, 175, 55, 0.1); }
+
+        .progress-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-bottom: 40px; }
+        #progress-fill { height: 100%; background: var(--gold); width: 0%; transition: 0.4s; }
+
+        #result-img { width: 100%; border-radius: 20px; border: 1px solid var(--gold); margin: 30px 0; }
+        .dna-box { background: rgba(212, 175, 55, 0.05); padding: 25px; border-radius: 20px; border: 1px dashed var(--gold); margin-bottom: 20px; }
+        .dna-box h3 { margin-top: 0; color: var(--gold); text-transform: uppercase; font-size: 14px; letter-spacing: 2px; }
+        
+        @media (max-width: 600px) { .options { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="intro-section">
+        <div class="header-box"><img src="../images/k-pop men.jpg" alt="Male Group Universe"></div>
+        <h1>Which K-Pop Group Suits You?</h1>
+        <div class="immersion-text">
+            <b>Welcome, Trainee.</b> You are no longer just a fan—you are a candidate for the next global phenomenon. The K-Pop male industry isn't just about perfect dancing; it's about <b>ideology, brotherhood, and raw power.</b><br><br>
+            In this roleplay simulation, you will walk the path of a debut artist. From midnight studio grinds to the heavy silence before a stadium encore, every choice reveals your <b>Artistic DNA.</b> Are you a lyrical philosopher, a rebellious architect of sound, or a theatrical stage titan?<br><br>
+            Your contract is waiting. Step into the lights.
+        </div>
+        <div style="text-align: center; margin-bottom: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #666;">
+        Available DNA Matches:
+    </div>
+    <div class="possible-results">
+        <span class="group-tag">BTS</span>
+        <span class="group-tag">Stray Kids</span>
+        <span class="group-tag">EXO</span>
+        <span class="group-tag">SEVENTEEN</span>
+        <span class="group-tag">ATEEZ</span>
+        <span class="group-tag">TXT</span>
+        <span class="group-tag">ENHYPEN</span>
+    </div>
+        <button class="btn-main" onclick="startQuiz()">Start Simulation</button>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <div id="q-step" style="text-align: center; font-size: 12px; opacity: 0.5;">STATION 1 / 20</div>
+        <div id="question-text" class="question"></div>
+        <div id="options-container" class="options"></div>
+   <div id="options-container"></div>
+        
+        <div style="text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+            <a href="../index.html" class="btn-abort">Abort Mission</a>
+        </div>
+    </div>
+
+    <div id="result-section">
+        <h2 style="text-align: center; letter-spacing: 3px; color: #888;">DNA MATCH CONFIRMED:</h2>
+        <h1 id="result-name" style="font-size: 55px; color: var(--gold); text-align: center; margin: 10px 0;"></h1>
+        <img id="result-img" src="" alt="Winner">
+        
+        <div class="dna-box">
+            <h3>Who You Are in the Group:</h3>
+            <p id="result-desc" style="line-height: 1.6; color: #fff; font-size: 17px;"></p>
+        </div>
+
+        <div class="dna-box" style="border-style: solid; border-width: 1px; background: transparent;">
+            <h3>Backstage Secret:</h3>
+            <p id="result-fact" style="line-height: 1.6; opacity: 0.7; font-size: 14px;"></p>
+        </div>
+
+        <button class="btn-main" onclick="location.reload()">New Era</button>
+        <button class="btn-secondary" onclick="location.href='../index.html'">Back to Home</button>
+    </div>
+
+    <footer style="margin-top: 50px; padding: 20px; text-align: center; opacity: 0.4; font-size: 11px; line-height: 1.6; border-top: 1px solid rgba(212, 175, 55, 0.1);">
+    <p>
+        <strong>DISCLAIMER:</strong> This website is a fan-made project created for educational and entertainment purposes only. 
+        All artist names, group names, and trademarks are the property of their respective owners (including but not limited to HYBE Labels, SM Entertainment, JYP Entertainment,PLEDIS Entertainment, YG Entertainment, and KQ Entertainment). 
+        No copyright infringement is intended. 
+    </p>
+</footer>
+</div>
+
+
+<script>
+const groupData = [
+    { 
+        id: "bts", name: "BTS", 
+        desc: "You are an <b>Idealist and a Philosopher.</b> For you, music is a tool for change. You prioritize depth, sincerity, and an unbreakable bond with your audience. You speak for a generation.", 
+        fact: "They were the first K-pop group to speak at the UN, proving that their music is more than entertainment—it's a movement." 
+    },
+    { 
+        id: "straykids", name: "Stray Kids", 
+        desc: "You are a <b>Rebel and a Creator.</b> You refuse to fit into boxes. You love sonic experiments, raw energy, and building your own path regardless of what others think.", 
+        fact: "Their self-produced 'Mala-taste' genre focuses on the sounds of construction and cooking, turning everyday noise into global hits." 
+    },
+    { 
+        id: "exo", name: "EXO", 
+        desc: "You are the <b>Definition of Professionalism.</b> You value the classics, vocal mastery, and a 'High-Class' aesthetic. You represent the gold standard of the industry.", 
+        fact: "Legendary for their complex 'Exoplanet' mythology, each member represents a superpower that influences their MV storylines." 
+    },
+    { 
+        id: "seventeen", name: "SEVENTEEN", 
+        desc: "You are the <b>Ultimate Team Player.</b> You cherish perfect order, synchronization, and a family-like warmth. You believe that 13 souls can move as one perfectly synchronized heart.", 
+        fact: "They have a 'Performance Team' dedicated specifically to innovating the most complex choreography in the industry." 
+    },
+    { 
+        id: "ateez", name: "ATEEZ", 
+        desc: "You are a <b>Born Performer.</b> Your elements are drama, intensity, and a fierce stage presence. You leave your entire soul on the stage every single time.", 
+        fact: "Coming from a small agency, they relied purely on their 'Pirate' lore and raw energy to become global stadium headliners." 
+    },
+    { 
+        id: "txt", name: "TXT", 
+        desc: "You are a <b>Visual Storyteller.</b> You blend the magic of fantasy with the real struggles of growing up. You represent the youthful and artistic evolution of K-Pop.", 
+        fact: "Experts at blending fantasy with the struggles of youth, their name means 'Together with the same dream to build a new tomorrow'." 
+    },
+    { 
+        id: "enhypen", name: "ENHYPEN", 
+        desc: "You are the <b>Mystery of the New Gen.</b> You gravitate towards dark themes, sharp aesthetics, and fast-paced evolution. You are the future of the K-Pop dark-fantasy concept.", 
+        fact: "Born from a survival show, they've perfected the 'Dark Blood' aesthetic, merging vampire lore with sharp 4th-gen dancing." 
+    }
+];
+
+const questions = [
+    { q: "A fan asks for a deep lyric to live by. What do you say?", options: [{t:"'Love yourself, speak yourself'", s:"bts"}, {t:"'Step out and break the rules'", s:"straykids"}, {t:"'Eight makes one team'", s:"ateez"}, {t:"'Tomorrow will be better'", s:"txt"}]},
+    { q: "What's the 'Energy' of your first tour?", options: [{t:"Powerful and raw chaos", s:"straykids"}, {t:"Elegant and sophisticated vocals", s:"exo"}, {t:"Mathematically perfect synchronization", s:"seventeen"}, {t:"Theatrical pirate-ship battles", s:"ateez"}]},
+    { q: "You’re in charge of the group's Twitter for a day. What do you post?", options: [{t:"A philosophical quote about life", s:"bts"}, {t:"A chaotic mirror selfie with the members", s:"seventeen"}, {t:"A teaser for a song I'm producing", s:"straykids"}, {t:"An aesthetic photo of a sunset", s:"txt"}]},
+    { q: "Which 'Unit' would you belong to?", options: [{t:"The lyrical Rap Unit", s:"bts"}, {t:"The vocal Kings Unit", s:"exo"}, {t:"The high-speed Dance Unit", s:"seventeen"}, {t:"The dark Lore/Storytelling Unit", s:"enhypen"}]},
+    { q: "Choose your 'Secret Identity' in the MV lore:", options: [{t:"A Rebel with a message", s:"bts"}, {t:"An Alien with superpowers", s:"exo"}, {t:"A Pirate searching for Utopia", s:"ateez"}, {t:"A Vampire with a tragic past", s:"enhypen"}]},
+    { q: "The group is having a chaotic dinner. Who are you?", options: [{t:"The one paying for everyone", s:"exo"}, {t:"The one cooking the BBQ perfectly", s:"seventeen"}, {t:"The one making everyone laugh with dad jokes", s:"bts"}, {t:"The one who eats everything in 5 minutes", s:"straykids"}]},
+    { q: "Your stage fashion focus is:", options: [{t:"High-fashion luxury brands", s:"exo"}, {t:"Streetwear with tactical gear", s:"straykids"}, {t:"Custom royal uniforms", s:"ateez"}, {t:"Colorful, youthful trendy styles", s:"txt"}]},
+    { q: "Pick a hidden talent you'd show on a Variety Show:", options: [{t:"Impersonating the CEO perfectly", s:"seventeen"}, {t:"Fluent in four different languages", s:"bts"}, {t:"Insane beatboxing skills", s:"straykids"}, {t:"High-level gaming skills", s:"txt"}]},
+    { q: "What’s your 'Pre-Stage' ritual?", options: [{t:"A very loud, energetic team chant", s:"ateez"}, {t:"A quiet, focused prayer or meditation", s:"bts"}, {t:"Perfecting the hair and makeup one last time", s:"exo"}, {t:"Playing loud music to hype the dorm", s:"straykids"}]},
+    { q: "Your choreography features a 'Center Moment'. What is it?", options: [{t:"A gravity-defying backflip", s:"straykids"}, {t:"A slow, sexy vocal ad-lib", s:"exo"}, {t:"A 13-person formation change", s:"seventeen"}, {t:"A dramatic theatrical facial expression", s:"ateez"}]},
+    { q: "How do you handle 'Sasaeng' (toxic) fan behavior?", options: [{t:"Write a song about privacy and respect", s:"bts"}, {t:"Ignore them and focus on the real fans", s:"enhypen"}, {t:"Look them in the eye with a serious 'demon' gaze", s:"ateez"}, {t:"Protect the other members first", s:"exo"}]},
+    { q: "Pick an 'Animal Representative' for yourself:", options: [{t:"A Tiger (Fierce and brave)", s:"seventeen"}, {t:"A Wolf (Loyal and wild)", s:"exo"}, {t:"A Bunny (Soft but strong)", s:"txt"}, {t:"A Koala (Calm and wise)", s:"bts"}]},
+    { q: "The group is going on a 'Hiatus' for military service. What's your parting message?", options: [{t:"'Wait for our second chapter'", s:"bts"}, {t:"'We'll come back even stronger'", s:"ateez"}, {t:"'I'll write 100 songs while I'm away'", s:"straykids"}, {t:"'Support the solo activities of the others'", s:"exo"}]},
+    { q: "Choose your 'Stage Name' vibe:", options: [{t:"My real name (Authenticity)", s:"bts"}, {t:"A cool, one-syllable stage name", s:"exo"}, {t:"A name that means something in another language", s:"ateez"}, {t:"A cute nickname given by fans", s:"txt"}]},
+    { q: "What is the 'Must-Have' item in your group's dorm?", options: [{t:"A high-end recording studio", s:"straykids"}, {t:"A massive bookshelf full of poetry", s:"bts"}, {t:"An oversized fridge for all the members", s:"seventeen"}, {t:"A high-tech gaming room", s:"enhypen"}]},
+    { q: "Your first 'Solo Project' would be:", options: [{t:"A deep Hip-Hop mixtape", s:"bts"}, {t:"A soulful R&B ballad", s:"exo"}, {t:"A modern dance performance video", s:"seventeen"}, {t:"An acting role in a dark thriller", s:"enhypen"}]},
+    { q: "Choose your 'Ending Fairy' style:", options: [{t:"Breathing hard with a fierce look", s:"ateez"}, {t:"A sweet wink and a heart", s:"txt"}, {t:"Wiping sweat and looking cool", s:"straykids"}, {t:"A calm, professional smile", s:"exo"}]},
+    { q: "Which 'Gen' of K-pop do you vibe with most?", options: [{t:"The 3rd Gen (The Legends)", s:"bts"}, {t:"The 4th Gen (The Future)", s:"straykids"}, {t:"The 2.5 Gen (The Classics)", s:"exo"}, {t:"The 4.5 Gen (The Mystery)", s:"enhypen"}]},
+    { q: "If you could change one thing in the industry, what would it be?", options: [{t:"More mental health support for idols", s:"bts"}, {t:"More creative freedom for producers", s:"straykids"}, {t:"Longer rest periods between tours", s:"seventeen"}, {t:"More focus on talent over visuals", s:"ateez"}]},
+    { q: "Final Question: The world is watching. Who are you standing with?", options: [{t:"The brothers I struggled with since day 1", s:"bts"}, {t:"The team that makes our own music", s:"straykids"}, {t:"The fans who became our everything", s:"ateez"}, {t:"The group that synchronizes as one", s:"seventeen"}]}
+];
+
+let cur = 0;
+let sc = { bts:0, straykids:0, exo:0, seventeen:0, ateez:0, txt:0, enhypen:0 };
+
+function startQuiz() {
+    document.getElementById('intro-section').style.display = 'none';
+    document.getElementById('quiz-section').style.display = 'block';
+    render();
+}
+
+function render() {
+    const q = questions[cur];
+    document.getElementById('question-text').innerText = q.q;
+    document.getElementById('q-step').innerText = `STATION ${cur + 1} / 20`;
+    document.getElementById('progress-fill').style.width = ((cur / 20) * 100) + '%';
+    
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    
+    q.options.forEach(opt => {
+        const b = document.createElement('button');
+        b.className = 'option-btn';
+        b.innerText = opt.t;
+        b.onclick = () => {
+            sc[opt.s]++;
+            cur++;
+            if(cur < 20) render();
+            else showResult();
+        };
+        container.appendChild(b);
+    });
+}
+
+function showResult() {
+    document.getElementById('quiz-section').style.display = 'none';
+    document.getElementById('result-section').style.display = 'block';
+    window.scrollTo(0,0);
+    
+    let max = Math.max(...Object.values(sc));
+    let winners = Object.keys(sc).filter(k => sc[k] === max);
+    let win = winners[Math.floor(Math.random() * winners.length)];
+    
+    const res = groupData.find(g => g.id === win);
+    document.getElementById('result-name').innerText = res.name;
+    
+    // ИЗМЕНЕНИЕ 4: Теперь путь к картинке включает цифру 1 (например: bts1.jpg или bts1.png)
+    // Убедись, что твои картинки в папке images называются bts1.jpg, txt1.png и т.д.
+    document.getElementById('result-img').src = `../images/${win}1.jpg`; 
+    
+    document.getElementById('result-desc').innerHTML = res.desc; 
+    document.getElementById('result-fact').innerText = res.fact;
+}
+</script>
+</body>
+</html>

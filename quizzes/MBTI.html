@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official MBTI Personality Test | QUIZTOS</title>
+    
+    <style>
+        :root {
+            --accent: #6c5ce7;
+            --accent-hover: #a29bfe;
+            --bg-gradient: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            --white: #ffffff;
+            --text-dark: #2d3436;
+            --text-gray: #636e72;
+            --light-bg: #f8f9fa;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Poppins', sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .quiz-container { 
+            max-width: 800px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 30px; 
+            padding: 50px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+            box-sizing: border-box;
+        }
+
+        .main-img { 
+            width: 100%; 
+            border-radius: 20px; 
+            margin-bottom: 30px; 
+            display: block;
+            object-fit: contain; 
+            max-height: 400px;   
+            background-color: #f8f9fa; 
+        }
+
+        h1 { text-align: center; color: var(--accent); font-size: 38px; font-weight: 800; margin-bottom: 10px; }
+        .intro-text { line-height: 1.8; color: var(--text-gray); text-align: center; margin-bottom: 30px; font-size: 18px; }
+
+        .facts-container { text-align: left; margin: 40px 0; }
+        .fact-card { 
+            background: var(--light-bg); 
+            padding: 25px; 
+            border-radius: 20px; 
+            margin-bottom: 20px; 
+            border-left: 5px solid var(--accent);
+        }
+        .fact-card h3 { margin-top: 0; color: var(--accent); font-size: 20px; }
+        .fact-card p { margin-bottom: 0; line-height: 1.6; color: var(--text-dark); }
+        .scale-list { list-style: none; padding: 0; margin-top: 15px; }
+        .scale-list li { margin-bottom: 8px; padding-left: 25px; position: relative; }
+        .scale-list li::before { content: "⚡"; position: absolute; left: 0; }
+
+        .btn-main { 
+            display: block; width: 100%; max-width: 350px; margin: 20px auto;
+            padding: 22px; border: none; border-radius: 15px; background: var(--bg-gradient); 
+            color: white; font-size: 20px; font-weight: 700; cursor: pointer; text-transform: uppercase; 
+            transition: 0.3s; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        }
+        .btn-main:hover { transform: scale(1.03); box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4); }
+        .btn-secondary { display: block; text-align: center; color: var(--text-gray); text-decoration: none; font-weight: 600; margin-bottom: 20px; }
+
+        /* НОВЫЙ СТИЛЬ ДЛЯ КНОПКИ ЗАВЕРШЕНИЯ */
+        .btn-abort {
+            display: inline-block;
+            color: #b2bec3;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+            padding: 5px 10px;
+        }
+        .btn-abort:hover {
+            color: #eb4d4b;
+            text-decoration: underline;
+        }
+
+        #quiz-section, #result-section { display: none; }
+        .question-box { border-bottom: 2px solid #f1f2f6; padding-bottom: 30px; margin-bottom: 30px; }
+        .question { font-size: 28px; font-weight: 700; text-align: center; line-height: 1.3; }
+        .options { display: grid; gap: 15px; }
+        .option-btn { padding: 22px; border: 2px solid #f1f2f6; border-radius: 15px; background: white; cursor: pointer; font-size: 17px; transition: 0.3s; }
+        .option-btn:hover { border-color: var(--accent); background: #f9f9ff; }
+        
+        .progress-bar { height: 10px; background: #eee; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--bg-gradient); width: 0%; transition: 0.4s; }
+
+        .result-header { background: var(--bg-gradient); color: white; padding: 40px; border-radius: 20px; text-align: center; margin-bottom: 30px; }
+        .type-badge { font-size: 70px; font-weight: 900; letter-spacing: 8px; margin: 0; }
+        .type-title { font-size: 24px; opacity: 0.9; text-transform: uppercase; }
+
+        @media (max-width: 600px) {
+            .quiz-container { padding: 25px; }
+            h1 { font-size: 28px; }
+            .main-img { max-height: 250px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="intro-section">
+        <img src="../images/mbti test.jpg" alt="MBTI" class="main-img">
+        <h1>Official MBTI Test</h1>
+        <div class="intro-text">
+            Discover your 16-type personality profile with this deep psychological analysis.
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">Start Analysis</button>
+
+        <div class="intro-text" style="margin-top: 20px;">
+            The Myers-Briggs Type Indicator (MBTI) is an introspective personality test designed to identify a person's personality type, strengths, and preferences. Instead of looking at "good" or "bad" traits, it explores how you naturally process information and interact with the world.
+        </div>
+
+        <div class="facts-container">
+            <h2 style="text-align: center; margin-bottom: 30px;">🧩 5 Fascinating Facts About MBTI</h2>
+            <div class="fact-card">
+                <h3>1. Created by a Mother-Daughter Duo</h3>
+                <p>Unlike many psychological tests created by professors in labs, the MBTI was developed by Katharine Cook Briggs and her daughter Isabel Briggs Myers. They weren't psychologists—they were brilliant observers of human behavior.</p>
+            </div>
+            <div class="fact-card">
+                <h3>2. Based on Carl Jung’s "Cognitive Functions"</h3>
+                <p>The test is built on the theories of the famous Swiss psychiatrist Carl Jung. He believed that humans use four main mental functions: Sensing, Intuition, Thinking, and Feeling.</p>
+            </div>
+            <div class="fact-card">
+                <h3>3. The "Golden" 16 Types</h3>
+                <p>The test sorts everyone into 16 unique types using four scales:</p>
+                <ul class="scale-list">
+                    <li><b>E vs. I:</b> Where do you get your energy? (Extroversion/Introversion)</li>
+                    <li><b>S vs. N:</b> How do you take in information? (Sensing/Intuition)</li>
+                    <li><b>T vs. F:</b> How do you make decisions? (Thinking/Feeling)</li>
+                    <li><b>J vs. P:</b> How do you organize your life? (Judging/Perceiving)</li>
+                </ul>
+            </div>
+            <div class="fact-card">
+                <h3>4. The Rarest Type: INFJ</h3>
+                <p>While statistics vary, the INFJ is consistently ranked as the rarest personality type, making up only about 1-2% of the global population.</p>
+            </div>
+            <div class="fact-card">
+                <h3>5. It’s About Preference, Not Ability</h3>
+                <p>A great way to explain MBTI is the "Handwriting Metaphor." You can write with both hands, but one feels natural and effortless. MBTI shows you which "mental hand" is your dominant one.</p>
+            </div>
+        </div>
+
+        <button class="btn-main" onclick="startQuiz()">Start Analysis</button>
+        <a href="../index.html" class="btn-secondary">← Back to Main Menu</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span class="q-counter" id="q-counter">Step 1 of 19</span>
+        <div class="question-box"><div id="question-text" class="question"></div></div>
+        <div id="options-container" class="options"></div>
+        
+        <div style="text-align: center; margin-top: 50px; border-top: 1px dashed #eee; padding-top: 25px;">
+            <a href="../index.html" class="btn-abort">Finish the test (results won't be saved)</a>
+        </div>
+    </div>
+
+    <div id="result-section">
+        <div class="result-header">
+            <div class="type-badge" id="type-name">INTJ</div>
+            <div class="type-title" id="type-title">The Architect</div>
+        </div>
+        <div id="result-description" style="line-height: 1.8; font-size: 18px;"></div>
+        <div id="features-box" style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 15px; border-left: 5px solid var(--accent);"></div>
+        <button class="btn-main" style="margin-top: 30px;" onclick="location.reload()">Retake Test</button>
+        <a href="../index.html" class="btn-secondary">Return to Home</a>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "After a socially demanding day, you feel:", a: "Energized and ready for more", b: "Drained and in need of solitude", s: "EI" },
+        { q: "You tend to focus more on:", a: "Concrete facts and details", b: "Abstract patterns and ideas", s: "SN" },
+        { q: "When making a decision, you prioritize:", a: "Logic and objective truth", b: "Empathy and social harmony", s: "TF" },
+        { q: "You prefer your life to be:", a: "Structured and well-planned", b: "Flexible and spontaneous", s: "JP" },
+        { q: "In a group setting, you usually:", a: "Lead the conversation", b: "Listen and observe", s: "EI" },
+        { q: "You trust:", a: "Practical experience", b: "Gut feelings and intuition", s: "SN" },
+        { q: "In an argument, you care more about:", a: "Being right and fair", b: "Not hurting anyone's feelings", s: "TF" },
+        { q: "Your desk or workspace is usually:", a: "Orderly and tidy", b: "A bit of a creative mess", s: "JP" },
+        { q: "To recharge, you would rather:", a: "Go to a lively party", b: "Read a book or watch a movie alone", s: "EI" },
+        { q: "You prefer stories that are:", a: "Realistic and grounded", b: "Symbolic and imaginative", s: "SN" },
+        { q: "People describe you as more:", a: "Firm and rational", b: "Gentle and warm", s: "TF" },
+        { q: "You feel most comfortable when:", a: "A decision is final", b: "Options are still open", s: "JP" },
+        { q: "When meeting new people, you are:", a: "Very expressive and open", b: "Private and reserved", s: "EI" },
+        { q: "You are more interested in:", a: "The present reality", b: "Future possibilities", s: "SN" },
+        { q: "You admire people who are:", a: "Strong-willed and consistent", b: "Kind and compassionate", s: "TF" },
+        { q: "When traveling, you prefer to:", a: "Follow a strict itinerary", b: "Go where the wind takes you", s: "JP" },
+        { q: "At a party, you spend most of your time:", a: "In the middle of the crowd", b: "In a quiet corner with a few people", s: "EI" },
+        { q: "You would rather be called:", a: "A practical person", b: "A visionary person", s: "SN" },
+        { q: "It is worse to be:", a: "Illogical", b: "Cold-hearted", s: "TF" }
+    ];
+
+    const typeDetails = {
+        "INTJ": { title: "The Architect", desc: "You possess a rare combination of cold logic and brilliant imagination. You master life like a grand chessboard.", feat: "Strategic, analytical, independent, and determined." },
+        "INTP": { title: "The Logician", desc: "A true inventor of ideas. You see the world as a complex machine that only you can take apart and understand.", feat: "Original, philosophical, open-minded, and objective." },
+        "ENTJ": { title: "The Commander", desc: "Born to lead and built to win. You turn obstacles into runways with your iron will.", feat: "Efficient, charismatic, confident, and strategic." },
+        "ENTP": { title: "The Debater", desc: "An intellectual powerhouse. You thrive on the edge of innovation, questioning everything.", feat: "Quick-witted, energetic, resourceful, and charismatic." },
+        "INFJ": { title: "The Advocate", desc: "You are a mystical force of inspiration. You have a deep sense of integrity and a desire to help others.", feat: "Insightful, principled, creative, and passionate." },
+        "INFP": { title: "The Mediator", desc: "A beautiful, poetic soul. You stay true to your inner light, finding magic in small things.", feat: "Empathetic, idealistic, creative, and loyal." },
+        "ENFJ": { title: "The Protagonist", desc: "A beacon of light. Your natural charisma and genuine care make you a leader everyone follows.", feat: "Passionate, reliable, persuasive, and selfless." },
+        "ENFP": { title: "The Campaigner", desc: "The ultimate free spirit. You bring color and energy to everything you touch.", feat: "Enthusiastic, creative, social, and observant." },
+        "ISTJ": { title: "The Logistician", desc: "The rock of reliability. You value tradition, honesty, and hard work.", feat: "Direct, dutiful, organized, and responsible." },
+        "ISFJ": { title: "The Defender", desc: "A quiet hero. You are incredibly dedicated and warm, standing guard over your loved ones.", feat: "Supportive, loyal, patient, and observant." },
+        "ESTJ": { title: "The Executive", desc: "A master of organization. You lead by example, bringing people together through respect for order.", feat: "Dedicated, direct, loyal, and methodical." },
+        "ESFJ": { title: "The Consul", desc: "The heart of the community. Your warmth makes everyone feel welcome and valued.", feat: "Caring, social, warm, and helpful." },
+        "ISTP": { title: "The Virtuoso", desc: "A master of the physical world. You solve problems with a calm, practical energy.", feat: "Optimistic, energetic, practical, and spontaneous." },
+        "ISFP": { title: "The Adventurer", desc: "A charming artist of life. You live in a colorful, sensual world.", feat: "Artistic, sensitive, curious, and imaginative." },
+        "ESTP": { title: "The Entrepreneur", desc: "A thrill-seeker with a sharp mind. You live on the edge and act with lightning speed.", feat: "Bold, rational, sociable, and direct." },
+        "ESFP": { title: "The Entertainer", desc: "Life is your stage. You turn every moment into a celebration.", feat: "Bold, original, practical, and playful." }
+    };
+
+    let currentQ = 0;
+    let sc = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+    function startQuiz() {
+        document.getElementById('intro-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        updateQ();
+    }
+
+    function updateQ() {
+        const qData = questions[currentQ];
+        document.getElementById('q-counter').innerText = `Step ${currentQ + 1} of ${questions.length}`;
+        document.getElementById('question-text').innerText = qData.q;
+        document.getElementById('progress-fill').style.width = (currentQ / questions.length * 100) + '%';
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        const letters = qData.s.split('');
+        [ {t: qData.a, s: letters[0]}, {t: qData.b, s: letters[1]} ].forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = () => {
+                sc[opt.s]++;
+                currentQ++;
+                if (currentQ < questions.length) updateQ(); else showResults();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function showResults() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo(0,0);
+        let type = "";
+        type += (sc.E >= sc.I) ? "E" : "I";
+        type += (sc.S >= sc.N) ? "S" : "N";
+        type += (sc.T >= sc.F) ? "T" : "F";
+        type += (sc.J >= sc.P) ? "J" : "P";
+        const data = typeDetails[type];
+        document.getElementById('type-name').innerText = type;
+        document.getElementById('type-title').innerText = data.title;
+        document.getElementById('result-description').innerHTML = data.desc;
+        document.getElementById('features-box').innerHTML = `<strong>Key Traits:</strong> ${data.feat}`;
+    }
+</script>
+
+</body>
+</html>
