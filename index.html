@@ -347,22 +347,30 @@
     }
     checkUser();
 
-    function filterQuizzes(category, clickedElement) {
-        const cards = document.querySelectorAll('.quiz-card');
-        const buttons = document.querySelectorAll('.nav-link');
+function filterQuizzes(category, clickedElement) {
+    // 1. Находим все кнопки категорий
+    const buttons = document.querySelectorAll('.nav-link');
 
-        // Убираем активный класс у всех и добавляем нажатому
-        buttons.forEach(btn => btn.classList.remove('active'));
-        if(clickedElement) clickedElement.classList.add('active');
+    // 2. Убираем класс 'active' (красный цвет) у всех кнопок
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+    });
 
-        cards.forEach(card => {
-            if (category === 'all' || card.getAttribute('data-category') === category) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
+    // 3. Добавляем класс 'active' только той кнопке, на которую нажали
+    if (clickedElement) {
+        clickedElement.classList.add('active');
     }
+
+    // 4. Фильтруем карточки тестов
+    const cards = document.querySelectorAll('.quiz-card');
+    cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
 </script>
 
 </body>
