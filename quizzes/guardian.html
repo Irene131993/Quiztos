@@ -257,36 +257,35 @@
         document.getElementById('result-img').src = results[win].i;
         document.getElementById('result-desc').innerText = results[win].d;
     }
-    function shareResult() {
-    // 1. Исправленный поиск имени результата (теперь берем из id="result-name")
-    const resultElement = document.getElementById('result-name');
-    const resultName = resultElement ? resultElement.innerText : "My Guardian Planet";
-    
-    // 2. Указываем название теста вручную, так как h1 может быть скрыт
-    const quizTitle = "Your Guardian Planet";
+function showRes() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo(0,0);
+        
+        // Находим победителя (планета с макс. баллов)
+        const win = Object.keys(sc).reduce((a, b) => sc[a] > sc[b] ? a : b);
+        const planetData = results[win];
+        
+        // Отображаем результат
+        document.getElementById('result-name').innerText = `Your Guardian is ${planetData.n}`;
+        document.getElementById('result-img').src = planetData.i;
+        document.getElementById('result-desc').innerText = planetData.d;
 
-    // 3. Формируем текст
-    const shareText = `I found my cosmic protector! ${resultName}. Discover yours at QUIZTOS:`;
-    
-    // 4. Ссылка
-    const shareUrl = window.location.href;
+        // --- ДОБАВЛЯЕМ КНОПКУ ПОДЕЛИТЬСЯ (если её еще нет в верстке) ---
+        if (!document.getElementById('share-btn-dynamic')) {
+            const shareBtn = document.createElement('button');
+            shareBtn.id = 'share-btn-dynamic';
+            shareBtn.className = 'btn-share';
+            shareBtn.innerText = 'Share My Guardian Planet';
+            shareBtn.onclick = shareResult;
+            document.getElementById('result-desc').after(shareBtn);
+        }
 
-    if (navigator.share) {
-        navigator.share({
-            title: quizTitle,
-            text: shareText,
-            url: shareUrl,
-        })
-        .then(() => console.log('Successful share'))
-        .catch((err) => console.log('Error:', err));
-    } else {
-        // Копирование для ПК
-        const fullText = `${shareText} ${shareUrl}`;
-        navigator.clipboard.writeText(fullText).then(() => {
-            alert("Result copied to clipboard! Paste it to your friends.");
-        });
+        // --- СОХРАНЕНИЕ В SUPABASE ---
+        // Считаем "силу связи" с планетой (сколько ответов из 15 совпало)
+        const matchStrength = sc[win];
+        saveResult('Your Guardian Planet', matchStrength, 15, planetData.n);
     }
-}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
