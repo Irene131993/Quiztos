@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — Quiztos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1c28; color: #e2e8f0; }
+    .card { background: #1a2a3a; border: 1px solid #2b3d50; border-radius: 1rem; }
+    .btn-primary { background: #d35444; color: #fff; font-weight: 700; border-radius: 0.5rem; padding: 0.6rem 1.5rem; transition: opacity .2s; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-outline { border: 2px solid #475569; color: #94a3b8; font-weight: 700; border-radius: 0.5rem; padding: 0.6rem 1.5rem; transition: all .2s; }
+    .btn-outline:hover { border-color: #ef4444; color: #ef4444; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; padding: 0.75rem 0.5rem; border-bottom: 1px solid #2b3d50; }
+    td { padding: 0.75rem 0.5rem; border-bottom: 1px solid #1e3346; font-size: 0.875rem; }
+    tr:hover { background: rgba(255,255,255,0.03); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Loading -->
+  <div id="loading" class="flex items-center justify-center min-h-screen">
+    <p class="text-slate-400">Loading...</p>
+  </div>
+
+  <!-- Main content (hidden until loaded) -->
+  <div id="app" class="hidden max-w-3xl mx-auto px-4 py-10 space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <a href="/" class="text-2xl font-black tracking-widest uppercase text-white">QUIZTOS</a>
+      <button onclick="handleSignOut()" class="btn-outline text-xs uppercase tracking-wider">Sign Out</button>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card p-6 flex items-center gap-5">
+      <div id="avatar" class="w-16 h-16 rounded-full bg-[#d35444] flex items-center justify-center text-2xl font-black text-white shrink-0"></div>
+      <div>
+        <h1 id="userEmail" class="text-xl font-extrabold text-white"></h1>
+        <p id="memberSince" class="text-xs text-slate-500 mt-1"></p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="card p-5 text-center">
+        <p id="totalQuizzes" class="text-3xl font-black text-white">0</p>
+        <p class="text-xs uppercase tracking-wider text-slate-500 font-bold mt-1">Quizzes Taken</p>
+      </div>
+      <div class="card p-5 text-center">
+        <p id="uniqueResults" class="text-3xl font-black text-white">0</p>
+        <p class="text-xs uppercase tracking-wider text-slate-500 font-bold mt-1">Unique Results</p>
+      </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="card p-6">
+      <h2 class="text-lg font-extrabold text-[#d35444] mb-4">Quiz History</h2>
+      <div id="noResults" class="hidden text-center py-10">
+        <p class="text-slate-500">No quizzes taken yet.</p>
+        <p class="text-slate-600 text-sm mt-1">Complete a quiz and your results will appear here!</p>
+      </div>
+      <div id="resultsTable" class="hidden overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Quiz</th>
+              <th>Date</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xtwvtzqvpmwhytcegcxg.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function init() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
+        window.location.href = '/auth';
+        return;
+      }
+
+      const user = session.user;
+
+      // Display email & avatar
+      document.getElementById('userEmail').textContent = user.email;
+      document.getElementById('avatar').textContent = (user.email || '?')[0].toUpperCase();
+      document.getElementById('memberSince').textContent =
+        'Member since ' + new Date(user.created_at).toLocaleDateString();
+
+      // Fetch results
+      const { data: results } = await sb
+        .from('user_results')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      const rows = results || [];
+
+      // Stats
+      document.getElementById('totalQuizzes').textContent = rows.length;
+      const unique = new Set(rows.map(r => r.result_label).filter(Boolean));
+      document.getElementById('uniqueResults').textContent = unique.size;
+
+      // Table
+      if (rows.length === 0) {
+        document.getElementById('noResults').classList.remove('hidden');
+      } else {
+        document.getElementById('resultsTable').classList.remove('hidden');
+        const tbody = document.getElementById('resultsBody');
+        tbody.innerHTML = rows.map(r => `
+          <tr>
+            <td class="font-semibold text-white">${esc(r.quiz_name)}</td>
+            <td class="text-slate-400">${new Date(r.created_at).toLocaleDateString()}</td>
+            <td>${r.result_label ? esc(r.result_label) : `<span class="font-bold text-[#d35444]">${r.score}%</span>`}</td>
+          </tr>
+        `).join('');
+      }
+
+      // Show app
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    async function handleSignOut() {
+      await sb.auth.signOut();
+      window.location.href = '/';
+    }
+
+    init();
+  </script>
+</body>
+</html>
