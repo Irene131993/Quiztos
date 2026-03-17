@@ -548,25 +548,36 @@ function finishQuiz() {
     document.getElementById('res-long-text').innerHTML = data.analysis;
 
 }
-function shareResult() {
-    const resultName = document.getElementById('res-group').innerText;
-    const shareText = `I just took The Royal Audit and my K-Pop counterpart is ${resultName}! Find your aesthetic DNA here:`;
-    const shareUrl = window.location.href; // Автоматически берет ссылку на текущий тест
+function finishQuiz() {
+    document.getElementById('quiz-section').style.display = 'none';
+    document.getElementById('result-section').style.display = 'block';
+    
+    // Определяем победителя
+    let max = Math.max(...Object.values(scores));
+    let winnerId = Object.keys(scores).find(key => scores[key] === max);
+    let data = groupData.find(g => g.id === winnerId);
+    
+    // Обновляем интерфейс
+    const monument = document.getElementById('monument');
+    monument.style.setProperty('--group-color', data.color);
+    document.getElementById('res-group').innerText = data.name;
+    document.getElementById('res-fandom').innerText = data.fandom;
+    document.getElementById('res-long-text').innerHTML = data.analysis;
 
-    if (navigator.share) {
-        navigator.share({
-            title: 'My K-Pop Result',
-            text: shareText,
-            url: shareUrl,
-        })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
-    } else {
-        // Фоллбек: если браузер не поддерживает Share API (старые ПК)
-        alert(`Copy this to share: ${shareText} ${shareUrl}`);
+    // --- ДОБАВЛЯЕМ КНОПКУ SHARE ---
+    if (!document.getElementById('dynamic-share-btn')) {
+        const shareBtn = document.createElement('button');
+        shareBtn.id = 'dynamic-share-btn';
+        shareBtn.className = 'btn-share';
+        shareBtn.innerText = 'SHARE MY ROYAL LINEAGE';
+        shareBtn.onclick = shareResult;
+        document.getElementById('monument').after(shareBtn);
     }
-}
 
+    // --- СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
+    // Сохраняем имя группы как результат и количество совпавших ответов
+    saveResult('The Royal Audit (K-Pop)', max, 20, data.name);
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
