@@ -380,40 +380,68 @@
         });
     }
 
-   function showResults() {
-    document.getElementById('quiz-section').style.display = 'none';
-    document.getElementById('result-section').style.display = 'block';
-    window.scrollTo(0,0);
-    document.getElementById('score-val').innerText = `${score}/${questions.length}`;
-    
-    let rank = ""; 
-    let desc = "";
+function showResults() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        window.scrollTo(0,0);
+        document.getElementById('score-val').innerText = `${score}/${questions.length}`;
+        
+        let rank = ""; 
+        let desc = "";
 
-    if (score === 20) { 
-        rank = "Ultimate Movie Expert"; 
-        desc = "Pure Genius! You have the eagle eyes of a lead animator. You’ve spotted every hidden detail and mastered every trivia challenge we threw at you. You are to movies what Walt Disney was to imagination—a total pioneer. Grab the popcorn and take a bow, you’ve earned the top spot in the hall of fame!";
-    } 
-    else if (score > 15) { 
-        rank = "Movie Expert"; 
-        desc = "Impressive work! You have a sharp eye for detail and a deep love for stories. You’re not just a casual viewer—you’re the kind of person who notices the subtle animation styles and remembers the best lines. You’ve mastered the world of feature films, and only a few tricky details kept you from a perfect score. You're definitely ready for the big screen!"; 
-    } 
-    else if (score > 10) { 
-        rank = "Movie Buff"; 
-        desc = "Solid performance! You definitely know your way around the popcorn bucket. You remember the big hits and the famous characters, but some of the behind-the-scenes secrets tripped you up. It’s time for a movie marathon! Re-watch a few classics, and you’ll be a pro in no time. Not a bad start for a rising star!"; 
-    } 
-    else { 
-        rank = "Casual Fan"; 
-        desc = "Don't worry, every hero has a beginning. It just means you have an excuse for a full-scale movie night!"; 
+        if (score === 20) { 
+            rank = "Ultimate Movie Expert"; 
+            desc = "Pure Genius! You have the eagle eyes of a lead animator. You’ve spotted every hidden detail and mastered every trivia challenge we threw at you. You are to movies what Walt Disney was to imagination—a total pioneer!";
+        } 
+        else if (score > 15) { 
+            rank = "Movie Expert"; 
+            desc = "Impressive work! You have a sharp eye for detail and a deep love for stories. You’re not just a casual viewer—you’re the kind of person who notices the subtle animation styles."; 
+        } 
+        else if (score > 10) { 
+            rank = "Movie Buff"; 
+            desc = "Solid performance! You definitely know your way around the popcorn bucket. Time for a movie marathon to brush up on those hidden secrets!"; 
+        } 
+        else { 
+            rank = "Casual Fan"; 
+            desc = "Don't worry, every hero has a beginning. It just means you have an excuse for a full-scale movie night! 🍿"; 
+        }
+
+        document.getElementById('rank-title').innerText = rank;
+        document.getElementById('result-description').innerHTML = desc;
+
+        // --- СОХРАНЕНИЕ В SUPABASE ---
+        saveResult('True Cartoon Fan Quiz', score, 20, rank);
+
+        // --- СОЗДАНИЕ КНОПКИ SHARE (если её еще нет) ---
+        if (!document.getElementById('cartoon-share-btn')) {
+            const shareBtn = document.createElement('button');
+            shareBtn.id = 'cartoon-share-btn';
+            shareBtn.className = 'btn-main';
+            shareBtn.style.background = 'var(--gold-gradient)';
+            shareBtn.style.color = '#2d3436';
+            shareBtn.style.marginTop = '20px';
+            shareBtn.innerText = 'Share My Level 🏆';
+            shareBtn.onclick = shareResult;
+            document.getElementById('result-description').after(shareBtn);
+        }
     }
 
-    document.getElementById('rank-title').innerText = rank;
-    document.getElementById('result-description').innerHTML = desc;
-}
-
     function shareResult() {
-        const text = `I'm an ${document.getElementById('rank-title').innerText} in the Cartoon Quiz! Score: ${document.getElementById('score-val').innerText} 🍿🎨`;
-        if (navigator.share) navigator.share({ title: 'Cartoon Quiz', text: text, url: window.location.href });
-        else { navigator.clipboard.writeText(text); alert('Score copied to clipboard!'); }
+        const rank = document.getElementById('rank-title').innerText;
+        const scoreVal = document.getElementById('score-val').innerText;
+        const text = `I'm an ${rank} in the Cartoon Fan Quiz! My score: ${scoreVal}. Can you beat me? 🍿🎨 #QUIZTOS`;
+        const url = window.location.href;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Cartoon Fan Quiz Result',
+                text: text,
+                url: url
+            }).catch(err => console.log("Error sharing:", err));
+        } else {
+            navigator.clipboard.writeText(`${text} ${url}`);
+            alert('Result copied to clipboard! Share it with your friends.');
+        }
     }
 </script>
 
