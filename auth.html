@@ -42,8 +42,9 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://xtwvtzqvpmwhytcegcxg.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ';
+        // ТВОИ АКТУАЛЬНЫЕ КЛЮЧИ
+        const SUPABASE_URL = 'https://utsmlrpjidqrzashmyli.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0c21scnBqaWRxcnphc2hteWxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NTIwMjAsImV4cCI6MjA4OTMyODAyMH0.xjWq8107bVrYCs0M_rY65SnGxKJTano4JliEGvopv1U';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function loginWithEmail() {
@@ -64,7 +65,7 @@
             const { error } = await supabaseClient.auth.signInWithOtp({
                 email: email,
                 options: {
-                    // Ссылка вернет пользователя в профиль после клика в письме
+                    // После клика в письме пользователя кинет на profile.html
                     emailRedirectTo: window.location.origin + '/profile.html'
                 }
             });
