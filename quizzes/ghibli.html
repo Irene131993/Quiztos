@@ -358,19 +358,46 @@
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo(0,0);
         
+        // Определяем мир-победитель
         let winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-        document.getElementById('world-name').innerText = results[winner].name;
-        document.getElementById('world-icon').innerText = results[winner].icon;
-        document.getElementById('world-description').innerText = results[winner].desc;
+        const resData = results[winner];
+        
+        // Обновляем UI
+        document.getElementById('world-name').innerText = resData.name;
+        document.getElementById('world-icon').innerText = resData.icon;
+        document.getElementById('world-description').innerText = resData.desc;
+
+        // --- ДОБАВЛЯЕМ КНОПКУ SHARE ---
+        if (!document.getElementById('ghibli-share-btn')) {
+            const shareBtn = document.createElement('button');
+            shareBtn.id = 'ghibli-share-btn';
+            shareBtn.className = 'btn-main';
+            shareBtn.style.maxWidth = '280px';
+            shareBtn.innerText = 'Share My Sanctuary 🌸';
+            shareBtn.onclick = shareResult;
+            document.getElementById('world-description').after(shareBtn);
+        }
+
+        // --- СОХРАНЕНИЕ В SUPABASE ---
+        // Считаем 'score' как количество ответов за победивший вариант
+        const winningScore = scores[winner];
+        saveResult('Studio Ghibli World', winningScore, 15, resData.name);
     }
 
     function shareResult() {
-        const text = `I belong in ${document.getElementById('world-name').innerText}! Discover your Ghibli world on QUIZTOS 🌸`;
+        const resultName = document.getElementById('world-name').innerText;
+        const text = `I belong in ${resultName}! Discover your Ghibli sanctuary on QUIZTOS 🌸`;
+        const url = window.location.href;
+
         if (navigator.share) {
-            navigator.share({ title: 'Ghibli World Quiz', text: text, url: window.location.href });
+            navigator.share({
+                title: 'My Ghibli World',
+                text: text,
+                url: url
+            }).catch(err => console.log("Error sharing:", err));
         } else {
-            navigator.clipboard.writeText(text);
-            alert('Score copied to clipboard!');
+            navigator.clipboard.writeText(`${text} ${url}`);
+            alert('Result copied to clipboard! Share it with your friends.');
         }
     }
 </script>
