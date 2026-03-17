@@ -270,8 +270,10 @@
         document.getElementById('features-box').innerHTML = `<strong>Key Traits:</strong> ${data.feat}`;
     }
 </script>
-    <script>
-const supabaseClient = window.supabase.createClient(
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const supabaseClient = window.supabase.createClient(
     'https://xtwvtzqvpmwhytcegcxg.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ'
   );
@@ -291,6 +293,7 @@ const supabaseClient = window.supabase.createClient(
     } catch (err) { console.error(err); }
   }
 </script>
+
 
 </body>
 </html>
