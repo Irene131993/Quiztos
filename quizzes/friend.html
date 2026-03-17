@@ -470,33 +470,32 @@
 
     // --- 4. RESULTS CALCULATION AND ANIMATION ---
 
-    function showResults() {
-        document.getElementById('quiz-section').style.display = 'none';
-        document.getElementById('result-section').style.display = 'block';
-        window.scrollTo(0,0);
-        
-        // Calculate Percentages
-        const totalScore = scores.listener + scores.leader + scores.joker;
-        
-        const listenerPerc = Math.round((scores.listener / totalScore) * 100);
-        const leaderPerc = Math.round((scores.leader / totalScore) * 100);
-        const jokerPerc = Math.round((scores.joker / totalScore) * 100);
+function showResults() {
+    document.getElementById('quiz-section').style.display = 'none';
+    document.getElementById('result-section').style.display = 'block';
+    window.scrollTo(0,0);
 
-        // --- Animate the Results ---
-        // (Wait a small moment before animating to ensure section is visible)
-        setTimeout(() => {
-            // Update Text Percentages
-            document.getElementById('listener-perc').innerText = listenerPerc + '%';
-            document.getElementById('leader-perc').innerText = leaderPerc + '%';
-            document.getElementById('joker-perc').innerText = jokerPerc + '%';
+    const totalScore = scores.listener + scores.leader + scores.joker;
+    const listenerPerc = Math.round((scores.listener / totalScore) * 100);
+    const leaderPerc = Math.round((scores.leader / totalScore) * 100);
+    const jokerPerc = Math.round((scores.joker / totalScore) * 100);
 
-            // Update Fill Widths
-            document.getElementById('listener-fill').style.width = listenerPerc + '%';
-            document.getElementById('leader-fill').style.width = leaderPerc + '%';
-            document.getElementById('joker-fill').style.width = jokerPerc + '%';
-        }, 300);
-    }
+    let dominant = "The Listener";
+    let top = listenerPerc;
+    if (leaderPerc > top) { dominant = "The Leader"; top = leaderPerc; }
+    if (jokerPerc > top) { dominant = "The Joker"; top = jokerPerc; }
 
+    saveResult('Friendship Archetype', top, 100, dominant);
+
+    setTimeout(() => {
+        document.getElementById('listener-perc').innerText = listenerPerc + '%';
+        document.getElementById('leader-perc').innerText = leaderPerc + '%';
+        document.getElementById('joker-perc').innerText = jokerPerc + '%';
+        document.getElementById('listener-fill').style.width = listenerPerc + '%';
+        document.getElementById('leader-fill').style.width = leaderPerc + '%';
+        document.getElementById('joker-fill').style.width = jokerPerc + '%';
+    }, 300);
+}
     // --- 5. SHARE FUNCTION ---
     function shareFriendResult() {
         // Calculate the dominant archetype
@@ -529,6 +528,29 @@
             });
         }
     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const supabaseClient = window.supabase.createClient(
+    'https://xtwvtzqvpmwhytcegcxg.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ'
+  );
+
+  async function saveResult(quizName, score, maxScore, resultLabel) {
+    try {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) return;
+      await supabaseClient.from('user_results').insert({
+        user_id: user.id,
+        quiz_name: quizName,
+        score: score,
+        max_score: maxScore,
+        result_label: resultLabel,
+      });
+      console.log("Saved!");
+    } catch (err) { console.error(err); }
+  }
 </script>
 
 </body>
