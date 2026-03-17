@@ -254,20 +254,27 @@
         });
     }
 
-    function showResults() {
+function showResults() {
         document.getElementById('quiz-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo(0,0);
+
         let type = "";
         type += (sc.E >= sc.I) ? "E" : "I";
         type += (sc.S >= sc.N) ? "S" : "N";
         type += (sc.T >= sc.F) ? "T" : "F";
         type += (sc.J >= sc.P) ? "J" : "P";
+
         const data = typeDetails[type];
         document.getElementById('type-name').innerText = type;
         document.getElementById('type-title').innerText = data.title;
         document.getElementById('result-description').innerHTML = data.desc;
         document.getElementById('features-box').innerHTML = `<strong>Key Traits:</strong> ${data.feat}`;
+
+        // --- ДОБАВЛЕНО: СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
+        // Поскольку это психологический тест без "правильных" ответов, 
+        // мы можем передать 100/100 как прогресс завершения.
+        saveResult('Official MBTI Test', 100, 100, `${type} - ${data.title}`);
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
