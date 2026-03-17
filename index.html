@@ -251,27 +251,26 @@ min-height: 600px;
   }
 }
 </style>
-<header style="background: white; border-bottom: 1px solid #ddd; padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px;">
-            
-            <a href="index.html" class="logo" style="margin: 0; font-size: 24px; font-weight: 900; text-decoration: none; color: #2c3e50; text-transform: uppercase; letter-spacing: 2px;">
+<header style="background: white; border-bottom: 1px solid #ddd; padding: 10px 0; position: sticky; top: 0; z-index: 1000;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 15px;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <a href="index.html" style="font-size: 24px; font-weight: 900; text-decoration: none; color: #2c3e50; text-transform: uppercase;">
                 QUIZ<span style="color: #e74c3c;">TOS</span>
             </a>
-
-            <div id="auth-buttons" style="display: flex; gap: 8px;">
-                <a href="profile.html" id="profile-btn" class="nav-link" style="background: #2c3e50; color: white; display: none; font-size: 11px; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: bold; white-space: nowrap;">My Profile</a>
-                <a href="auth.html" id="login-btn" class="nav-link" style="background: #e74c3c; color: white; display: inline-block; font-size: 11px; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: bold; white-space: nowrap;">Login</a>
+            <div id="auth-buttons" style="display: flex; gap: 5px;">
+                <a href="profile.html" id="profile-btn" style="display: none; background: #2c3e50; color: white; font-size: 10px; padding: 5px 10px; border-radius: 15px; text-decoration: none; font-weight: bold; white-space: nowrap;">Profile</a>
+                <a href="auth.html" id="login-btn" style="display: inline-block; background: #e74c3c; color: white; font-size: 10px; padding: 5px 10px; border-radius: 15px; text-decoration: none; font-weight: bold; white-space: nowrap;">Login</a>
             </div>
         </div>
 
-        <nav style="display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; -webkit-overflow-scrolling: touch;">
-            <button class="nav-link active" onclick="filterQuizzes('all')" style="cursor:pointer; border:1px solid #ddd; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 13px;">All Quizzes</button>
-            <button class="nav-link" onclick="filterQuizzes('astrology')" style="cursor:pointer; border:1px solid #ddd; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 13px;">Astrology</button>
-            <button class="nav-link" onclick="filterQuizzes('personality')" style="cursor:pointer; border:1px solid #ddd; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 13px;">Personality</button>
-            <button class="nav-link" onclick="filterQuizzes('kpop')" style="cursor:pointer; border:1px solid #ddd; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 13px;">K-Pop</button>
-            <button class="nav-link" onclick="filterQuizzes('movies')" style="cursor:pointer; border:1px solid #ddd; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 13px;">Movies</button>
-            <button class="nav-link" onclick="filterQuizzes('anime')" style="cursor:pointer; border:1px solid #ddd; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 13px;">Anime</button>
+        <nav style="display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; padding: 5px 0; -webkit-overflow-scrolling: touch;">
+            <button class="nav-link active" onclick="filterQuizzes('all')" style="border:1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: #f0f0f0;">All Quizzes</button>
+            <button class="nav-link" onclick="filterQuizzes('astrology')" style="border:1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: #f0f0f0;">Astrology</button>
+            <button class="nav-link" onclick="filterQuizzes('personality')" style="border:1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: #f0f0f0;">Personality</button>
+            <button class="nav-link" onclick="filterQuizzes('kpop')" style="border:1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: #f0f0f0;">K-Pop</button>
+            <button class="nav-link" onclick="filterQuizzes('movies')" style="border:1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: #f0f0f0;">Movies</button>
+            <button class="nav-link" onclick="filterQuizzes('anime')" style="border:1px solid #ddd; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: #f0f0f0;">Anime</button>
         </nav>
     </div>
 </header>
