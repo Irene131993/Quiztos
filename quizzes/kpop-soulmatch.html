@@ -260,6 +260,16 @@ function finishQuiz() {
     document.getElementById('result-debut-info').innerText = `Debut: ${result.debut} | Agency: ${result.company}`;
     document.getElementById('result-img').src = `../images/${result.id}.jpg`;
     document.getElementById('result-text-big').innerHTML = `<b>${result.info}</b><br><br>${result.fact}`;
+
+    // --- СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
+    // Считаем процент "совпадения" с этой группой (макс. баллы из 20 возможных)
+    const matchPercent = Math.round((maxScore / 20) * 100);
+    
+    // quizName: Название теста
+    // score: % совпадения
+    // maxScore: 100%
+    // resultLabel: Название группы (BTS, BLACKPINK и т.д.)
+    saveResult('K-POP Destiny: Road to Debut', matchPercent, 100, result.name);
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
