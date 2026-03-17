@@ -298,7 +298,7 @@
         });
     }
 
-    function showResults() {
+   function showResults() {
         document.getElementById('quiz-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo(0,0);
@@ -317,14 +317,14 @@
             document.getElementById('f-dreamer').style.width = pD + '%';
         }, 100);
 
-        // Logic for multiple winners
+        // Определяем победителей
         let maxScore = Math.max(sc.thinker, sc.maker, sc.dreamer);
         let winners = [];
         if (sc.thinker === maxScore) winners.push('thinker');
         if (sc.maker === maxScore) winners.push('maker');
         if (sc.dreamer === maxScore) winners.push('dreamer');
 
-        // Render Winner Images
+        // Рендерим картинки
         const imgContainer = document.getElementById('res-images-container');
         imgContainer.innerHTML = '';
         winners.forEach(win => {
@@ -334,20 +334,29 @@
             imgContainer.appendChild(img);
         });
 
-        // Description logic
+        // Логика описания и ярлыка для базы данных
         let desc = "";
+        let finalLabel = "";
+
         if (winners.length > 1) {
             let titles = winners.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' & ');
+            finalLabel = `Hybrid: ${titles}`;
             desc = `<b style="font-size: 20px; color: #1e272e;">The Ultimate Hybrid: ${titles}!</b><br><br>`;
-            desc += "You are a rare phenomenon! Your mind doesn't fit into a single box. You possess a powerful synergy of traits that allows you to see the world from multiple perspectives. This balance is your greatest superpower — you can dream big and actually build it, or analyze deeply and still find the magic. You are truly a multi-dimensional force of nature!";
+            desc += "You are a rare phenomenon! Your mind doesn't fit into a single box. You possess a powerful synergy of traits that allows you to see the world from multiple perspectives.";
         } else {
             let win = winners[0];
-            if (win === 'thinker') desc = "<b>The Thinker:</b> You are the architect of ideas. You value logic, structure, and deep understanding above all else. Your strength lies in seeing connections others miss.";
-            else if (win === 'maker') desc = "<b>The Maker:</b> You are the engine of progress. You don't just dream—you build. Your energy and focus turn abstract thoughts into tangible reality.";
-            else desc = "<b>The Dreamer:</b> You are the visionary. You see infinite possibilities and follow the spark of inspiration. You remind the world that magic still exists.";
+            finalLabel = win.charAt(0).toUpperCase() + win.slice(1);
+            if (win === 'thinker') desc = "<b>The Thinker:</b> You are the architect of ideas. You value logic, structure, and deep understanding above all else.";
+            else if (win === 'maker') desc = "<b>The Maker:</b> You are the engine of progress. You don't just dream—you build.";
+            else desc = "<b>The Dreamer:</b> You are the visionary. You see infinite possibilities and follow the spark of inspiration.";
         }
 
         document.getElementById('result-description').innerHTML = desc;
+
+        // --- СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
+        // Берем самый высокий процент (maxScore / 15 * 100)
+        const topPercent = Math.round((maxScore / total) * 100);
+        saveResult('Creative Mind Profile', topPercent, 100, finalLabel);
     }
 
     function shareMindResult() {
