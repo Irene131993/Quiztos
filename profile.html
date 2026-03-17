@@ -81,25 +81,30 @@
   <script>
     const SUPABASE_URL = 'https://xtwvtzqvpmwhytcegcxg.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    // Переименовали sb в supabaseClient
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function init() {
-      const { data: { session } } = await sb.auth.getSession();
+      // Здесь тоже меняем sb на supabaseClient
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      
       if (!session) {
-        window.location.href = '/auth';
+        // Если юзер не залогинен, отправляем его на страницу входа
+        window.location.href = '/auth'; 
         return;
       }
 
       const user = session.user;
 
-      // Display email & avatar
+      // Отображаем почту и первую букву для аватара
       document.getElementById('userEmail').textContent = user.email;
       document.getElementById('avatar').textContent = (user.email || '?')[0].toUpperCase();
       document.getElementById('memberSince').textContent =
         'Member since ' + new Date(user.created_at).toLocaleDateString();
 
-      // Fetch results
-      const { data: results } = await sb
+      // Тянем результаты из базы (меняем sb на supabaseClient)
+      const { data: results } = await supabaseClient
         .from('user_results')
         .select('*')
         .eq('user_id', user.id)
@@ -107,12 +112,12 @@
 
       const rows = results || [];
 
-      // Stats
+      // Считаем статистику
       document.getElementById('totalQuizzes').textContent = rows.length;
       const unique = new Set(rows.map(r => r.result_label).filter(Boolean));
       document.getElementById('uniqueResults').textContent = unique.size;
 
-      // Table
+      // Заполняем таблицу
       if (rows.length === 0) {
         document.getElementById('noResults').classList.remove('hidden');
       } else {
@@ -127,20 +132,21 @@
         `).join('');
       }
 
-      // Show app
+      // Показываем контент, прячем загрузку
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
+    }
+
+    // Не забудь поправить функцию выхода
+    async function handleSignOut() {
+      await supabaseClient.auth.signOut();
+      window.location.href = '/';
     }
 
     function esc(s) {
       const d = document.createElement('div');
       d.textContent = s;
       return d.innerHTML;
-    }
-
-    async function handleSignOut() {
-      await sb.auth.signOut();
-      window.location.href = '/';
     }
 
     init();
