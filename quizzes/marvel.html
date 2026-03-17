@@ -323,13 +323,16 @@
         });
     }
 
-    function showResults() {
+  function showResults() {
         document.getElementById('quiz-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo(0,0);
         
         const scoreCircle = document.getElementById('score-val');
         scoreCircle.innerText = `${score}/${questions.length}`;
+        
+        // Считаем процент для базы данных
+        const finalPercent = Math.round((score / questions.length) * 100);
         
         let rank = "";
         let desc = "";
@@ -354,8 +357,12 @@
         
         document.getElementById('rank-title').innerText = rank;
         document.getElementById('result-description').innerHTML = desc;
-    }
 
+        // --- СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
+        // Название теста: Marvel Knowledge
+        // Результат: Твой ранг (Avenger Legend и т.д.)
+        saveResult('Marvel Movies Knowledge', finalPercent, 100, rank);
+    }
     function shareResult() {
         const rank = document.getElementById('rank-title').innerText;
         const scoreVal = document.getElementById('score-val').innerText;
