@@ -21,21 +21,17 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- Loading -->
   <div id="loading" class="flex items-center justify-center min-h-screen">
     <p class="text-slate-400">Loading...</p>
   </div>
 
-  <!-- Main content (hidden until loaded) -->
   <div id="app" class="hidden max-w-3xl mx-auto px-4 py-10 space-y-6">
 
-    <!-- Header -->
     <div class="flex items-center justify-between">
-      <a href="/" class="text-2xl font-black tracking-widest uppercase text-white">QUIZTOS</a>
+      <a href="index.html" class="text-2xl font-black tracking-widest uppercase text-white">QUIZ<span class="text-[#d35444]">TOS</span></a>
       <button onclick="handleSignOut()" class="btn-outline text-xs uppercase tracking-wider">Sign Out</button>
     </div>
 
-    <!-- Profile Card -->
     <div class="card p-6 flex items-center gap-5">
       <div id="avatar" class="w-16 h-16 rounded-full bg-[#d35444] flex items-center justify-center text-2xl font-black text-white shrink-0"></div>
       <div>
@@ -44,7 +40,6 @@
       </div>
     </div>
 
-    <!-- Stats -->
     <div class="grid grid-cols-2 gap-4">
       <div class="card p-5 text-center">
         <p id="totalQuizzes" class="text-3xl font-black text-white">0</p>
@@ -56,7 +51,6 @@
       </div>
     </div>
 
-    <!-- Results Table -->
     <div class="card p-6">
       <h2 class="text-lg font-extrabold text-[#d35444] mb-4">Quiz History</h2>
       <div id="noResults" class="hidden text-center py-10">
@@ -79,45 +73,43 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://xtwvtzqvpmwhytcegcxg.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ';
+    // ТВОИ ОБНОВЛЕННЫЕ КЛЮЧИ
+    const SUPABASE_URL = 'https://utsmlrpjidqrzashmyli.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0c21scnBqaWRxcnphc2hteWxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NTIwMjAsImV4cCI6MjA4OTMyODAyMH0.xjWq8107bVrYCs0M_rY65SnGxKJTano4JliEGvopv1U';
     
-    // Переименовали sb в supabaseClient
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function init() {
-      // Здесь тоже меняем sb на supabaseClient
-      const { data: { session } } = await supabaseClient.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
       
       if (!session) {
-        // Если юзер не залогинен, отправляем его на страницу входа
         window.location.href = 'auth.html';
         return;
       }
 
       const user = session.user;
-
-      // Отображаем почту и первую букву для аватара
       document.getElementById('userEmail').textContent = user.email;
       document.getElementById('avatar').textContent = (user.email || '?')[0].toUpperCase();
       document.getElementById('memberSince').textContent =
         'Member since ' + new Date(user.created_at).toLocaleDateString();
 
-      // Тянем результаты из базы (меняем sb на supabaseClient)
-      const { data: results } = await supabaseClient
+      // Загрузка результатов
+      const { data: results, error: dbError } = await supabaseClient
         .from('user_results')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
+      if (dbError) {
+        console.error("Database error:", dbError);
+      }
+
       const rows = results || [];
 
-      // Считаем статистику
       document.getElementById('totalQuizzes').textContent = rows.length;
       const unique = new Set(rows.map(r => r.result_label).filter(Boolean));
       document.getElementById('uniqueResults').textContent = unique.size;
 
-      // Заполняем таблицу
       if (rows.length === 0) {
         document.getElementById('noResults').classList.remove('hidden');
       } else {
@@ -132,15 +124,13 @@
         `).join('');
       }
 
-      // Показываем контент, прячем загрузку
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
     }
 
-    // Не забудь поправить функцию выхода
     async function handleSignOut() {
       await supabaseClient.auth.signOut();
-      window.location.href = '/';
+      window.location.href = 'index.html';
     }
 
     function esc(s) {
