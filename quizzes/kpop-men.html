@@ -307,12 +307,18 @@ function showResult() {
     const res = groupData.find(g => g.id === win);
     document.getElementById('result-name').innerText = res.name;
     
-    // ИЗМЕНЕНИЕ 4: Теперь путь к картинке включает цифру 1 (например: bts1.jpg или bts1.png)
-    // Убедись, что твои картинки в папке images называются bts1.jpg, txt1.png и т.д.
+    // Путь к картинке (убедись, что файлы называются bts1.jpg и т.д.)
     document.getElementById('result-img').src = `../images/${win}1.jpg`; 
     
     document.getElementById('result-desc').innerHTML = res.desc; 
     document.getElementById('result-fact').innerText = res.fact;
+
+    // --- СОХРАНЕНИЕ В SUPABASE ---
+    // Считаем процент совместимости (набранные баллы по этой группе из 20 вопросов)
+    const matchPercent = Math.round((max / 20) * 100);
+    
+    // Сохраняем: Название теста, % совпадения, макс (100) и название группы
+    saveResult('Male K-Pop Group DNA', matchPercent, 100, res.name);
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
