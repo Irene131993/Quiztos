@@ -15,25 +15,29 @@
 </head>
 <body class="min-h-screen flex items-center justify-center px-4">
     <div class="auth-card w-full max-w-md p-8 rounded-2xl shadow-2xl">
-        <div class="text-center mb-8">
-            <a href="index.html" class="text-3xl font-black tracking-tighter text-white">QUIZ<span class="text-[#d35444]">TOS</span></a>
-            <p class="text-slate-400 mt-2">Sign in to save your quiz results</p>
+        <div class="text-center mb-10">
+            <a href="index.html" class="text-5xl font-black tracking-tighter text-white uppercase">
+                QUIZ<span class="text-[#d35444]">TOS</span>
+            </a>
+            <p class="text-slate-400 mt-4 text-sm">Enter your email to receive a login link</p>
         </div>
 
         <div id="auth-ui" class="space-y-4">
-            <button onclick="loginWithGitHub()" class="w-full flex items-center justify-center gap-3 bg-white text-black font-bold py-3 rounded-lg hover:bg-slate-200 transition">
-                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="20" alt="GitHub">
-                Continue with GitHub
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Email Address</label>
+                <input type="email" id="email" placeholder="name@example.com" 
+                    class="w-full bg-[#0f1c28] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#d35444] transition">
+            </div>
+            
+            <button onclick="loginWithEmail()" id="login-btn" class="w-full btn-primary text-white font-bold py-3 rounded-lg shadow-lg">
+                Send Magic Link
             </button>
             
-            <div class="relative py-4">
-                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-700"></div></div>
-                <div class="relative flex justify-center text-xs uppercase"><span class="bg-[#1a2a3a] px-2 text-slate-500">Or use email</span></div>
-            </div>
+            <p id="msg" class="text-sm text-center mt-4 min-h-[20px]"></p>
+        </div>
 
-            <input type="email" id="email" placeholder="your@email.com" class="w-full bg-[#0f1c28] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#d35444]">
-            <button onclick="loginWithEmail()" class="w-full btn-primary text-white font-bold py-3 rounded-lg">Send Magic Link</button>
-            <p id="msg" class="text-xs text-center mt-4"></p>
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-xs text-slate-500 hover:text-white transition uppercase font-bold tracking-widest">← Back to home</a>
         </div>
     </div>
 
@@ -42,21 +46,41 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function loginWithGitHub() {
-            await supabaseClient.auth.signInWithOAuth({
-                provider: 'github',
-                options: { redirectTo: window.location.origin + '/profile.html' }
-            });
-        }
-
         async function loginWithEmail() {
-            const email = document.getElementById('email').value;
+            const emailInput = document.getElementById('email');
+            const btn = document.getElementById('login-btn');
+            const msg = document.getElementById('msg');
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                alert("Please enter your email");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Sending...";
+            msg.innerText = "";
+
             const { error } = await supabaseClient.auth.signInWithOtp({
                 email: email,
-                options: { emailRedirectTo: window.location.origin + '/profile.html' }
+                options: {
+                    // Ссылка вернет пользователя в профиль после клика в письме
+                    emailRedirectTo: window.location.origin + '/profile.html'
+                }
             });
-            if (error) alert(error.message);
-            else document.getElementById('msg').innerText = "Check your email for the login link!";
+
+            if (error) {
+                msg.classList.add('text-red-500');
+                msg.innerText = "Error: " + error.message;
+                btn.disabled = false;
+                btn.innerText = "Send Magic Link";
+            } else {
+                msg.classList.remove('text-red-500');
+                msg.classList.add('text-green-400');
+                msg.innerText = "Check your email! We sent you a login link.";
+                emailInput.value = "";
+                btn.innerText = "Link Sent!";
+            }
         }
     </script>
 </body>
