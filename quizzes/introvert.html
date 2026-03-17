@@ -218,23 +218,36 @@
         });
     }
 
-    function showRes() {
+   function showRes() {
         document.getElementById('quiz-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo(0,0);
-        let title, desc;
+        
+        let title, desc, label;
+        
         if (scoreA > scoreB + 2) {
+            label = "Introvert";
             title = "🌙 You are an INTROVERT";
             desc = "You gain energy from your internal world. Being alone is your way of 'recharging your batteries.' You value deep connections, meaningful conversations, and personal space.";
         } else if (scoreB > scoreA + 2) {
+            label = "Extrovert";
             title = "☀️ You are an EXTROVERT";
             desc = "You gain energy from the outside world. Socializing 'recharges' you. You are likely expressive, outgoing, and comfortable in crowds, feeling most alive when interacting with others.";
         } else {
+            label = "Ambivert";
             title = "🌗 You are an AMBIVERT";
             desc = "You have a balance of both introverted and extroverted traits. You can be the life of the party, but you also deeply cherish your alone time. You are flexible and adapt to any situation.";
         }
+        
         document.getElementById('result-name').innerText = title;
         document.getElementById('result-desc').innerHTML = desc;
+
+        // --- СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
+        // В этом тесте нет "баллов" в привычном смысле, 
+        // поэтому запишем количество ответов за доминирующий тип (макс 15)
+        const finalScore = Math.max(scoreA, scoreB);
+        
+        saveResult('Introvert vs Extrovert', finalScore, 15, label);
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
