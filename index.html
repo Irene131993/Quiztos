@@ -82,41 +82,59 @@
 
     /* --- КАТЕГОРИИ (Скролл и Красная подсветка) --- */
  /* Центрируем навигацию */
+ /* Центрируем навигацию и разрешаем перенос строк, чтобы всё влезло */
     nav {
         display: flex;
-        justify-content: center; /* Центрирует категории по горизонтали */
-        gap: 12px;
-        flex-wrap: wrap; /* Позволяет кнопкам переноситься на новую строку, если мало места */
+        justify-content: center; 
+        gap: 8px;
+        flex-wrap: wrap; /* Кнопки будут прыгать на новую строку, если не влезают */
         padding: 10px 0;
+        width: 100%;
     }
 
     .nav-link {
         color: #555;
         text-decoration: none;
-        font-size: 13px;
+        font-size: 12px; /* Чуть меньше шрифт для мобильных */
         font-weight: 700;
         text-transform: uppercase;
-        padding: 10px 22px;
-        border-radius: 25px;
+        padding: 6px 12px; /* Компактные отступы */
+        border-radius: 20px;
         background: #f0f0f0;
-        transition: all 0.3s ease; /* Плавный переход цвета */
+        transition: all 0.2s ease;
         cursor: pointer;
-        border: 1px solid transparent;
+        border: 1px solid #ddd;
         display: inline-block;
+        white-space: nowrap;
     }
 
-    /* ПОДСВЕТКА ПРИ НАВЕДЕНИИ (Hover) */
+    /* Красная подсветка при НАВЕДЕНИИ (для ПК) */
     .nav-link:hover {
-        background: var(--accent) !important; /* Красный фон */
-        color: var(--white) !important; /* Белый текст */
-        transform: translateY(-2px); /* Легкий подъем кнопки */
-        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        background: #e74c3c !important;
+        color: white !important;
+        border-color: #e74c3c !important;
     }
 
-    /* Стиль для активной (выбранной) категории остается, чтобы пользователь видел, где он */
+    /* Красная подсветка для ВЫБРАННОЙ категории */
     .nav-link.active {
-        background: var(--primary);
-        color: var(--white);
+        background: #e74c3c !important;
+        color: white !important;
+        border-color: #e74c3c !important;
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    }
+
+    /* Кнопка теста: красная при наведении */
+    .btn-take:hover {
+        background: #e74c3c !important;
+    }
+
+    @media (max-width: 480px) {
+        .logo { font-size: 26px !important; }
+        .nav-link {
+            font-size: 11px; /* Еще меньше на маленьких телефонах */
+            padding: 5px 10px;
+        }
+        nav { gap: 5px; } /* Плотнее друг к другу */
     }
 
     /* --- ТВОИ ОРИГИНАЛЬНЫЕ СТИЛИ ТЕСТОВ --- */
@@ -382,21 +400,21 @@
     }
     checkUser();
 
-function filterQuizzes(category, clickedElement) {
-    // 1. Находим все кнопки категорий
+function filterQuizzes(category, btnElement) {
+    // 1. Убираем класс active у всех кнопок
     const buttons = document.querySelectorAll('.nav-link');
+    buttons.forEach(btn => btn.classList.remove('active'));
 
-    // 2. Убираем класс 'active' (красный цвет) у всех кнопок
-    buttons.forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    // 3. Добавляем класс 'active' только той кнопке, на которую нажали
-    if (clickedElement) {
-        clickedElement.classList.add('active');
+    // 2. Если нажали на кнопку — добавляем ей active (станет красной)
+    if (btnElement) {
+        btnElement.classList.add('active');
+    } else {
+        // Если вызвали программно (например, при загрузке для 'all')
+        const allBtn = Array.from(buttons).find(b => b.innerText.toLowerCase().includes('all'));
+        if (allBtn) allBtn.classList.add('active');
     }
 
-    // 4. Фильтруем карточки тестов
+    // 3. Сама фильтрация карточек
     const cards = document.querySelectorAll('.quiz-card');
     cards.forEach(card => {
         if (category === 'all' || card.getAttribute('data-category') === category) {
