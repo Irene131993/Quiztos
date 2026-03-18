@@ -176,6 +176,11 @@
 </div>
 
 <script>
+    // 1. Сначала инициализируем Supabase
+    const SUPABASE_URL = 'https://xtwvtzqvpmwhytcegcxg.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const questions = [
         { q: "How do you feel after spending a few hours at a loud party?", options: [{t: "Exhausted. I need to be alone to recharge.", s: "A"}, {t: "Energized! I feel excited and ready for more.", s: "B"}] },
         { q: "When you have a problem, what do you usually do?", options: [{t: "I process it internally on my own first.", s: "A"}, {t: "I call a friend to process thoughts out loud.", s: "B"}] },
@@ -205,74 +210,77 @@
 
     function updateQ() {
         const qData = questions[cur];
-        document.getElementById('q-counter').innerText = `Question ${cur + 1} of 15`;
-        document.getElementById('question-text').innerText = qData.q;
-        document.getElementById('progress-fill').style.width = ((cur) / 15 * 100) + '%';
+        const counter = document.getElementById('q-counter');
+        const qText = document.getElementById('question-text');
+        const progress = document.getElementById('progress-fill');
         const optCont = document.getElementById('options-container');
+
+        if (!qData) return; // Защита от ошибок
+
+        counter.innerText = `Question ${cur + 1} of 15`;
+        qText.innerText = qData.q;
+        progress.style.width = ((cur) / 15 * 100) + '%';
+        
         optCont.innerHTML = '';
         qData.options.forEach(o => {
             const b = document.createElement('button');
-            b.className = 'option-btn'; b.innerText = o.t;
-            b.onclick = () => { if(o.s === "A") scoreA++; else scoreB++; cur++; if(cur < 15) updateQ(); else showRes(); };
+            b.className = 'option-btn'; 
+            b.innerText = o.t;
+            b.onclick = () => { 
+                if(o.s === "A") scoreA++; else scoreB++; 
+                cur++; 
+                if(cur < 15) updateQ(); else showRes(); 
+            };
             optCont.appendChild(b);
         });
     }
 
-   function showRes() {
+    async function showRes() {
         document.getElementById('quiz-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo(0,0);
         
         let title, desc, label;
-        
         if (scoreA > scoreB + 2) {
             label = "Introvert";
             title = "🌙 You are an INTROVERT";
-            desc = "You gain energy from your internal world. Being alone is your way of 'recharging your batteries.' You value deep connections, meaningful conversations, and personal space.";
+            desc = "You gain energy from your internal world...";
         } else if (scoreB > scoreA + 2) {
             label = "Extrovert";
             title = "☀️ You are an EXTROVERT";
-            desc = "You gain energy from the outside world. Socializing 'recharges' you. You are likely expressive, outgoing, and comfortable in crowds, feeling most alive when interacting with others.";
+            desc = "You gain energy from the outside world...";
         } else {
             label = "Ambivert";
             title = "🌗 You are an AMBIVERT";
-            desc = "You have a balance of both introverted and extroverted traits. You can be the life of the party, but you also deeply cherish your alone time. You are flexible and adapt to any situation.";
+            desc = "You have a balance of both traits...";
         }
         
         document.getElementById('result-name').innerText = title;
         document.getElementById('result-desc').innerHTML = desc;
 
-        // --- СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
-        // В этом тесте нет "баллов" в привычном смысле, 
-        // поэтому запишем количество ответов за доминирующий тип (макс 15)
+        // Сохранение
         const finalScore = Math.max(scoreA, scoreB);
-        
-        saveResult('Introvert vs Extrovert', finalScore, 15, label);
+        await saveResult('Introvert vs Extrovert', finalScore, 15, label);
+    }
+
+    async function saveResult(quizName, score, maxScore, resultLabel) {
+        try {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) return;
+            const user = session.user;
+
+            await supabaseClient.from('user_results').insert({
+                user_id: user.id,
+                quiz_name: quizName,
+                score: score,
+                max_score: maxScore,
+                result_label: resultLabel,
+            });
+            console.log("Saved successfully!");
+        } catch (err) { console.error("Save error:", err); }
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const supabaseClient = window.supabase.createClient(
-    'https://xtwvtzqvpmwhytcegcxg.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ'
-  );
-
-  async function saveResult(quizName, score, maxScore, resultLabel) {
-    try {
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) return;
-      await supabaseClient.from('user_results').insert({
-        user_id: user.id,
-        quiz_name: quizName,
-        score: score,
-        max_score: maxScore,
-        result_label: resultLabel,
-      });
-      console.log("Saved!");
-    } catch (err) { console.error(err); }
-  }
-</script>
 
 </body>
 </html>
