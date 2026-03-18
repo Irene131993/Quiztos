@@ -81,15 +81,14 @@
     }
 
     /* --- КАТЕГОРИИ (Скролл и Красная подсветка) --- */
+ /* Центрируем навигацию */
     nav {
         display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 5px 0;
-        -webkit-overflow-scrolling: touch;
+        justify-content: center; /* Центрирует категории по горизонтали */
+        gap: 12px;
+        flex-wrap: wrap; /* Позволяет кнопкам переноситься на новую строку, если мало места */
+        padding: 10px 0;
     }
-    nav::-webkit-scrollbar { display: none; }
 
     .nav-link {
         color: #555;
@@ -97,20 +96,27 @@
         font-size: 13px;
         font-weight: 700;
         text-transform: uppercase;
-        padding: 8px 20px;
+        padding: 10px 22px;
         border-radius: 25px;
         background: #f0f0f0;
-        transition: 0.3s ease;
+        transition: all 0.3s ease; /* Плавный переход цвета */
         cursor: pointer;
         border: 1px solid transparent;
         display: inline-block;
     }
 
-    /* ТА САМАЯ КРАСНАЯ ПОДСВЕТКА */
+    /* ПОДСВЕТКА ПРИ НАВЕДЕНИИ (Hover) */
+    .nav-link:hover {
+        background: var(--accent) !important; /* Красный фон */
+        color: var(--white) !important; /* Белый текст */
+        transform: translateY(-2px); /* Легкий подъем кнопки */
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+
+    /* Стиль для активной (выбранной) категории остается, чтобы пользователь видел, где он */
     .nav-link.active {
-        background: var(--accent) !important;
-        color: var(--white) !important;
-        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        background: var(--primary);
+        color: var(--white);
     }
 
     /* --- ТВОИ ОРИГИНАЛЬНЫЕ СТИЛИ ТЕСТОВ --- */
@@ -150,12 +156,26 @@
     .quiz-card h3 { margin: 0 0 10px 0; font-size: 22px; color: #111; }
     .quiz-card p { font-size: 15px; color: #666; margin-bottom: 25px; flex-grow: 1; }
 
-    .btn-take {
-        background: var(--primary); color: white; text-align: center;
-        padding: 14px; text-decoration: none; font-weight: 800;
-        text-transform: uppercase; font-size: 13px; border-radius: 6px; transition: 0.3s;
+  .btn-take {
+        background: var(--primary);
+        color: white;
+        text-align: center;
+        padding: 14px;
+        text-decoration: none;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 13px;
+        border-radius: 6px;
+        transition: 0.3s all ease;
+        display: block;
     }
-    .btn-take:hover { background: var(--accent); }
+
+    /* Красная подсветка при наведении и нажатии */
+    .btn-take:hover, .btn-take:active {
+        background: var(--accent) !important;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        transform: scale(1.02); /* Кнопка чуть увеличивается */
+    }
 
     footer { background: #1a1a1a; color: #888; padding: 60px 0; text-align: center; }
     .footer-logo { font-size: 24px; font-weight: 900; color: #fff; text-decoration: none; }
@@ -168,6 +188,21 @@
         .hero h1 { font-size: 22px; }
         .quiz-grid { grid-template-columns: 1fr; }
     }
+    @media (max-width: 600px) {
+        nav {
+            justify-content: flex-start; /* На очень узких экранах лучше оставить скролл влево */
+            overflow-x: auto;
+            padding-left: 15px;
+            flex-wrap: nowrap; /* Чтобы категории шли в ряд со скроллом */
+        }
+        
+        /* Чтобы на тачскринах кнопка подсвечивалась при нажатии */
+        .btn-take:active, .nav-link:active {
+            background: var(--accent) !important;
+            color: white !important;
+        }
+    }
+    
 </style>
 </head>
 <body>
