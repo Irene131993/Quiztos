@@ -4,246 +4,255 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>QUIZTOS | Free Online Quizzes & Games</title>
-<style>
-    /* Базовые настройки, чтобы ничего не дергалось */
-    html, body {
-        max-width: 100vw;
-        overflow-x: hidden;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        background: #f4f7f6;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    :root {
-        --primary: #2c3e50;
-        --accent: #e74c3c;
-        --white: #ffffff;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 15px;
-    }
-
-    /* --- ОБНОВЛЕННЫЙ HEADER (Лого слева, Кнопки справа) --- */
-    header {
-        background: var(--white);
-        border-bottom: 1px solid #ddd;
-        padding: 15px 0;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .header-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .logo {
-        font-size: 32px; /* Большой логотип */
-        font-weight: 900;
-        color: var(--primary);
-        text-decoration: none;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        flex-shrink: 1;
-    }
-
-    .logo span { color: var(--accent); }
-
-    #auth-buttons {
-        display: flex;
-        gap: 10px;
-        flex-shrink: 0;
-    }
-
-    /* Стили для кнопок входа */
-    .nav-auth {
-        color: var(--white);
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        padding: 8px 18px;
-        border-radius: 25px;
-        transition: 0.3s;
-        white-space: nowrap;
-    }
-
-    /* --- КАТЕГОРИИ (Скролл и Красная подсветка) --- */
- /* Центрируем навигацию */
- /* Центрируем навигацию и разрешаем перенос строк, чтобы всё влезло */
-    nav {
-        display: flex;
-        justify-content: center; 
-        gap: 8px;
-        flex-wrap: wrap; /* Кнопки будут прыгать на новую строку, если не влезают */
-        padding: 10px 0;
-        width: 100%;
-    }
-
-    .nav-link {
-        color: #555;
-        text-decoration: none;
-        font-size: 12px; /* Чуть меньше шрифт для мобильных */
-        font-weight: 700;
-        text-transform: uppercase;
-        padding: 6px 12px; /* Компактные отступы */
-        border-radius: 20px;
-        background: #f0f0f0;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        border: 1px solid #ddd;
-        display: inline-block;
-        white-space: nowrap;
-    }
-
-    /* Красная подсветка при НАВЕДЕНИИ (для ПК) */
-    .nav-link:hover {
-        background: #e74c3c !important;
-        color: white !important;
-        border-color: #e74c3c !important;
-    }
-
-    /* Красная подсветка для ВЫБРАННОЙ категории */
-    .nav-link.active {
-        background: #e74c3c !important;
-        color: white !important;
-        border-color: #e74c3c !important;
-        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
-    }
-
-    /* Кнопка теста: красная при наведении */
-    .btn-take:hover {
-        background: #e74c3c !important;
-    }
-
-    @media (max-width: 480px) {
-        .logo { font-size: 26px !important; }
-        .nav-link {
-            font-size: 11px; /* Еще меньше на маленьких телефонах */
-            padding: 5px 10px;
-        }
-        nav { gap: 5px; } /* Плотнее друг к другу */
-    }
-
-    /* --- ТВОИ ОРИГИНАЛЬНЫЕ СТИЛИ ТЕСТОВ --- */
-    .hero { background: var(--white); padding: 50px 0; text-align: center; border-bottom: 1px solid #eee; margin-bottom: 40px; }
-    .hero h1 { margin: 0; font-size: 28px; color: #222; font-weight: 300; }
-    .hero h1 b { font-weight: 800; color: var(--primary); }
-
-    .quiz-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 30px;
-        padding-bottom: 60px;
-    }
-
-    .quiz-card {
-        background: var(--white);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        display: flex;
-        flex-direction: column;
-        transition: 0.3s;
-        border: 1px solid #eee;
-    }
-    .quiz-card:hover { transform: translateY(-8px); }
-
-    .card-img-wrap { height: 210px; overflow: hidden; }
-    .card-img { width: 100%; height: 100%; object-fit: cover; }
     
-    .card-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
-    .card-tag { 
-        font-size: 10px; background: var(--primary); color: white; 
-        padding: 4px 12px; border-radius: 4px; text-transform: uppercase; 
-        font-weight: 800; align-self: flex-start; margin-bottom: 15px;
-    }
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    .quiz-card h3 { margin: 0 0 10px 0; font-size: 22px; color: #111; }
-    .quiz-card p { font-size: 15px; color: #666; margin-bottom: 25px; flex-grow: 1; }
-
-  .btn-take {
-        background: var(--primary);
-        color: white;
-        text-align: center;
-        padding: 14px;
-        text-decoration: none;
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 13px;
-        border-radius: 6px;
-        transition: 0.3s all ease;
-        display: block;
-    }
-
-    /* Красная подсветка при наведении и нажатии */
-    .btn-take:hover, .btn-take:active {
-        background: var(--accent) !important;
-        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
-        transform: scale(1.02); /* Кнопка чуть увеличивается */
-    }
-
-    footer { background: #1a1a1a; color: #888; padding: 60px 0; text-align: center; }
-    .footer-logo { font-size: 24px; font-weight: 900; color: #fff; text-decoration: none; }
-    .footer-logo span { color: var(--accent); }
-
-    /* МОБИЛЬНАЯ ВЕРСИЯ */
-    @media (max-width: 600px) {
-        .logo { font-size: 24px; }
-        .nav-auth { font-size: 11px; padding: 6px 14px; }
-        .hero h1 { font-size: 22px; }
-        .quiz-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 600px) {
-        nav {
-            justify-content: flex-start; /* На очень узких экранах лучше оставить скролл влево */
-            overflow-x: auto;
-            padding-left: 15px;
-            flex-wrap: nowrap; /* Чтобы категории шли в ряд со скроллом */
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --bg: #f4f7f6;
+            --text: #333;
+            --white: #ffffff;
+            --indigo: #4f46e5;
         }
-        
-        /* Чтобы на тачскринах кнопка подсвечивалась при нажатии */
-        .btn-take:active, .nav-link:active {
-            background: var(--accent) !important;
+
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            box-sizing: border-box;
+        }
+
+        * { box-sizing: border-box; }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid #ddd;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 38px;
+            font-weight: 900;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .logo span { color: var(--accent); }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 8px 18px;
+            border-radius: 25px;
+            background: #f0f0f0;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .nav-account {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--indigo) !important;
             color: white !important;
         }
-    }
-    
-</style>
+
+        /* --- MODAL AUTH --- */
+        #authModal {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); 
+            z-index: 9999; 
+            justify-content: center; 
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal-content h2 { margin-top: 0; color: var(--primary); }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .modal-content button#submitBtn {
+            background: var(--indigo);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .modal-content button#submitBtn:hover { opacity: 0.9; }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #999;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            background: var(--white);
+            padding: 50px 0;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 40px;
+        }
+        .hero h1 { margin: 0; font-size: 28px; color: #222; font-weight: 300; }
+        .hero h1 b { font-weight: 800; color: var(--primary); }
+
+        /* --- QUIZ GRID --- */
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            padding-bottom: 60px;
+        }
+
+        .quiz-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+            border: 1px solid #eee;
+        }
+
+        .quiz-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card-img-wrap { height: 210px; overflow: hidden; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .quiz-card:hover .card-img { transform: scale(1.08); }
+
+        .card-content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
+        .card-tag { 
+            font-size: 10px; background: var(--primary); color: white; 
+            padding: 4px 12px; border-radius: 4px; text-transform: uppercase; 
+            font-weight: 800; align-self: flex-start; margin-bottom: 15px;
+        }
+
+        .quiz-card h3 { margin: 0 0 10px 0; font-size: 22px; color: #111; line-height: 1.2; }
+        .quiz-card p { font-size: 15px; color: #666; margin-bottom: 25px; flex-grow: 1; }
+        .btn-take { background: var(--primary); color: white; text-align: center; padding: 14px; text-decoration: none; font-weight: 800; text-transform: uppercase; font-size: 13px; border-radius: 6px; }
+        .btn-take:hover { background: var(--accent); }
+
+        /* --- FOOTER --- */
+        footer { background: #1a1a1a; color: #888; padding: 60px 0; text-align: center; }
+        .footer-logo { font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 20px; display: block; text-decoration: none; }
+        .footer-links a { color: #555; text-decoration: none; margin: 0 15px; font-size: 14px; }
+
+        @media (max-width: 850px) {
+            .nav-account { position: static; transform: none; margin-top: 15px; }
+            nav { padding: 0; }
+        }
+    </style>
 </head>
 <body>
 
 <header>
-    <div class="container">
-        <div class="header-wrapper">
-            <a href="index.html" class="logo">QUIZ<span>TOS</span></a>
-            <div id="auth-buttons">
-                <a href="profile.html" id="profile-btn" class="nav-auth" style="background: #2c3e50; display: none;">Profile</a>
-                <a href="auth.html" id="login-btn" class="nav-auth" style="background: #e74c3c;">Login</a>
-            </div>
-        </div>
-        <nav id="category-nav">
-            <div class="nav-link active" onclick="filterQuizzes('all', this)">All Quizzes</div>
-            <div class="nav-link" onclick="filterQuizzes('astrology', this)">Astrology</div>
-            <div class="nav-link" onclick="filterQuizzes('personality', this)">Personality</div>
-            <div class="nav-link" onclick="filterQuizzes('kpop', this)">K-Pop</div>
-            <div class="nav-link" onclick="filterQuizzes('movies', this)">Movies</div>
-            <div class="nav-link" onclick="filterQuizzes('anime', this)">Anime</div>
+    <div class="container header-content">
+        <a href="index.html" class="logo">QUIZ<span>TOS</span></a>
+        <nav>
+            <button class="nav-link active" onclick="filterQuizzes('all')">All</button>
+            <button class="nav-link" onclick="filterQuizzes('astrology')">Astrology</button>
+            <button class="nav-link" onclick="filterQuizzes('personality')">Personality</button>
+            <button class="nav-link" onclick="filterQuizzes('kpop')">K-Pop</button>
+            <button class="nav-link" onclick="filterQuizzes('movies')">Movies</button>
+            <button class="nav-link" onclick="filterQuizzes('anime')">Anime</button>
+            <a href="javascript:void(0)" onclick="handleAccountClick()" class="nav-link nav-account">My Account 👤</a>
         </nav>
     </div>
 </header>
+
+<div id="authModal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Login</h2>
+        <form id="authForm">
+            <input type="text" id="username" placeholder="Username" style="display:none;" autocomplete="nickname">
+            <input type="email" id="email" placeholder="Email" required autocomplete="username">
+            <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+            <button type="submit" id="submitBtn">Sign In</button>
+        </form>
+        <div style="margin-top:20px; font-size:13px;">
+            <a href="javascript:void(0)" onclick="toggleMode()" id="toggleText" style="color:var(--indigo); text-decoration:none; font-weight:bold;">Don't have an account? Sign Up</a>
+            <br><br>
+            <a href="javascript:void(0)" onclick="resetPassword()" style="color:#999; text-decoration:none;">Forgot password?</a>
+        </div>
+    </div>
+</div>
 
 <div class="hero">
     <div class="container">
@@ -253,9 +262,8 @@
 
 <main class="container">
     <div class="quiz-grid" id="quiz-grid">
-        
         <div class="quiz-card" data-category="astrology">
-            <div class="card-img-wrap"><img src="images/zodiac.jpg" class="card-img" alt="Zodiac"></div>
+            <div class="card-img-wrap"><img src="images/zodiac.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Astrology</span>
                 <h3>Your Zodiac Element</h3>
@@ -263,9 +271,8 @@
                 <a href="quizzes/zodiac.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
         <div class="quiz-card" data-category="astrology">
-            <div class="card-img-wrap"><img src="images/kosmos.jpg" class="card-img" alt="Planet"></div>
+            <div class="card-img-wrap"><img src="images/kosmos.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Astrology</span>
                 <h3>Your Guardian Planet</h3>
@@ -273,9 +280,8 @@
                 <a href="quizzes/guardian.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
         <div class="quiz-card" data-category="personality">
-            <div class="card-img-wrap"><img src="images/mind.jpg" class="card-img" alt="Planet"></div>
+            <div class="card-img-wrap"><img src="images/mind.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Personality</span>
                 <h3>Your Creative Mind</h3>
@@ -283,9 +289,8 @@
                 <a href="quizzes/mind.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
         <div class="quiz-card" data-category="personality">
-            <div class="card-img-wrap"><img src="images/mbti.jpg" class="card-img" alt="MBTI"></div>
+            <div class="card-img-wrap"><img src="images/mbti.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Personality</span>
                 <h3>Official MBTI Test</h3>
@@ -293,138 +298,228 @@
                 <a href="quizzes/mbti.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
         <div class="quiz-card" data-category="personality">
-            <div class="card-img-wrap"><img src="images/test1.jpg" class="card-img" alt="Friendship"></div>
+            <div class="card-img-wrap"><img src="images/introvert.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Personality</span>
-                <h3>What Kind of Friend Are You?</h3>
-                <p>Are you the listener, the leader, or the joker? Discover your unique social role.</p>
+                <h3>Introvert vs Extrovert</h3>
+                <p>Where do you get your energy from? Find out your true social battery type.</p>
+                <a href="quizzes/introvert.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
+         <div class="quiz-card" data-category="personality">
+            <div class="card-img-wrap"><img src="images/test1.jpg" class="card-img"></div>
+            <div class="card-content">
+                <span class="card-tag">Personality</span>
+                <h3>Introvert vs Extrovert</h3>
+                <p>Where do you get your energy from? Find out your true social battery type.</p>
                 <a href="quizzes/friend.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
         <div class="quiz-card" data-category="kpop">
-            <div class="card-img-wrap"><img src="images/k-pop.jpg" class="card-img" alt="Kpop Soul"></div>
+            <div class="card-img-wrap"><img src="images/k-pop.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">K-Pop</span>
-                <h3>Are you ready to debut?</h3>
+                <h3>Ready to debut?</h3>
                 <p>Step into the shoes of a trainee and find your ultimate K-pop home.</p>
                 <a href="quizzes/kpop-soulmatch.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
-        <div class="quiz-card" data-category="kpop">
-            <div class="card-img-wrap"><img src="images/k-pop men.jpg" class="card-img" alt="Kpop Men"></div>
+          <div class="quiz-card" data-category="kpop">
+            <div class="card-img-wrap"><img src="images/k-pop women.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">K-Pop</span>
-                <h3>Which Male K-Pop Group Suits You?</h3>
-                <p>In this roleplay simulation, you will walk the path of a debut artist.</p>
-                <a href="quizzes/kpop-men.html" class="btn-take">Take the quiz</a>
-            </div>
-        </div>
-
-        <div class="quiz-card" data-category="kpop">
-            <div class="card-img-wrap"><img src="images/k-pop women.jpg" class="card-img" alt="Kpop Women"></div>
-            <div class="card-content">
-                <span class="card-tag">K-Pop</span>
-                <h3>Girl Groups Expert Quiz</h3>
-                <p>How well do you know the queens of K-Pop? Take the ultimate fandom test.</p>
+                <h3>Ready to debut?</h3>
+                <p>Step into the shoes of a trainee and find your ultimate K-pop home.</p>
                 <a href="quizzes/girls-test.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
+          <div class="quiz-card" data-category="kpop">
+            <div class="card-img-wrap"><img src="images/k-pop men.jpg" class="card-img"></div>
+            <div class="card-content">
+                <span class="card-tag">K-Pop</span>
+                <h3>Ready to debut?</h3>
+                <p>Step into the shoes of a trainee and find your ultimate K-pop home.</p>
+                <a href="quizzes/kpop-men.html" class="btn-take">Take the quiz</a>
+            </div>
+        </div>
         <div class="quiz-card" data-category="movies">
-            <div class="card-img-wrap"><img src="images/marvel.jpg" class="card-img" alt="Marvel"></div>
+            <div class="card-img-wrap"><img src="images/marvel.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Movies</span>
-                <h3>Marvel Movies Knowledge</h3>
+                <h3>Marvel Knowledge</h3>
                 <p>Only a true Avenger can answer all these tough MCU questions correctly!</p>
                 <a href="quizzes/marvel.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
-        <div class="quiz-card" data-category="movies">
-            <div class="card-img-wrap"><img src="images/mult.jpg" class="card-img" alt="Cartoon"></div>
+         <div class="quiz-card" data-category="movies">
+            <div class="card-img-wrap"><img src="images/mult.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Movies</span>
-                <h3>True Cartoon Fan Quiz</h3>
-                <p>Relive your childhood and test your memory of classic animated masterpieces.</p>
+                <h3>Marvel Knowledge</h3>
+                <p>Only a true Avenger can answer all these tough MCU questions correctly!</p>
                 <a href="quizzes/cartoon.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
         <div class="quiz-card" data-category="anime">
-            <div class="card-img-wrap"><img src="images/ghibli.jpg" class="card-img" alt="Ghibli"></div>
+            <div class="card-img-wrap"><img src="images/ghibli.jpg" class="card-img"></div>
             <div class="card-content">
                 <span class="card-tag">Anime</span>
-                <h3>Studio Ghibli World Quiz</h3>
+                <h3>Studio Ghibli Quiz</h3>
                 <p>Journey through Miyazaki's masterpieces and find your magical spirit home.</p>
                 <a href="quizzes/ghibli.html" class="btn-take">Take the quiz</a>
             </div>
         </div>
-
     </div>
 </main>
 
 <footer>
     <div class="container">
         <a href="index.html" class="footer-logo">QUIZ<span>TOS</span></a>
+        <p>&copy; 2026 QUIZTOS. All rights reserved.</p>
         <div class="footer-links">
-            <a href="about.html">About</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="terms.html">Terms</a>
-            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a> <a href="terms.html">Terms</a> <a href="contact.html">Contact</a>
         </div>
-        <p style="font-size: 12px; margin-top: 30px;">&copy; 2026 QUIZTOS. All rights reserved.</p>
     </div>
 </footer>
-
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-    const SUPABASE_URL = 'https://utsmlrpjidqrzashmyli.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0c21scnBqaWRxcnphc2hteWxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NTIwMjAsImV4cCI6MjA4OTMyODAyMH0.xjWq8107bVrYCs0M_rY65SnGxKJTano4JliEGvopv1U';
+    const SUPABASE_URL = 'https://ajeeutzdtaddnqxktwgi.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZWV1dHpkdGFkZG5xeGt0d2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTMwMzgsImV4cCI6MjA5MDM4OTAzOH0.edqU65LasrR-nXCgCYoRNJgpB3QZuU_ux70xXf-FBts';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function checkUser() {
+    let isLoginMode = true;
+
+    // --- УМНОЕ ОТКРЫТИЕ АККАУНТА ---
+    async function handleAccountClick() {
+        // Проверяем сессию, прежде чем открывать окно
         const { data: { session } } = await supabaseClient.auth.getSession();
-        const profileBtn = document.getElementById('profile-btn');
-        const loginBtn = document.getElementById('login-btn');
+        
         if (session) {
-            if (profileBtn) profileBtn.style.display = 'inline-block';
-            if (loginBtn) loginBtn.style.display = 'none';
+            // Если уже вошли — летим в профиль
+            window.location.href = 'profile.html';
         } else {
-            if (profileBtn) profileBtn.style.display = 'none';
-            if (loginBtn) loginBtn.style.display = 'inline-block';
+            // Если нет — показываем модалку логина
+            document.getElementById('authModal').style.display = 'flex';
         }
     }
-    checkUser();
 
-function filterQuizzes(category, btnElement) {
-    // 1. Убираем класс active у всех кнопок
-    const buttons = document.querySelectorAll('.nav-link');
-    buttons.forEach(btn => btn.classList.remove('active'));
-
-    // 2. Если нажали на кнопку — добавляем ей active (станет красной)
-    if (btnElement) {
-        btnElement.classList.add('active');
-    } else {
-        // Если вызвали программно (например, при загрузке для 'all')
-        const allBtn = Array.from(buttons).find(b => b.innerText.toLowerCase().includes('all'));
-        if (allBtn) allBtn.classList.add('active');
+    function closeModal() {
+        document.getElementById('authModal').style.display = 'none';
     }
 
-    // 3. Сама фильтрация карточек
-    const cards = document.querySelectorAll('.quiz-card');
-    cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
+    function toggleMode() {
+        isLoginMode = !isLoginMode;
+        document.getElementById('modalTitle').innerText = isLoginMode ? 'Login' : 'Sign Up';
+        document.getElementById('submitBtn').innerText = isLoginMode ? 'Sign In' : 'Create Account';
+        document.getElementById('toggleText').innerText = isLoginMode ? "Don't have an account? Sign Up" : "Already have an account? Login";
+        document.getElementById('username').style.display = isLoginMode ? 'none' : 'block';
+    }
+
+    // ЛОГИКА ФОРМЫ
+    document.getElementById('authForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const username = document.getElementById('username').value.trim();
+
+        btn.disabled = true;
+        btn.innerText = isLoginMode ? 'Signing in...' : 'Registering...';
+
+        try {
+            if (isLoginMode) {
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                window.location.href = 'profile.html';
+            } else {
+                const { error } = await supabaseClient.auth.signUp({
+                    email,
+                    password,
+                    options: { data: { display_name: username } }
+                });
+                if (error) throw error;
+
+                btn.innerText = 'Success! 🎉';
+                setTimeout(() => {
+                    window.location.assign('profile.html');
+                }, 1000);
+            }
+        } catch (err) {
+            alert("Error: " + err.message);
+            btn.disabled = false;
+            btn.innerText = isLoginMode ? 'Sign In' : 'Create Account';
         }
     });
+
+    // СБРОС ПАРОЛЯ
+    async function resetPassword() {
+        const email = document.getElementById('email').value;
+        if (!email) return alert("Please enter your email first!");
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/profile.html',
+        });
+        if (error) alert(error.message);
+        else alert("Password reset link sent to your email!");
+    }
+
+    // ФИЛЬТР ТЕСТОВ
+    function filterQuizzes(category) {
+        const cards = document.querySelectorAll('.quiz-card');
+        const buttons = document.querySelectorAll('.nav-link');
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
+            if(category === 'all' && btn.innerText.includes('All')) btn.classList.add('active');
+        });
+        cards.forEach(card => {
+            card.style.display = (category === 'all' || card.dataset.category === category) ? 'flex' : 'none';
+        });
+    }
+
+    // ПРОВЕРКА ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
+    async function checkUserOnLoad() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+            const accountBtn = document.querySelector('.nav-account');
+            if (accountBtn) {
+                accountBtn.innerHTML = 'Profile 👤';
+            }
+        }
+    }
+    
+    // Запускаем проверку сразу
+    checkUserOnLoad();
+
+    // Проверка: пришел ли пользователь для сброса пароля
+async function handlePasswordRecovery() {
+    // Supabase автоматически добавляет хеш в URL при клике из письма
+    const hash = window.location.hash;
+    
+    if (hash && hash.includes('type=recovery')) {
+        const newPassword = prompt("Please enter your new password:");
+        
+        if (newPassword) {
+            const { data, error } = await supabaseClient.auth.updateUser({
+                password: newPassword
+            });
+
+            if (error) {
+                alert("Error updating password: " + error.message);
+            } else {
+                alert("Password updated successfully! Now you can login.");
+                // Очищаем хеш из адресной строки
+                window.location.hash = '';
+            }
+        }
+    }
 }
+
+// Запускаем проверку при каждой загрузке страницы
+handlePasswordRecovery();
 </script>
 
 </body>
+
+
+
 </html>
