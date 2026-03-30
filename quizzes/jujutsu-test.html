@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jujutsu Sorcerer Grade | QUIZTOS</title>
+    
+
+
+<style>
+        :root {
+            --primary: #1e272e;
+            --accent: #ff4757;
+            --cursed-col: #5f27cd; 
+            --bg: #1e272e;
+            --white: #ffffff;
+            --text: #2d3436;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #1e272e 0%, #000000 100%); 
+            color: var(--white); 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+
+        .quiz-container { 
+            max-width: 800px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 20px; 
+            color: var(--text); 
+            overflow: hidden; 
+            padding: 40px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            box-sizing: border-box;
+        }
+
+        .main-img { width: 100%; border-radius: 15px; margin-bottom: 25px; object-fit: cover; height: 350px; display: block; }
+        h1 { text-align: center; color: var(--primary); font-size: 34px; font-weight: 800; margin-bottom: 20px; }
+        .intro-text { line-height: 1.8; color: #444; text-align: left; margin-bottom: 30px; font-size: 17px; }
+
+        #quiz-section, #result-section { display: none; }
+        
+        .question-box { border-bottom: 2px solid #eee; padding-bottom: 30px; margin-bottom: 30px; }
+        .question { font-size: 24px; font-weight: 800; text-align: center; color: var(--primary); line-height: 1.3; }
+
+        .options { display: grid; gap: 15px; }
+        .option-btn { 
+            padding: 18px 25px; border: 2px solid #eee; border-radius: 12px; 
+            background: white; cursor: pointer; font-size: 16px; transition: 0.3s; 
+            text-align: left; font-weight: 600; color: #444;
+        }
+        .option-btn:hover { border-color: var(--cursed-col); background: #f9f9ff; transform: scale(1.01); }
+
+        .progress-bar { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--cursed-col); width: 0%; transition: 0.4s; }
+        .q-counter { font-size: 13px; color: #999; display: block; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
+
+        /* --- СТИЛИ МЕТАЛЛИЧЕСКОГО СЛИТКА --- */
+        .metal-ingot {
+            margin-top: 25px;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: 0.5s;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: linear-gradient(145deg, #e0e0e0, #ffffff);
+            box-shadow: 10px 10px 20px #bebebe, -10px -10px 20px #ffffff;
+        }
+
+        /* Золото для Special Grade */
+        .ingot-special {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 50%, #d35400 100%);
+            box-shadow: 0 0 30px rgba(241, 196, 15, 0.4), inset 0 0 20px rgba(255,255,255,0.5);
+            color: #ffffff !important;
+        }
+
+        /* Серебро/Сталь для Grade 1 */
+        .ingot-grade1 {
+            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 50%, #7f8c8d 100%);
+            box-shadow: 0 0 30px rgba(149, 165, 166, 0.4), inset 0 0 20px rgba(255,255,255,0.5);
+            color: #ffffff !important;
+        }
+
+        .btn-main { display: block; width: fit-content; margin: 30px auto 10px; padding: 18px 50px; border: none; border-radius: 50px; background: var(--primary); color: white; font-size: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-main:hover { transform: scale(1.05); background: var(--cursed-col); }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="intro-section">
+        <img src="../images/jujutsu-test.jpg" alt="Jujutsu Kaisen" class="main-img">
+        <h1>Jujutsu Sorcerer Grade</h1>
+        <div class="intro-text">
+            <p>Welcome to Jujutsu High. In a world full of malicious curses and powerful sorcerers, where do you stand?</p>
+            <p>This evaluation will analyze how you handle cursed energy and your battlefield choices. Are you a Special Grade anomaly or a dedicated protector?</p>
+        </div>
+        <button class="btn-main" onclick="startQuiz()">Exorcise the Quiz</button>
+        <a href="../index.html" style="display: block; text-align: center; color: #999; text-decoration: none; margin-top: 20px;">← Back to Main Menu</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <span class="q-counter" id="q-counter">Step 1 / 15</span>
+        <div class="question-box">
+            <div id="question-text" class="question"></div>
+        </div>
+        <div id="options-container" class="options"></div>
+    </div>
+
+    <div id="result-section">
+        <h1 style="color: var(--primary); text-transform: uppercase; letter-spacing: 2px;">Evaluation Complete</h1>
+        
+        <div id="result-card" class="metal-ingot">
+            <div id="grade-badge" style="display: inline-block; padding: 5px 15px; border-radius: 5px; background: rgba(0,0,0,0.2); color: inherit; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; font-size: 12px;">Sorcerer Profile Confirmed</div>
+            <h2 id="result-title" style="margin: 10px 0; font-size: 28px;"></h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; text-align: left; font-size: 14px;">
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                    <strong>Potential:</strong> <span id="stat-potential"></span>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                    <strong>Energy Type:</strong> <span id="stat-energy"></span>
+                </div>
+            </div>
+
+            <p id="result-text" style="line-height: 1.6;"></p>
+        </div>
+
+        <button class="btn-main" onclick="location.reload()">Re-evaluate Soul</button>
+        <a href="../index.html" style="display: block; text-align: center; color: #999; text-decoration: none; margin-top: 20px; font-weight: bold;">← Return to Headquarters</a>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        /* ... твои 15 вопросов остаются без изменений ... */
+        { q: "A powerful Grade 1 Curse has cornered you and civilians. Your move?", options: [{ t: "Save everyone, even if I die.", s: "grade1" }, { t: "Exorcise it instantly; I am the priority.", s: "special" }, { t: "Hold the line and wait for backup.", s: "grade2" }, { t: "Focus on healing the injured.", s: "grade3" }] },
+        { q: "Choose your primary innate cursed technique:", options: [{ t: "Cursed Speech: Commands that alter reality.", s: "grade2" }, { t: "Ten Shadows: Summoning powerful shikigami.", s: "special" }, { t: "Black Flash: Master of physical blows.", s: "grade1" }, { t: "Reverse Technique: Accelerated healing.", s: "grade3" }] },
+        { q: "How do you generate cursed energy?", options: [{ t: "From my deepest negative emotions.", s: "grade1" }, { t: "Calmly; energy is just a logical tool.", s: "grade2" }, { t: "It flows infinitely and naturally.", s: "special" }, { t: "I only use what's strictly necessary.", s: "grade3" }] },
+        { q: "You find a dangerous Cursed Object. You...", options: [{ t: "Consume it to gain absolute power.", s: "special" }, { t: "Analyze its origin and risks.", s: "grade2" }, { t: "Consult a master before touching it.", s: "grade1" }, { t: "Destroy it to keep everyone safe.", s: "grade3" }] },
+        { q: "What is your main weakness in battle?", options: [{ t: "A massive, sometimes uncontrolled pool of energy.", s: "special" }, { t: "Overthinking the strategy.", s: "grade2" }, { t: "Depending too much on raw strength.", s: "grade1" }, { t: "Lack of destructive offensive power.", s: "grade3" }] },
+        { q: "Choose your preferred Jujutsu tool:", options: [{ t: "The Cursed Rope for binding.", s: "special" }, { t: "A sharp, enchanted dagger.", s: "grade1" }, { t: "The Cursed Staff for balance.", s: "grade2" }, { t: "My own fists augmented with energy.", s: "grade3" }] },
+        { q: "A fellow sorcerer has gone rogue. What do you do?", options: [{ t: "Only fight if they attack me first.", s: "special" }, { t: "Attempt to bring them back alive.", s: "grade1" }, { t: "Analyze their reasons for leaving.", s: "grade2" }, { t: "Obey the higher-ups and exorcise them.", s: "grade3" }] },
+        { q: "In a team, you are the one who:", options: [{ t: "Creates the most chaos and misdirection.", s: "special" }, { t: "Is the main offensive vanguard.", s: "grade1" }, { t: "Calculates the opponent's movements.", s: "grade2" }, { t: "Supplies support and energy to others.", s: "grade3" }] },
+        { q: "Your ideal Domain Expansion effect:", options: [{ t: "Infinite Void: Overwhelming with information.", s: "special" }, { t: "Malevolent Shrine: Unavoidable slicing.", s: "grade1" }, { t: "Deadly Sentencing: A non-lethal court trial.", s: "grade2" }, { t: "A barrier that heals all allies inside.", s: "grade3" }] },
+        { q: "How do you spend your free time?", options: [{ t: "Isolating myself to meditate on power.", s: "special" }, { t: "Training my body to its limits.", s: "grade1" }, { t: "Reading ancient jujutsu texts.", s: "grade2" }, { t: "Helping people in the 'normal' world.", s: "grade3" }] },
+        { q: "A curse offers you a deal to save your friend. You...", options: [{ t: "Kill the curse; I don't negotiate.", s: "grade1" }, { t: "Trick the curse into a binding vow.", s: "special" }, { t: "Look for a third way out using logic.", s: "grade2" }, { t: "Consider the deal if it's the only hope.", s: "grade3" }] },
+        { q: "What defines a 'True Sorcerer'?", options: [{ t: "The ability to be selfish and overwhelming.", s: "special" }, { t: "The will to protect the weak.", s: "grade1" }, { t: "Knowledge of the soul and energy flow.", s: "grade2" }, { t: "Duty and obedience to the school.", s: "grade3" }] },
+        { q: "Pick a color that represents your energy:", options: [{ t: "Deep Purple / Void Black", s: "special" }, { t: "Crimson Red / Electric Blue", s: "grade1" }, { t: "Emerald Green / Silver", s: "grade2" }, { t: "Golden Yellow / White", s: "grade3" }] },
+        { q: "When facing a stronger enemy, you...", options: [{ t: "Laugh; the challenge excites me.", s: "special" }, { t: "Push past my limits with a Black Flash.", s: "grade1" }, { t: "Find their structural weakness.", s: "grade2" }, { t: "Prioritize a safe retreat for the team.", s: "grade3" }] },
+        { q: "What is your final goal in the Jujutsu world?", options: [{ t: "To reach the pinnacle of power.", s: "special" }, { t: "To die surrounded by people I saved.", s: "grade1" }, { t: "To modernize the Jujutsu society.", s: "grade2" }, { t: "To just live a normal, quiet life.", s: "grade3" }] }
+    ];
+
+    let currentQuestion = 0;
+    let scores = { special: 0, grade1: 0, grade2: 0, grade3: 0 };
+
+    function startQuiz() {
+        document.getElementById('intro-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('q-counter').innerText = `Step ${currentQuestion + 1} / 15`;
+        document.getElementById('progress-fill').style.width = `${((currentQuestion + 1) / 15) * 100}%`;
+        document.getElementById('question-text').innerText = q.q;
+        
+        const optionsDiv = document.getElementById('options-container');
+        optionsDiv.innerHTML = '';
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = () => nextQuestion(opt.s);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function nextQuestion(scoreKey) {
+        scores[scoreKey]++;
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        
+        const winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        
+        const card = document.getElementById('result-card');
+        const badge = document.getElementById('grade-badge');
+        const title = document.getElementById('result-title');
+        const text = document.getElementById('result-text');
+        const pot = document.getElementById('stat-potential');
+        const nrg = document.getElementById('stat-energy');
+
+        // Очищаем старые классы и добавляем базовый класс слитка
+        card.className = "result-desc metal-ingot";
+
+        const resultsData = {
+            special: {
+                title: "Special Grade Sorcerer",
+                ingotClass: "ingot-special",
+                pot: "Limitless",
+                nrg: "Void / Infinite",
+                desc: "You are an anomaly. Your power level is immeasurable, and you possess the potential to rival Satoru Gojo or Ryomen Sukuna. You exist outside the standard ranking system."
+            },
+            grade1: {
+                title: "Grade 1 Sorcerer",
+                ingotClass: "ingot-grade1",
+                pot: "Elite High",
+                nrg: "High Output",
+                desc: "The pinnacle of standard sorcery. You are a battlefield master. Curses fear your name, and your technique is refined to perfection. You are the backbone of Jujutsu High."
+            },
+            grade2: {
+                title: "Grade 2 Sorcerer",
+                ingotClass: "metal-ingot", // Обычный металл
+                pot: "Calculated",
+                nrg: "Precise Control",
+                desc: "A tactical genius. You overcome raw power with superior strategy and efficient energy management. You are the future of the Jujutsu world."
+            },
+            grade3: {
+                title: "Grade 3 Sorcerer",
+                ingotClass: "metal-ingot", // Обычный металл
+                pot: "Reliable",
+                nrg: "Support Type",
+                desc: "A dedicated guardian of humanity. Your strength lies in your resolve to protect. With more training, your innate talent will surely bloom."
+            }
+        };
+
+        const res = resultsData[winner];
+        
+        // Применяем специфический стиль слитка
+        if(res.ingotClass) card.classList.add(res.ingotClass);
+        
+        badge.innerText = "Sorcerer Profile Confirmed";
+        badge.style.background = "rgba(0,0,0,0.2)"; // Полупрозрачный фон для плашки на слитке
+        
+        title.innerText = res.title;
+        pot.innerText = res.pot;
+        nrg.innerText = res.nrg;
+        text.innerText = res.desc;
+        
+        // Меняем цвет текста для читаемости на золоте/серебре
+        if(winner === 'special' || winner === 'grade1') {
+            title.style.color = "#fff";
+            text.style.color = "#fff";
+        } else {
+            title.style.color = "#1e272e";
+            text.style.color = "#333";
+        }
+    }
+</script>
+</body>
+</html>
