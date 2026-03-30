@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Color of Your Soul | QUIZTOS</title>
+    
+    <style>
+        :root {
+            --primary: #1e272e;
+            --accent: #ff4757;
+            --white: #ffffff;
+            --text: #2d3436;
+            --indigo: #4f46e5;
+            --amber: #f59e0b;
+            --emerald: #10b981;
+            --crimson: #dc2626;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            /* Более светлый и "атмосферный" фон */
+            background: radial-gradient(circle at top, #d8c450 0%, #f19292 100%); 
+            color: var(--white); 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+
+        .quiz-container { 
+            max-width: 750px; 
+            width: 100%; 
+            background: var(--white); 
+            border-radius: 24px; 
+            color: var(--text); 
+            padding: 40px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4); 
+        }
+
+        .main-img { width: 100%; border-radius: 15px; margin-bottom: 25px; object-fit: cover; height: 320px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: var(--primary); font-size: 32px; margin-bottom: 15px; font-weight: 900; letter-spacing: -0.5px; }
+
+        #quiz-section, #result-section { display: none; }
+        
+        .intro-desc { line-height: 1.8; color: #444; font-size: 16px; margin-bottom: 30px; }
+        .intro-desc p { margin-bottom: 15px; }
+
+        /* Счетчик и прогресс */
+        .q-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
+        .q-count { font-size: 13px; font-weight: 800; color: #a4b0be; text-transform: uppercase; letter-spacing: 1px; }
+        .progress-bar-top { height: 6px; background: #f1f2f6; border-radius: 3px; margin-bottom: 35px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+
+        .question { font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 35px; color: var(--primary); line-height: 1.4; }
+        .options { display: grid; gap: 12px; }
+        .option-btn { 
+            padding: 20px; border: 2px solid #eee; border-radius: 14px; 
+            background: white; cursor: pointer; font-size: 16px; transition: 0.3s; 
+            text-align: left; font-weight: 600; color: #333;
+        }
+        .option-btn:hover { border-color: var(--primary); background: #f8f9ff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        .stats-container { margin: 30px 0; background: #f8f9fa; padding: 25px; border-radius: 20px; border: 1px solid #eee; }
+        .stat-row { margin-bottom: 18px; }
+        .stat-label { display: flex; justify-content: space-between; font-weight: 800; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; color: #747d8c; }
+        .stat-outer { height: 10px; background: #dfe4ea; border-radius: 5px; overflow: hidden; }
+        .stat-inner { height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
+
+        .result-text-block { line-height: 1.9; font-size: 17px; color: #3c4d52; text-align: left; padding: 25px 0; border-top: 2px solid #f1f2f6; }
+        
+        .btn-main { display: block; width: 100%; max-width: 320px; margin: 30px auto 10px; padding: 20px; border: none; border-radius: 50px; background: var(--primary); color: white; font-size: 17px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; box-shadow: 0 10px 20px rgba(30, 39, 46, 0.2); }
+        .btn-main:hover { transform: translateY(-3px); background: #183988; box-shadow: 0 15px 25px rgba(30, 39, 46, 0.3); }
+
+        .nav-link { display: block; text-align: center; color: #a4b0be; text-decoration: none; margin-top: 20px; font-weight: 700; font-size: 14px; transition: 0.2s; }
+        .nav-link:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="intro-section">
+        <img src="../images/soul-color.jpg" alt="Soul Color" class="main-img">
+        <h1>The Color of Your Soul</h1>
+        <div class="intro-desc">
+            <p>Welcome to the silent sanctuary of your subconscious. Have you ever wondered what kind of energy your true self radiates when the noise of the outside world fades away? The soul doesn't speak in words—it vibrates at specific frequencies that can be expressed through a spectrum of colors.</p>
+            <p>This deep psychological evaluation, consisting of 20 introspective questions, will help you map your spiritual composition. We will analyze your stress responses, your dreams, your intuitive impulses, and your hidden aspirations.</p>
+            <p>Be honest with yourself. There are no right or wrong answers here, only the shades of your unique personality.</p>
+        </div>
+        <button class="btn-main" onclick="startQuiz()">Begin Analysis</button>
+        <a href="../index.html" class="nav-link">← Return to Main Menu</a>
+    </div>
+
+    <div id="quiz-section">
+        <div class="q-header">
+            <span class="q-count" id="q-counter">Step 1 of 20</span>
+        </div>
+        <div class="progress-bar-top"><div id="progress-fill"></div></div>
+        <div id="question-text" class="question"></div>
+        <div id="options-container" class="options"></div>
+        <a href="../index.html" class="nav-link" style="color: #ff4757; opacity: 0.6; margin-top: 40px;">Abort Test & Return Home</a>
+    </div>
+
+    <div id="result-section">
+        <h1 id="result-title">Your Soul Spectrum</h1>
+        <p style="text-align: center; color: #767b81; font-size: 14px; margin-bottom: 30px; font-weight: 600;">Spectral Composition Analysis Complete</p>
+        
+        <div class="stats-container">
+            <div class="stat-row">
+                <div class="stat-label"><span>Indigo (Intuition)</span><span id="perc-indigo">0%</span></div>
+                <div class="stat-outer"><div id="bar-indigo" class="stat-inner" style="background: var(--indigo)"></div></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label"><span>Amber (Empathy)</span><span id="perc-amber">0%</span></div>
+                <div class="stat-outer"><div id="bar-amber" class="stat-inner" style="background: var(--amber)"></div></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label"><span>Emerald (Serenity)</span><span id="perc-emerald">0%</span></div>
+                <div class="stat-outer"><div id="bar-emerald" class="stat-inner" style="background: var(--emerald)"></div></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label"><span>Crimson (Passion)</span><span id="perc-crimson">0%</span></div>
+                <div class="stat-outer"><div id="bar-crimson" class="stat-inner" style="background: var(--crimson)"></div></div>
+            </div>
+        </div>
+
+        <div id="result-description" class="result-text-block"></div>
+        
+        <button class="btn-main" onclick="location.reload()">Retake Analysis</button>
+        <a href="../index.html" class="nav-link" style="color: var(--primary); font-size: 15px;">Back to Main Page</a>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "In a vast, silent forest at twilight, your primary feeling is:", options: [{t:"Peace and connection to nature", s:"emerald"}, {t:"Curiosity for the unknown", s:"indigo"}, {t:"Warmth and comfort, like home", s:"amber"}, {t:"A surge of hidden powerful energy", s:"crimson"}] },
+        { q: "When facing a problem with no clear right answer, you:", options: [{t:"Trust your intuition", s:"indigo"}, {t:"Look for the least harmful path", s:"emerald"}, {t:"Consider the human emotional impact", s:"amber"}, {t:"Choose the bravest, most decisive path", s:"crimson"}] },
+        { q: "What art style draws you in the most?", options: [{t:"Abstract and mysterious", s:"indigo"}, {t:"Landscapes and nature", s:"emerald"}, {t:"Portraits and human stories", s:"amber"}, {t:"Bold and provocative", s:"crimson"}] },
+        { q: "After achieving a difficult goal, your first thought is:", options: [{t:"What's the next challenge?", s:"crimson"}, {t:"Who can I share this joy with?", s:"amber"}, {t:"Finally, a moment of peace", s:"emerald"}, {t:"What did I learn on this journey?", s:"indigo"}] },
+        { q: "A sudden connection with a stranger feels like:", options: [{t:"A meeting of ancient souls", s:"indigo"}, {t:"A shared fire for life", s:"crimson"}, {t:"A safe and kindred spirit", s:"emerald"}, {t:"A simple act of human kindness", s:"amber"}] },
+        { q: "If you found a hidden room in your house, you would:", options: [{t:"Study every mystery within it", s:"indigo"}, {t:"Appreciate the new sanctuary", s:"emerald"}, {t:"Prepare it for loved ones", s:"amber"}, {t:"Feel energized by the discovery", s:"crimson"}] },
+        { q: "How do you react to criticism?", options: [{t:"Analyze the underlying logic", s:"indigo"}, {t:"Try to find common ground", s:"emerald"}, {t:"Protect your inner harmony", s:"amber"}, {t:"Use it as fuel for growth", s:"crimson"}] },
+        { q: "Your ideal getaway destination:", options: [{t:"An ancient, mysterious city", s:"indigo"}, {t:"A quiet cabin in the mountains", s:"emerald"}, {t:"A vibrant resort with friends", s:"amber"}, {t:"A high-stakes, extreme adventure", s:"crimson"}] },
+        { q: "Destiny is best described as:", options: [{t:"A hidden path waiting to be found", s:"indigo"}, {t:"A force that connects the right people", s:"emerald"}, {t:"A warm guide toward happiness", s:"amber"}, {t:"Something you build yourself", s:"crimson"}] },
+        { q: "You see a lost child. Your first instinct is:", options: [{t:"Calmly search for their family", s:"emerald"}, {t:"Feel their fear as your own", s:"indigo"}, {t:"Surround them with warmth and safety", s:"amber"}, {t:"Act decisively and quickly", s:"crimson"}] },
+        { q: "In a team, you are the person who:", options: [{t:"Challenges the status quo", s:"indigo"}, {t:"Maintains stability and peace", s:"emerald"}, {t:"Boosts the group's morale", s:"amber"}, {t:"Drives everyone toward victory", s:"crimson"}] },
+        { q: "True heroism means:", options: [{t:"Quietly protecting the vulnerable", s:"emerald"}, {t:"Following intuition against the odds", s:"indigo"}, {t:"Healing someone's inner pain", s:"amber"}, {t:"Sacrificing for a grand cause", s:"crimson"}] },
+        { q: "Your most desired state of being is:", options: [{t:"Complete inner silence", s:"emerald"}, {t:"Constant learning and insight", s:"indigo"}, {t:"True connection with others", s:"amber"}, {t:"Overcoming all obstacles", s:"crimson"}] },
+        { q: "Your dreams are usually:", options: [{t:"Symbolic and abstract", s:"indigo"}, {t:"Natural and spacious", s:"emerald"}, {t:"Cozy and familiar", s:"amber"}, {t:"Intense and action-oriented", s:"crimson"}] },
+        { q: "A secret entrusted to you is:", options: [{t:"A part of that person's journey", s:"emerald"}, {t:"A mystery to be analyzed", s:"indigo"}, {t:"A chance to provide support", s:"amber"}, {t:"A tool for future change", s:"crimson"}] },
+        { q: "Which season mirrors your soul?", options: [{t:"Autumn (Mystery & Change)", s:"indigo"}, {t:"Spring (Growth & Peace)", s:"emerald"}, {t:"Summer (Warmth & Life)", s:"amber"}, {t:"Winter (Will & Strength)", s:"crimson"}] },
+        { q: "Home is most importantly a:", options: [{t:"Space for deep reflection", s:"emerald"}, {t:"Sanctuary for the true self", s:"indigo"}, {t:"Heart for loved ones", s:"amber"}, {t:"Base for your ambitions", s:"crimson"}] },
+        { q: "Facing a stronger opponent, you:", options: [{t:"Identify their structural weakness", s:"indigo"}, {t:"Fight with everything you have", s:"crimson"}, {t:"Wait for them to make a mistake", s:"emerald"}, {t:"Shield those standing behind you", s:"amber"}] },
+        { q: "Your intuition feels like:", options: [{t:"A subtle, profound understanding", s:"indigo"}, {t:"A gentle whisper of calm", s:"emerald"}, {t:"A warm pull toward someone", s:"amber"}, {t:"A sharp command to act", s:"crimson"}] },
+        { q: "You want to be remembered as someone:", options: [{t:"Wise and insightful", s:"indigo"}, {t:"Kind and warm-hearted", s:"amber"}, {t:"A reliable protector", s:"emerald"}, {t:"A powerful leader of change", s:"crimson"}] }
+    ];
+
+    let currentQ = 0;
+    let scores = { indigo: 0, amber: 0, emerald: 0, crimson: 0 };
+
+    function startQuiz() {
+        document.getElementById('intro-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        showQ();
+    }
+
+    function showQ() {
+        const q = questions[currentQ];
+        // Обновляем текстовый счетчик
+        document.getElementById('q-counter').innerText = `Step ${currentQ + 1} of 20`;
+        // Обновляем полоску прогресса
+        document.getElementById('progress-fill').style.width = `${((currentQ + 1) / 20) * 100}%`;
+        
+        document.getElementById('question-text').innerText = q.q;
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = () => { scores[opt.s]++; next(); };
+            container.appendChild(btn);
+        });
+    }
+
+    function next() {
+        currentQ++;
+        if (currentQ < 20) showQ(); else showResults();
+    }
+
+    function showResults() {
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        
+        const keys = ['indigo', 'amber', 'emerald', 'crimson'];
+        keys.forEach(k => {
+            const p = Math.round((scores[k] / 20) * 100);
+            document.getElementById(`perc-${k}`).innerText = p + '%';
+            document.getElementById(`bar-${k}`).style.width = p + '%';
+        });
+
+        const winner = keys.reduce((a, b) => scores[a] > scores[b] ? a : b);
+        const descriptions = {
+            indigo: "<h3>Dominant: Indigo Soul (The Sage)</h3><p>Your soul vibrates at the frequency of <b>Intuition</b>. You are a 'Visionary,' someone who sees hidden patterns where others only see chaos. Your subconscious is connected to deep layers of ancient wisdom.</p><p>You often sense the outcome of events before they even begin. Your strength lies in analysis, insight, and the ability to look into the very essence of things. Others may find you mysterious, but you are the one they turn to for the truth in life's most complex moments.</p>",
+            amber: "<h3>Dominant: Amber Soul (The Healer)</h3><p>Your soul is a fountain of <b>Warmth and Empathy</b>. You possess the rare gift of truly feeling others. Your 'Amber' energy warms everyone around you, creating a space of safety and profound trust.</p><p>You are the glue that holds people together. Your power lies in building connections rather than destruction. You listen with your heart, not just your ears. Your path is to bring light and harmony to society, transforming isolation into unity. People are naturally drawn to you for comfort and inspiration.</p>",
+            emerald: "<h3>Dominant: Emerald Soul (The Guardian)</h3><p>Your soul is the embodiment of <b>Balance and Resilience</b>. You possess an 'Emerald' energy of serenity that remains untouched by storms. You are a natural protector of all things fragile and living.</p><p>Your strength lies in your steadfastness and ability to maintain clarity in any situation. You value nature, silence, and deep internal development. Your presence calms the chaos. Your destiny is to be an anchor for those who have lost their way, helping the world grow in harmony.</p>",
+            crimson: "<h3>Dominant: Crimson Soul (The Catalyst)</h3><p>Your soul burns with the fire of <b>Passion and Will</b>. You are a 'Catalyst,' a person of action whose energy can shift the very landscape of reality. Your 'Crimson' aura attracts both challenges and great victories.</p><p>You don't wait for life to happen to you—you happen to life. Your strength is in your decisiveness, bravery, and unyielding character. You are a natural leader, even if you don't seek power. Your destiny is to tear down the old to build the new, inspiring others through your own powerful example.</p>"
+        };
+        
+        document.getElementById('result-description').innerHTML = descriptions[winner];
+        document.getElementById('result-title').style.color = `var(--${winner})`;
+    }
+</script>
+</body>
+</html>
