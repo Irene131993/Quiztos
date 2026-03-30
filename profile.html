@@ -4,142 +4,308 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Profile — Quiztos</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f1c28; color: #e2e8f0; }
-    .card { background: #1a2a3a; border: 1px solid #2b3d50; border-radius: 1rem; }
-    .btn-primary { background: #d35444; color: #fff; font-weight: 700; border-radius: 0.5rem; padding: 0.6rem 1.5rem; transition: opacity .2s; }
-    .btn-primary:hover { opacity: 0.85; }
-    .btn-outline { border: 2px solid #475569; color: #94a3b8; font-weight: 700; border-radius: 0.5rem; padding: 0.6rem 1.5rem; transition: all .2s; }
-    .btn-outline:hover { border-color: #ef4444; color: #ef4444; }
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; padding: 0.75rem 0.5rem; border-bottom: 1px solid #2b3d50; }
-    td { padding: 0.75rem 0.5rem; border-bottom: 1px solid #1e3346; font-size: 0.875rem; }
-    tr:hover { background: rgba(255,255,255,0.03); }
+    /* ТВОИ СТИЛИ ПОЛНОСТЬЮ ОСТАВЛЕНЫ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0f1c28; color: #e8e8e8; min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    .header { background: #1a2a3a; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 100; }
+    .logo { font-size: 28px; font-weight: 900; letter-spacing: 3px; color: #fff; }
+    .logo span { color: #e74c3c; }
+    .header-btn { padding: 8px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: 2px solid #e74c3c; color: #e74c3c; background: transparent; transition: all 0.3s; }
+    .header-btn:hover { background: #e74c3c; color: #fff; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 16px; }
+    .section { margin-bottom: 24px; }
+    .card { background: #1a2a3a; border-radius: 16px; padding: 32px; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .profile-header { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .avatar { width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 900; background: #e74c3c; color: #fff; border: 4px solid rgba(231,76,60,0.3); flex-shrink: 0; }
+    .profile-info { flex: 1; min-width: 200px; }
+    .profile-info h1 { font-size: 28px; font-weight: 900; color: #fff; }
+    .profile-info .email { color: #8899aa; font-size: 14px; margin-top: 4px; }
+    .profile-info .member-since { color: #667788; font-size: 12px; margin-top: 4px; }
+    .profile-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+    .btn-share { padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: 2px solid #e74c3c; color: #e74c3c; background: transparent; transition: all 0.3s; display: flex; align-items: center; gap: 6px; }
+    .btn-share:hover { background: #e74c3c; color: #fff; }
+    .btn-signout { padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: 2px solid rgba(255,255,255,0.15); color: #8899aa; background: transparent; transition: all 0.3s; }
+    .btn-signout:hover { border-color: #e74c3c; color: #e74c3c; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .stat-card { background: #1a2a3a; border-radius: 16px; padding: 24px; border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(231,76,60,0.12); color: #e74c3c; font-size: 22px; }
+    .stat-value { font-size: 28px; font-weight: 900; color: #fff; }
+    .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: #667788; }
+    .section-title { font-size: 20px; font-weight: 900; color: #e74c3c; margin-bottom: 16px; }
+    .edit-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .edit-input { flex: 1; min-width: 200px; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0f1c28; color: #e8e8e8; font-size: 15px; outline: none; transition: border 0.3s; }
+    .edit-input:focus { border-color: #e74c3c; }
+    .btn-save { padding: 12px 24px; border-radius: 10px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; background: #e74c3c; color: #fff; border: none; transition: all 0.3s; }
+    .btn-save:hover { background: #c0392b; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+    .results-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .results-table th { text-align: left; padding: 12px 8px; font-weight: 700; color: #667788; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .results-table td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s; }
+    .results-table tr:hover td { background: rgba(255,255,255,0.03); }
+    .share-cell { position: relative; }
+    .share-trigger { background: none; border: 1px solid rgba(255,255,255,0.1); color: #8899aa; border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 12px; transition: all 0.3s; }
+    .share-trigger:hover { border-color: #e74c3c; color: #e74c3c; }
+    .share-dropdown { display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; background: #1a2a3a; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; z-index: 50; min-width: 220px; box-shadow: 0 12px 30px rgba(0,0,0,0.5); }
+    .share-dropdown.open { display: block; }
+    .share-icons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .share-icon-btn { width: 40px; height: 40px; border-radius: 50%; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; color: #fff; text-decoration: none; }
+    .share-icon-btn:hover { transform: scale(1.15); }
+    .share-icon-btn svg { width: 20px; height: 20px; fill: currentColor; }
+    .btn-download { width: 100%; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; background: rgba(231,76,60,0.1); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); margin-bottom: 10px; transition: all 0.3s; }
+    .btn-download:hover { background: #e74c3c; color: #fff; }
+    .empty-state { text-align: center; padding: 48px 16px; color: #667788; }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+    .loading-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; color: #667788; }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #1a2a3a; color: #fff; padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.5); border: 1px solid rgba(231,76,60,0.3); transform: translateY(100px); opacity: 0; transition: all 0.4s; z-index: 1000; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .footer { background: #1a2a3a; padding: 32px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 48px; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .footer-links a { color: #fff; font-size: 14px; font-weight: 600; transition: all 0.3s; }
+    .footer-links a:hover { color: #e74c3c; text-shadow: 0 0 8px rgba(231,76,60,0.4); }
+    .footer-copy { color: #556677; font-size: 12px; }
+    @media (max-width: 640px) { .profile-header { flex-direction: column; text-align: center; } .profile-actions { flex-direction: row; } .stats-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
-<body class="min-h-screen">
-
-  <div id="loading" class="flex items-center justify-center min-h-screen">
-    <p class="text-slate-400">Loading...</p>
+<body>
+  <div id="loading" class="loading-screen">Loading Profile...</div>
+  <div id="app" style="display:none;">
+    <div class="header">
+      <a href="index.html" class="logo">QUIZ<span>TOS</span></a>
+      <button class="header-btn" onclick="handleSignOut()">Sign Out</button>
+    </div>
+    <div class="container">
+      <div class="section">
+        <div class="card">
+          <div class="profile-header">
+            <div class="avatar" id="avatar">?</div>
+            <div class="profile-info">
+              <h1 id="displayName">User</h1>
+              <p class="email" id="userEmail"></p>
+              <p class="member-since" id="memberSince"></p>
+            </div>
+            <div class="profile-actions">
+              <button class="btn-share" onclick="shareProfile()">📤 Share Profile</button>
+              <button class="btn-signout" onclick="handleSignOut()">Sign Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div><div class="stat-value" id="totalQuizzes">0</div><div class="stat-label">Total Quizzes</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✨</div>
+            <div><div class="stat-value" id="uniqueResults">0</div><div class="stat-label">My Discoveries</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div><div class="stat-value" id="lastActivity">—</div><div class="stat-label">Last Activity</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="card">
+          <h2 class="section-title">Edit Profile</h2>
+          <div class="edit-row">
+            <input type="text" class="edit-input" id="editName" placeholder="Display Name" />
+            <button class="btn-save" id="saveBtn" onclick="saveName()">Save</button>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="card">
+          <h2 class="section-title">Quiz History</h2>
+          <div id="historyContent"></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="footer-links">
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </div>
+      <div class="footer-copy">&copy; 2026 Quiztos. All rights reserved.</div>
+    </div>
   </div>
+  <div class="toast" id="toast"></div>
 
-  <div id="app" class="hidden max-w-3xl mx-auto px-4 py-10 space-y-6">
+<script>
+// ТВОИ КЛЮЧИ И ДАННЫЕ
+var SB_URL = 'https://ajeeutzdtaddnqxktwgi.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZWV1dHpkdGFkZG5xeGt0d2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTMwMzgsImV4cCI6MjA5MDM4OTAzOH0.edqU65LasrR-nXCgCYoRNJgpB3QZuU_ux70xXf-FBts';
+var sb = supabase.createClient(SB_URL, SB_KEY);
 
-    <div class="flex items-center justify-between">
-      <a href="index.html" class="text-2xl font-black tracking-widest uppercase text-white">QUIZ<span class="text-[#d35444]">TOS</span></a>
-      <button onclick="handleSignOut()" class="btn-outline text-xs uppercase tracking-wider">Sign Out</button>
-    </div>
+// ВЕРНУЛ ВЕСЬ ТВОЙ СПИСОК КАРТИНОК
+var quizImageMap = {
+  "Your Zodiac Element": "/images/zodiac.jpg",
+  "Introvert vs Extrovert": "/images/introvert.jpg",
+  "Your Guardian Planet": "/images/planeta.jpg",
+  "Your Creative Mind": "/images/mind.jpg",
+  "Official MBTI Test": "/images/mbti.jpg",
+  "What Kind of Friend Are You?": "/images/dreamer.jpg",
+  "Ready to debut?": "/images/k-pop.jpg",
+  "Which Male K-Pop Group Suits You?": "/images/k-pop men.jpg",
+  "Girl Groups Expert Quiz": "/images/k-pop women.jpg",
+  "Marvel Movies Knowledge": "/images/marvel.jpg",
+  "True Cartoon Fan Quiz": "/images/mult.jpg",
+  "Studio Ghibli World Quiz": "/images/ghibli.jpg"
+};
 
-    <div class="card p-6 flex items-center gap-5">
-      <div id="avatar" class="w-16 h-16 rounded-full bg-[#d35444] flex items-center justify-center text-2xl font-black text-white shrink-0"></div>
-      <div>
-        <h1 id="userEmail" class="text-xl font-extrabold text-white"></h1>
-        <p id="memberSince" class="text-xs text-slate-500 mt-1"></p>
-      </div>
-    </div>
+var currentUser = null;
 
-    <div class="grid grid-cols-2 gap-4">
-      <div class="card p-5 text-center">
-        <p id="totalQuizzes" class="text-3xl font-black text-white">0</p>
-        <p class="text-xs uppercase tracking-wider text-slate-500 font-bold mt-1">Quizzes Taken</p>
-      </div>
-      <div class="card p-5 text-center">
-        <p id="uniqueResults" class="text-3xl font-black text-white">0</p>
-        <p class="text-xs uppercase tracking-wider text-slate-500 font-bold mt-1">Unique Results</p>
-      </div>
-    </div>
+function esc(s) { if(!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-    <div class="card p-6">
-      <h2 class="text-lg font-extrabold text-[#d35444] mb-4">Quiz History</h2>
-      <div id="noResults" class="hidden text-center py-10">
-        <p class="text-slate-500">No quizzes taken yet.</p>
-        <p class="text-slate-600 text-sm mt-1">Complete a quiz and your results will appear here!</p>
-      </div>
-      <div id="resultsTable" class="hidden overflow-x-auto">
-        <table>
-          <thead>
-            <tr>
-              <th>Quiz</th>
-              <th>Date</th>
-              <th>Result</th>
-            </tr>
-          </thead>
-          <tbody id="resultsBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
 
-  <script>
-    // ТВОИ ОБНОВЛЕННЫЕ КЛЮЧИ
-    const SUPABASE_URL = 'https://utsmlrpjidqrzashmyli.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0c21scnBqaWRxcnphc2hteWxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NTIwMjAsImV4cCI6MjA4OTMyODAyMH0.xjWq8107bVrYCs0M_rY65SnGxKJTano4JliEGvopv1U';
-    
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function init() {
+  await new Promise(r => setTimeout(r, 500)); // Задержка для подгрузки сессии
+  
+  var res = await sb.auth.getUser();
+  var user = res.data.user;
+  if (!user) { window.location.href = 'index.html'; return; }
+  currentUser = user;
 
-    async function init() {
-      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-      
-      if (!session) {
-        window.location.href = 'auth.html';
-        return;
-      }
+  var name = (user.user_metadata && user.user_metadata.display_name) || (user.email ? user.email.split('@')[0] : 'User');
+  
+  document.getElementById('displayName').textContent = name;
+  document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('userEmail').textContent = user.email;
+  document.getElementById('memberSince').textContent = '📅 Member since ' + new Date(user.created_at).toLocaleDateString();
+  document.getElementById('editName').value = name;
 
-      const user = session.user;
-      document.getElementById('userEmail').textContent = user.email;
-      document.getElementById('avatar').textContent = (user.email || '?')[0].toUpperCase();
-      document.getElementById('memberSince').textContent =
-        'Member since ' + new Date(user.created_at).toLocaleDateString();
+  var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+  var rows = resultsRes.data || [];
 
-      // Загрузка результатов
-      const { data: results, error: dbError } = await supabaseClient
-        .from('user_results')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+  document.getElementById('totalQuizzes').textContent = rows.length;
+  var labels = {};
+  rows.forEach(function(r) { if (r.score) labels[r.score] = true; });
+  document.getElementById('uniqueResults').textContent = Object.keys(labels).length;
+  document.getElementById('lastActivity').textContent = rows.length > 0 ? new Date(rows[0].created_at).toLocaleDateString() : '—';
 
-      if (dbError) {
-        console.error("Database error:", dbError);
-      }
+  var container = document.getElementById('historyContent');
+  if (rows.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No quizzes taken yet.</p></div>';
+  } else {
+    // ВЕРНУЛ ТВОЮ ТАБЛИЦУ С ОРИГИНАЛЬНЫМИ СТИЛЯМИ
+    var html = '<div style="overflow-x:auto"><table class="results-table"><thead><tr><th>Quiz</th><th>Date</th><th>Result</th><th></th></tr></thead><tbody>';
+    rows.forEach(function(r, i) {
+      var qn = esc(r.test_name).replace(/'/g, "\\'");
+      var rl = esc(r.score).replace(/'/g, "\\'");
+      html += '<tr><td style="font-weight:600;color:#fff;">' + esc(r.test_name) + '</td>'
+        + '<td style="color:#8899aa;">' + new Date(r.created_at).toLocaleDateString() + '</td>'
+        + '<td>' + esc(r.score) + '</td>'
+        + '<td class="share-cell"><button class="share-trigger" onclick="toggleShare(' + i + ')">Share ▾</button>'
+        + '<div class="share-dropdown" id="share-' + i + '">'
+        + '<button class="btn-download" onclick="downloadCard(\'' + qn + '\',\'' + rl + '\')">📥 Download Image</button>'
+        + '<div class="share-icons">' + buildShareIcons(r.test_name, r.score) + '</div>'
+        + '</div></td></tr>';
+    });
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+  }
 
-      const rows = results || [];
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
 
-      document.getElementById('totalQuizzes').textContent = rows.length;
-      const unique = new Set(rows.map(r => r.result_label).filter(Boolean));
-      document.getElementById('uniqueResults').textContent = unique.size;
+// ВЕРНУЛ ЛОГИКУ ПОДЕЛИТЬСЯ (TELEGRAM ICON)
+function buildShareIcons(quizName, resultLabel) {
+  var text = 'I got "' + resultLabel + '" on ' + quizName + '! 🎉 https://quiztos.com';
+  return '<button class="share-icon-btn" style="background:#0088cc" onclick="copyText(\''+text.replace(/'/g,"\\'")+'\')"><svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></button>';
+}
 
-      if (rows.length === 0) {
-        document.getElementById('noResults').classList.remove('hidden');
-      } else {
-        document.getElementById('resultsTable').classList.remove('hidden');
-        const tbody = document.getElementById('resultsBody');
-        tbody.innerHTML = rows.map(r => `
-          <tr>
-            <td class="font-semibold text-white">${esc(r.quiz_name)}</td>
-            <td class="text-slate-400">${new Date(r.created_at).toLocaleDateString()}</td>
-            <td>${r.result_label ? esc(r.result_label) : `<span class="font-bold text-[#d35444]">${r.score}%</span>`}</td>
-          </tr>
-        `).join('');
-      }
+function toggleShare(idx) {
+  var target = document.getElementById('share-' + idx);
+  var isOpen = target.classList.contains('open');
+  document.querySelectorAll('.share-dropdown').forEach(el => el.classList.remove('open'));
+  if (!isOpen) target.classList.add('open');
+}
 
-      document.getElementById('loading').classList.add('hidden');
-      document.getElementById('app').classList.remove('hidden');
-    }
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(function() { showToast('Copied to clipboard!'); });
+}
 
-    async function handleSignOut() {
-      await supabaseClient.auth.signOut();
-      window.location.href = 'index.html';
-    }
+// ВОССТАНОВИЛ ПОЛНУЮ ЛОГИКУ CANVAS CARD
+function downloadCard(quizName, resultLabel) {
+  var c = document.createElement('canvas'); c.width = 480; c.height = 640;
+  var ctx = c.getContext('2d');
+  var g = ctx.createLinearGradient(0,0,480,640);
+  g.addColorStop(0,'#2b3d50'); g.addColorStop(0.5,'#1a2a3a'); g.addColorStop(1,'#0f1c28');
+  ctx.fillStyle = g; ctx.fillRect(0,0,480,640);
 
-    function esc(s) {
-      const d = document.createElement('div');
-      d.textContent = s;
-      return d.innerHTML;
-    }
+  ctx.textAlign = 'center'; ctx.fillStyle = '#fff';
+  ctx.font = '900 32px Inter,sans-serif'; ctx.fillText('QUIZTOS',240,70);
+  ctx.font = '400 11px Inter,sans-serif'; ctx.globalAlpha=0.5; ctx.fillText('quiztos.com',240,88); ctx.globalAlpha=1;
+  ctx.font = '700 13px Inter,sans-serif'; ctx.globalAlpha=0.6; ctx.fillText('My Result',240,320); ctx.globalAlpha=1;
+  ctx.font = '600 16px Inter,sans-serif'; ctx.globalAlpha=0.8; ctx.fillText(quizName,240,350); ctx.globalAlpha=1;
+  ctx.fillStyle = '#e74c3c'; ctx.font = '900 32px Inter,sans-serif';
+  wrapText(ctx, resultLabel, 240, 400, 360, 38);
 
-    init();
-  </script>
+  var imgUrl = quizImageMap[quizName];
+  if (imgUrl) {
+    var img = new Image(); img.crossOrigin='anonymous';
+    img.onload = function() {
+      ctx.save(); ctx.beginPath(); ctx.arc(240,220,80,0,Math.PI*2); ctx.clip();
+      ctx.drawImage(img,160,140,160,160); ctx.restore();
+      dl(c, quizName);
+    };
+    img.onerror = function() { dl(c, quizName); };
+    img.src = imgUrl;
+  } else { dl(c, quizName); }
+}
+
+function dl(canvas, name) {
+  var a = document.createElement('a');
+  a.download = 'quiztos-' + name.replace(/\s+/g,'-').toLowerCase() + '.png';
+  a.href = canvas.toDataURL('image/png'); a.click();
+  showToast('Image downloaded!');
+}
+
+function wrapText(ctx,text,x,y,maxW,lh) {
+  var words=text.split(' '), line='';
+  for(var i=0;i<words.length;i++){
+    var t=line+words[i]+' ';
+    if(ctx.measureText(t).width>maxW&&line){ ctx.fillText(line.trim(),x,y); line=words[i]+' '; y+=lh; }
+    else line=t;
+  }
+  ctx.fillText(line.trim(),x,y);
+}
+
+async function saveName() {
+  if(!currentUser) return;
+  var btn=document.getElementById('saveBtn'), name=document.getElementById('editName').value.trim();
+  btn.disabled=true; btn.textContent='Saving...';
+  const { error } = await sb.auth.updateUser({ data: { display_name: name } });
+  btn.disabled=false; btn.textContent='Save';
+  if(error){ showToast('Error: '+error.message); return; }
+  document.getElementById('displayName').textContent=name||'User';
+  document.getElementById('avatar').textContent=(name||'?').charAt(0).toUpperCase();
+  showToast('Profile saved!');
+}
+
+function shareProfile() {
+  navigator.clipboard.writeText(window.location.href).then(function(){ showToast('Profile link copied!'); });
+}
+
+async function handleSignOut() {
+  await sb.auth.signOut();
+  window.location.href = 'index.html';
+}
+
+init();
+</script>
 </body>
 </html>
