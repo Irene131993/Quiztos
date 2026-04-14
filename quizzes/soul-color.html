@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Color of Your Soul | QUIZTOS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
     
     <style>
         :root {
@@ -210,6 +212,8 @@
         
         document.getElementById('result-description').innerHTML = descriptions[winner];
         document.getElementById('result-title').style.color = `var(--${winner})`;
+       // Передаем название теста и объект со счетом
+saveQuizResult("The Color of Your Soul", scores); 
     }
 </script>
 </body>
