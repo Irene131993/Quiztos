@@ -494,15 +494,26 @@
     });
 
     // СБРОС ПАРОЛЯ
-    async function resetPassword() {
-        const email = document.getElementById('email').value;
-        if (!email) return alert("Please enter your email first!");
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/profile.html',
-        });
-        if (error) alert(error.message);
-        else alert("Password reset link sent to your email!");
+   async function resetPassword() {
+    const emailInput = document.getElementById('email');
+    const email = emailInput.value.trim();
+    
+    if (!email) {
+        alert("Please enter your email first!");
+        return;
     }
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        // Явно указываем адрес твоего сайта
+        redirectTo: 'https://quiztos.com/index.html', 
+    });
+
+    if (error) {
+        alert("Error: " + error.message);
+    } else {
+        alert("Check your email! If you don't see it, check the SPAM folder.");
+    }
+}
 
     // ФИЛЬТР ТЕСТОВ
     function filterQuizzes(category) {
