@@ -299,6 +299,23 @@ async function saveName() {
 function shareProfile() {
   navigator.clipboard.writeText(window.location.href).then(function(){ showToast('Profile link copied!'); });
 }
+  function shareResult(testName, score) {
+    const shareText = `Я прошел тест "${testName}" на сайте QUIZTOS и мой результат: ${score}! Попробуй и ты!`;
+    
+    // Проверяем, поддерживает ли браузер стандартное "Поделиться" (как на смартфонах)
+    if (navigator.share) {
+        navigator.share({
+            title: 'Мой результат QUIZTOS',
+            text: shareText,
+            url: window.location.origin // ссылка на твой сайт
+        }).catch(console.error);
+    } else {
+        // Если это обычный компьютер, просто копируем текст в буфер обмена
+        navigator.clipboard.writeText(shareText).then(() => {
+            alert("Результат скопирован в буфер обмена! Теперь можешь вставить его в соцсети.");
+        });
+    }
+}
 
 async function handleSignOut() {
   await sb.auth.signOut();
