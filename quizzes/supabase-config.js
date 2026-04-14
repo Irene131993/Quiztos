@@ -20,7 +20,7 @@ async function saveQuizResult(testName, finalScores) {
         const scoreText = `${winner.charAt(0).toUpperCase() + winner.slice(1)}: ${percentage}%`;
 
         const { error } = await supabaseShared
-            .from('quiz_results')
+            .from('test_results')
             .insert([{
                 user_id: session.user.id,
                 test_name: testName,
