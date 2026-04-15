@@ -155,7 +155,6 @@
   </div>
 
   <div class="toast" id="toast"></div>
-
 <script>
 var SB_URL = 'https://ajeeutzdtaddnqxktwgi.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZWV1dHpkdGFkZG5xeGt0d2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTMwMzgsImV4cCI6MjA5MDM4OTAzOH0.edqU65LasrR-nXCgCYoRNJgpB3QZuU_ux70xXf-FBts';
@@ -178,7 +177,11 @@ var quizImageMap = {
 
 var currentUser = null;
 
-function esc(s) { if(!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+// Функция для безопасного вывода текста в HTML
+function esc(s) { 
+    if(!s) return ''; 
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); 
+}
 
 function showToast(msg) {
   var t = document.getElementById('toast');
@@ -199,6 +202,7 @@ async function init() {
   document.getElementById('memberSince').textContent = '📅 Member since ' + new Date(user.created_at).toLocaleDateString();
   document.getElementById('editName').value = name;
 
+  // Загружаем результаты
   var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
   var rows = resultsRes.data || [];
 
@@ -209,25 +213,53 @@ async function init() {
   document.getElementById('lastActivity').textContent = rows.length > 0 ? new Date(rows[0].created_at).toLocaleDateString() : '—';
 
   var container = document.getElementById('historyContent');
+  
   if (rows.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No quizzes taken yet.</p></div>';
+    container.innerHTML = '<div class="empty-state">📋 No quizzes taken yet.</div>';
   } else {
-    var html = '<div style="overflow-x:auto"><table class="results-table"><thead><tr><th>Quiz</th><th>Date</th><th>Result</th><th>Actions</th></tr></thead><tbody>';
+    var tableHTML = `
+      <div style="overflow-x:auto">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Quiz</th>
+              <th>Date</th>
+              <th>Result</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>`;
+    container.innerHTML = tableHTML;
+    
+    var tbody = document.getElementById('tableBody');
     rows.forEach(function(r) {
-      var qn = esc(r.test_name).replace(/'/g, "\\'");
-      var rl = esc(r.score).replace(/'/g, "\\'");
-      html += '<tr><td style="font-weight:600;color:#fff;">' + esc(r.test_name) + '</td>'
-        + '<td style="color:#8899aa;">' + new Date(r.created_at).toLocaleDateString() + '</td>'
-        + '<td style="color:#e74c3c; font-weight:700;">' + esc(r.score) + '</td>'
-        + '<td><div class="actions-cell">'
-        + '<button class="btn-action btn-dl" onclick="downloadCard(\'' + qn + '\',\'' + rl + '\')">📥 Image</button>'
-        + '<button class="btn-action btn-sh" onclick="shareToTelegram(\'' + qn + '\',\'' + rl + '\')">'
-        + '<svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> Share</button>'
-        + '</div></td></tr>';
+      var tr = document.createElement('tr');
+      
+      // Чтобы избежать проблем с кавычками в названиях, создаем кнопки через JS, а не через строку
+      tr.innerHTML = `
+        <td style="font-weight:600;color:#fff;">${esc(r.test_name)}</td>
+        <td style="color:#8899aa;">${new Date(r.created_at).toLocaleDateString()}</td>
+        <td style="color:#e74c3c; font-weight:700;">${esc(r.score)}</td>
+        <td>
+          <div class="actions-cell">
+            <button class="btn-action btn-dl" id="dl-${r.id}">📥 Image</button>
+            <button class="btn-action btn-sh" id="sh-${r.id}">
+              <svg viewBox="0 0 24 24" style="width:14px; fill:currentColor;"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+              Share
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+
+      // Вешаем события клика программно (это надежнее)
+      tr.querySelector(`#dl-${r.id}`).onclick = function() { downloadCard(r.test_name, r.score); };
+      tr.querySelector(`#sh-${r.id}`).onclick = function() { shareToTelegram(r.test_name, r.score); };
     });
-    html += '</tbody></table></div>';
-    container.innerHTML = html;
   }
+  
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 }
@@ -252,6 +284,7 @@ function downloadCard(quizName, resultLabel) {
   ctx.font = '600 16px Inter,sans-serif'; ctx.globalAlpha=0.8; ctx.fillText(quizName,240,350); ctx.globalAlpha=1;
   ctx.fillStyle = '#e74c3c'; ctx.font = '900 32px Inter,sans-serif';
   wrapText(ctx, resultLabel, 240, 400, 360, 38);
+  
   var imgUrl = quizImageMap[quizName];
   if (imgUrl) {
     var img = new Image(); img.crossOrigin='anonymous';
@@ -300,6 +333,6 @@ async function handleSignOut() {
 }
 
 init();
-</script>
+  </script>
 </body>
 </html>
