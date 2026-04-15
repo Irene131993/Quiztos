@@ -6,6 +6,7 @@
   <title>My Profile — Quiztos</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     /* ТВОИ СТИЛИ ПОЛНОСТЬЮ ОСТАВЛЕНЫ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -77,64 +78,75 @@
       <a href="index.html" class="logo">QUIZ<span>TOS</span></a>
       <button class="header-btn" onclick="handleSignOut()">Sign Out</button>
     </div>
-    <div class="container">
-      <div class="section">
-        <div class="card">
-          <div class="profile-header">
-            <div class="avatar" id="avatar">?</div>
-            <div class="profile-info">
-              <h1 id="displayName">User</h1>
-              <p class="email" id="userEmail"></p>
-              <p class="member-since" id="memberSince"></p>
-            </div>
-            <div class="profile-actions">
-              <button class="btn-signout" onclick="handleSignOut()">Sign Out</button>
-            </div>
-          </div>
+<div class="container">
+  <div class="section">
+    <div class="card">
+      <div class="profile-header">
+        <div class="avatar" id="avatar">?</div>
+        <div class="profile-info">
+          <h1 id="displayName">User</h1>
+          <p class="email" id="userEmail"></p>
+          <p class="member-since" id="memberSince"></p>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-signout" onclick="handleSignOut()">Sign Out</button>
         </div>
       </div>
-      <div class="section">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon">🏆</div>
-            <div><div class="stat-value" id="totalQuizzes">0</div><div class="stat-label">Total Quizzes</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">✨</div>
-            <div><div class="stat-value" id="uniqueResults">0</div><div class="stat-label">My Discoveries</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">📅</div>
-            <div><div class="stat-value" id="lastActivity">—</div><div class="stat-label">Last Activity</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="card">
-          <h2 class="section-title">Edit Profile</h2>
-          <div class="edit-row">
-            <input type="text" class="edit-input" id="editName" placeholder="Display Name" />
-            <button class="btn-save" id="saveBtn" onclick="saveName()">Save</button>
-          </div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="card">
-          <h2 class="section-title">Quiz History</h2>
-          <div id="historyContent"></div>
-        </div>
-      </div>
-    </div>
-    <div class="footer">
-      <div class="footer-links">
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-      </div>
-      <div class="footer-copy">&copy; 2026 Quiztos. All rights reserved.</div>
     </div>
   </div>
+
+  <div class="section">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div>
+          <div class="stat-value" id="totalQuizzes">0</div>
+          <div class="stat-label">Total Quizzes</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✨</div>
+        <div>
+          <div class="stat-value" id="uniqueResults">0</div>
+          <div class="stat-label">My Discoveries</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div>
+          <div class="stat-value" id="lastActivity">—</div>
+          <div class="stat-label">Last Activity</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h2 class="section-title">Edit Profile</h2>
+      <div class="edit-row">
+        <input type="text" class="edit-input" id="editName" placeholder="Display Name" />
+        <button class="btn-save" id="saveBtn" onclick="saveName()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h2 class="section-title">Quiz History</h2>
+      <div id="historyContent">
+        </div>
+    </div>
+  </div>
+</div> <div class="footer">
+  <div class="footer-links">
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 Quiztos. All rights reserved.</div>
+</div>
   <div class="toast" id="toast"></div>
 
 <script>
@@ -294,26 +306,46 @@ async function saveName() {
   document.getElementById('avatar').textContent=(name||'?').charAt(0).toUpperCase();
   showToast('Profile saved!');
 }
+  async function saveAsImage(testName, score) {
+    // Создаем временный блок, который превратим в картинку
+    const tempDiv = document.createElement('div');
+    tempDiv.style = "padding:40px; background:white; color:black; text-align:center; font-family:sans-serif; width:400px; border: 5px solid purple;";
+    tempDiv.innerHTML = `
+        <h1 style="color:purple">QUIZTOS</h1>
+        <hr>
+        <h2>${testName}</h2>
+        <p style="font-size:24px;">Мой результат:</p>
+        <p style="font-size:32px; font-weight:bold;">${score}</p>
+        <p>quiztos.com</p>
+    `;
+    document.body.appendChild(tempDiv);
+
+    // Превращаем блок в картинку и скачиваем
+    const canvas = await html2canvas(tempDiv);
+    const link = document.createElement('a');
+    link.download = `my-result-${testName}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+
+    // Удаляем временный блок
+    document.body.removeChild(tempDiv);
+}
 
 function shareProfile() {
   navigator.clipboard.writeText(window.location.href).then(function(){ showToast('Profile link copied!'); });
 }
   function shareResult(testName, score) {
-    const shareText = `Я прошел тест "${testName}" на сайте QUIZTOS и мой результат: ${score}! Попробуй и ты!`;
-    
-    // Проверяем, поддерживает ли браузер стандартное "Поделиться" (как на смартфонах)
-    if (navigator.share) {
-        navigator.share({
-            title: 'Мой результат QUIZTOS',
-            text: shareText,
-            url: window.location.origin // ссылка на твой сайт
-        }).catch(console.error);
-    } else {
-        // Если это обычный компьютер, просто копируем текст в буфер обмена
-        navigator.clipboard.writeText(shareText).then(() => {
-            alert("Результат скопирован в буфер обмена! Теперь можешь вставить его в соцсети.");
-        });
-    }
+    const text = encodeURIComponent(`Мой результат в тесте "${testName}": ${score}! Узнай свой на QUIZTOS!`);
+    const url = encodeURIComponent(window.location.origin);
+
+    // Создаем ссылки для разных соцсетей
+    const telegramUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+
+    // Открываем красивое модальное окно (или просто предлагаем выбор)
+    // Для теста сейчас просто откроем Телеграм:
+    window.open(telegramUrl, '_blank');
 }
 
 async function handleSignOut() {
