@@ -264,11 +264,26 @@ async function init() {
   document.getElementById('app').style.display = 'block';
 }
 
-function shareToTelegram(quizName, resultLabel) {
-  var text = "My result in '" + resultLabel + "' on " + quizName + "! Try it on QUIZTOS! 🚀";
-  var url = window.location.origin;
-  var telegramUrl = "https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(text);
-  window.open(telegramUrl, '_blank');
+async function shareResult(quizName, resultLabel) {
+  const text = "My result in '" + resultLabel + "' on " + quizName + "! Try it on QUIZTOS! 🚀";
+  const url = window.location.origin;
+
+  // Проверяем, поддерживает ли браузер системное меню "Поделиться"
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'Quiztos Result',
+        text: text,
+        url: url,
+      });
+    } catch (err) {
+      console.log('Share cancelled or failed', err);
+    }
+  } else {
+    // Если браузер старый (или ПК), открываем Telegram как запасной вариант
+    const telegramUrl = "https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(text);
+    window.open(telegramUrl, '_blank');
+  }
 }
 
 function downloadCard(quizName, resultLabel) {
@@ -331,8 +346,31 @@ async function handleSignOut() {
   await sb.auth.signOut();
   window.location.href = 'index.html';
 }
+async function shareResult(quizName, resultLabel) {
+  const text = "My result in '" + resultLabel + "' on " + quizName + "! Try it on QUIZTOS! 🚀";
+  const url = window.location.origin;
 
+  // Проверяем поддержку Web Share API (мобильные браузеры)
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'Quiztos Result',
+        text: text,
+        url: url,
+      });
+    } catch (err) {
+      // Пользователь просто закрыл меню, ничего не делаем
+      console.log('Share cancelled');
+    }
+  } else {
+    // Если это ПК или браузер без поддержки Share API — открываем Telegram
+    const telegramUrl = "https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(text);
+    window.open(telegramUrl, '_blank');
+  }
+}
 init();
+  // Найдите это место в вашем коде внутри функции init:
+tr.querySelector(`#sh-${r.id}`).onclick = function() { shareResult(r.test_name, r.score); };
   </script>
 </body>
 </html>
