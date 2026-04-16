@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Official MBTI Personality Test | QUIZTOS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     
     <style>
         :root {
@@ -73,7 +75,6 @@
         .btn-main:hover { transform: scale(1.03); box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4); }
         .btn-secondary { display: block; text-align: center; color: var(--text-gray); text-decoration: none; font-weight: 600; margin-bottom: 20px; }
 
-        /* НОВЫЙ СТИЛЬ ДЛЯ КНОПКИ ЗАВЕРШЕНИЯ */
         .btn-abort {
             display: inline-block;
             color: #b2bec3;
@@ -122,36 +123,30 @@
         <button class="btn-main" onclick="startQuiz()">Start Analysis</button>
 
         <div class="intro-text" style="margin-top: 20px;">
-            The Myers-Briggs Type Indicator (MBTI) is an introspective personality test designed to identify a person's personality type, strengths, and preferences. Instead of looking at "good" or "bad" traits, it explores how you naturally process information and interact with the world.
+            The Myers-Briggs Type Indicator (MBTI) is an introspective personality test designed to identify a person's personality type, strengths, and preferences.
         </div>
 
         <div class="facts-container">
             <h2 style="text-align: center; margin-bottom: 30px;">🧩 5 Fascinating Facts About MBTI</h2>
             <div class="fact-card">
                 <h3>1. Created by a Mother-Daughter Duo</h3>
-                <p>Unlike many psychological tests created by professors in labs, the MBTI was developed by Katharine Cook Briggs and her daughter Isabel Briggs Myers. They weren't psychologists—they were brilliant observers of human behavior.</p>
+                <p>Unlike many psychological tests created by professors in labs, the MBTI was developed by Katharine Cook Briggs and her daughter Isabel Briggs Myers.</p>
             </div>
             <div class="fact-card">
                 <h3>2. Based on Carl Jung’s "Cognitive Functions"</h3>
-                <p>The test is built on the theories of the famous Swiss psychiatrist Carl Jung. He believed that humans use four main mental functions: Sensing, Intuition, Thinking, and Feeling.</p>
+                <p>The test is built on the theories of the famous Swiss psychiatrist Carl Jung.</p>
             </div>
             <div class="fact-card">
                 <h3>3. The "Golden" 16 Types</h3>
-                <p>The test sorts everyone into 16 unique types using four scales:</p>
-                <ul class="scale-list">
-                    <li><b>E vs. I:</b> Where do you get your energy? (Extroversion/Introversion)</li>
-                    <li><b>S vs. N:</b> How do you take in information? (Sensing/Intuition)</li>
-                    <li><b>T vs. F:</b> How do you make decisions? (Thinking/Feeling)</li>
-                    <li><b>J vs. P:</b> How do you organize your life? (Judging/Perceiving)</li>
-                </ul>
+                <p>The test sorts everyone into 16 unique types using four scales (E/I, S/N, T/F, J/P).</p>
             </div>
             <div class="fact-card">
                 <h3>4. The Rarest Type: INFJ</h3>
-                <p>While statistics vary, the INFJ is consistently ranked as the rarest personality type, making up only about 1-2% of the global population.</p>
+                <p>The INFJ is consistently ranked as the rarest personality type, making up only about 1-2% of the global population.</p>
             </div>
             <div class="fact-card">
                 <h3>5. It’s About Preference, Not Ability</h3>
-                <p>A great way to explain MBTI is the "Handwriting Metaphor." You can write with both hands, but one feels natural and effortless. MBTI shows you which "mental hand" is your dominant one.</p>
+                <p>MBTI shows you which "mental hand" is your dominant one.</p>
             </div>
         </div>
 
@@ -206,21 +201,21 @@
     ];
 
     const typeDetails = {
-        "INTJ": { title: "The Architect", desc: "You possess a rare combination of cold logic and brilliant imagination. You master life like a grand chessboard.", feat: "Strategic, analytical, independent, and determined." },
-        "INTP": { title: "The Logician", desc: "A true inventor of ideas. You see the world as a complex machine that only you can take apart and understand.", feat: "Original, philosophical, open-minded, and objective." },
-        "ENTJ": { title: "The Commander", desc: "Born to lead and built to win. You turn obstacles into runways with your iron will.", feat: "Efficient, charismatic, confident, and strategic." },
-        "ENTP": { title: "The Debater", desc: "An intellectual powerhouse. You thrive on the edge of innovation, questioning everything.", feat: "Quick-witted, energetic, resourceful, and charismatic." },
-        "INFJ": { title: "The Advocate", desc: "You are a mystical force of inspiration. You have a deep sense of integrity and a desire to help others.", feat: "Insightful, principled, creative, and passionate." },
-        "INFP": { title: "The Mediator", desc: "A beautiful, poetic soul. You stay true to your inner light, finding magic in small things.", feat: "Empathetic, idealistic, creative, and loyal." },
-        "ENFJ": { title: "The Protagonist", desc: "A beacon of light. Your natural charisma and genuine care make you a leader everyone follows.", feat: "Passionate, reliable, persuasive, and selfless." },
-        "ENFP": { title: "The Campaigner", desc: "The ultimate free spirit. You bring color and energy to everything you touch.", feat: "Enthusiastic, creative, social, and observant." },
-        "ISTJ": { title: "The Logistician", desc: "The rock of reliability. You value tradition, honesty, and hard work.", feat: "Direct, dutiful, organized, and responsible." },
-        "ISFJ": { title: "The Defender", desc: "A quiet hero. You are incredibly dedicated and warm, standing guard over your loved ones.", feat: "Supportive, loyal, patient, and observant." },
-        "ESTJ": { title: "The Executive", desc: "A master of organization. You lead by example, bringing people together through respect for order.", feat: "Dedicated, direct, loyal, and methodical." },
-        "ESFJ": { title: "The Consul", desc: "The heart of the community. Your warmth makes everyone feel welcome and valued.", feat: "Caring, social, warm, and helpful." },
-        "ISTP": { title: "The Virtuoso", desc: "A master of the physical world. You solve problems with a calm, practical energy.", feat: "Optimistic, energetic, practical, and spontaneous." },
-        "ISFP": { title: "The Adventurer", desc: "A charming artist of life. You live in a colorful, sensual world.", feat: "Artistic, sensitive, curious, and imaginative." },
-        "ESTP": { title: "The Entrepreneur", desc: "A thrill-seeker with a sharp mind. You live on the edge and act with lightning speed.", feat: "Bold, rational, sociable, and direct." },
+        "INTJ": { title: "The Architect", desc: "You possess a rare combination of cold logic and brilliant imagination.", feat: "Strategic, analytical, independent, and determined." },
+        "INTP": { title: "The Logician", desc: "A true inventor of ideas. You see the world as a complex machine.", feat: "Original, philosophical, open-minded, and objective." },
+        "ENTJ": { title: "The Commander", desc: "Born to lead and built to win.", feat: "Efficient, charismatic, confident, and strategic." },
+        "ENTP": { title: "The Debater", desc: "An intellectual powerhouse. You thrive on the edge of innovation.", feat: "Quick-witted, energetic, resourceful, and charismatic." },
+        "INFJ": { title: "The Advocate", desc: "You are a mystical force of inspiration.", feat: "Insightful, principled, creative, and passionate." },
+        "INFP": { title: "The Mediator", desc: "A beautiful, poetic soul. You stay true to your inner light.", feat: "Empathetic, idealistic, creative, and loyal." },
+        "ENFJ": { title: "The Protagonist", desc: "A beacon of light. Your natural charisma and care make you a leader.", feat: "Passionate, reliable, persuasive, and selfless." },
+        "ENFP": { title: "The Campaigner", desc: "The ultimate free spirit. You bring color and energy to everything.", feat: "Enthusiastic, creative, social, and observant." },
+        "ISTJ": { title: "The Logistician", desc: "The rock of reliability. You value tradition and hard work.", feat: "Direct, dutiful, organized, and responsible." },
+        "ISFJ": { title: "The Defender", desc: "A quiet hero. You are incredibly dedicated and warm.", feat: "Supportive, loyal, patient, and observant." },
+        "ESTJ": { title: "The Executive", desc: "A master of organization. You lead by example.", feat: "Dedicated, direct, loyal, and methodical." },
+        "ESFJ": { title: "The Consul", desc: "The heart of the community.", feat: "Caring, social, warm, and helpful." },
+        "ISTP": { title: "The Virtuoso", desc: "A master of the physical world. Practical and calm.", feat: "Optimistic, energetic, practical, and spontaneous." },
+        "ISFP": { title: "The Adventurer", desc: "A charming artist of life. You live in a colorful world.", feat: "Artistic, sensitive, curious, and imaginative." },
+        "ESTP": { title: "The Entrepreneur", desc: "A thrill-seeker with a sharp mind.", feat: "Bold, rational, sociable, and direct." },
         "ESFP": { title: "The Entertainer", desc: "Life is your stage. You turn every moment into a celebration.", feat: "Bold, original, practical, and playful." }
     };
 
@@ -254,7 +249,7 @@
         });
     }
 
-function showResults() {
+    function showResults() {
         document.getElementById('quiz-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         window.scrollTo(0,0);
@@ -271,36 +266,14 @@ function showResults() {
         document.getElementById('result-description').innerHTML = data.desc;
         document.getElementById('features-box').innerHTML = `<strong>Key Traits:</strong> ${data.feat}`;
 
-        // --- ДОБАВЛЕНО: СОХРАНЕНИЕ В БАЗУ ДАННЫХ ---
-        // Поскольку это психологический тест без "правильных" ответов, 
-        // мы можем передать 100/100 как прогресс завершения.
-        saveResult('Official MBTI Test', 100, 100, `${type} - ${data.title}`);
+        // Сохранение в базу
+        const finalLabel = `${type}: ${data.title}`;
+        const fakeScores = {};
+        fakeScores[finalLabel] = 20; 
+
+        saveQuizResult("Official MBTI Test", fakeScores);
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const supabaseClient = window.supabase.createClient(
-    'https://xtwvtzqvpmwhytcegcxg.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3Z0enF2cG13aHl0Y2VnY3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MzA1MDUsImV4cCI6MjA4OTMwNjUwNX0.Y1_F90eol6VgtZvhL-LuXLuKGRZHU4CgczkZG0HP_gQ'
-  );
-
-  async function saveResult(quizName, score, maxScore, resultLabel) {
-    try {
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) return;
-      await supabaseClient.from('user_results').insert({
-        user_id: user.id,
-        quiz_name: quizName,
-        score: score,
-        max_score: maxScore,
-        result_label: resultLabel,
-      });
-      console.log("Saved!");
-    } catch (err) { console.error(err); }
-  }
-</script>
-
 
 </body>
 </html>
