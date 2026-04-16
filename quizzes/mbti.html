@@ -236,7 +236,7 @@
         // СОХРАНЕНИЕ В БАЗУ ДАННЫХ
         if (typeof saveQuizResult === 'function') {
             const resultForDB = {};
-            resultForDB[`${type}: ${res.title}`] = 100;
+            resultForDB[`${type}: ${res.title}`] = 1;
             saveQuizResult('Official MBTI Test', resultForDB);
         }
     }
