@@ -202,7 +202,7 @@ async function init() {
   document.getElementById('memberSince').textContent = '📅 Member since ' + new Date(user.created_at).toLocaleDateString();
   document.getElementById('editName').value = name;
 
-  // Загружаем результаты
+  // Загружаем результаты из Supabase
   var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
   var rows = resultsRes.data || [];
 
@@ -217,6 +217,7 @@ async function init() {
   if (rows.length === 0) {
     container.innerHTML = '<div class="empty-state">📋 No quizzes taken yet.</div>';
   } else {
+    // 1. Создаем каркас таблицы
     var tableHTML = `
       <div style="overflow-x:auto">
         <table class="results-table">
@@ -234,19 +235,24 @@ async function init() {
     container.innerHTML = tableHTML;
     
     var tbody = document.getElementById('tableBody');
+    
+    // 2. Наполняем таблицу строками
     rows.forEach(function(r) {
       var tr = document.createElement('tr');
       
-      // Чтобы избежать проблем с кавычками в названиях, создаем кнопки через JS, а не через строку
+      // Генерируем ID для кнопок, чтобы потом к ним привязаться
+      var dlId = "dl-" + r.id;
+      var shId = "sh-" + r.id;
+
       tr.innerHTML = `
         <td style="font-weight:600;color:#fff;">${esc(r.test_name)}</td>
         <td style="color:#8899aa;">${new Date(r.created_at).toLocaleDateString()}</td>
         <td style="color:#e74c3c; font-weight:700;">${esc(r.score)}</td>
         <td>
           <div class="actions-cell">
-            <button class="btn-action btn-dl" id="dl-${r.id}">📥 Image</button>
-            <button class="btn-action btn-sh" id="sh-${r.id}">
-              <svg viewBox="0 0 24 24" style="width:14px; fill:currentColor;"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            <button class="btn-action btn-dl" id="${dlId}">📥 Image</button>
+            <button class="btn-action btn-sh" id="${shId}">
+              <svg viewBox="0 0 24 24" style="width:14px; fill:currentColor; margin-right:5px;"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
               Share
             </button>
           </div>
@@ -254,9 +260,9 @@ async function init() {
       `;
       tbody.appendChild(tr);
 
-      // Вешаем события клика программно (это надежнее)
-      tr.querySelector(`#dl-${r.id}`).onclick = function() { downloadCard(r.test_name, r.score); };
-      tr.querySelector(`#sh-${r.id}`).onclick = function() { shareToTelegram(r.test_name, r.score); };
+      // 3. Привязываем новые функции к кнопкам
+      tr.querySelector("#" + dlId).onclick = function() { downloadCard(r.test_name, r.score); };
+      tr.querySelector("#" + shId).onclick = function() { shareResult(r.test_name, r.score); };
     });
   }
   
