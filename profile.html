@@ -233,16 +233,20 @@ async function init() {
         </table>
       </div>`;
     container.innerHTML = tableHTML;
-
-    // 2. Заполняем таблицу данными
+// 2. Заполняем таблицу данными
     const tbody = document.getElementById('tableBody');
     rows.forEach(row => {
       const date = new Date(row.created_at).toLocaleDateString();
       
-      // Определяем текстовый результат (label)
-      const displayResult = row.result_label || "Completed";
+      // Вытаскиваем только текстовый заголовок результата
+      // Если в базе есть объект results, берем его ключи, иначе берем label
+      let displayResult = "Completed";
+      if (row.result_label) {
+          displayResult = row.result_label;
+      } else if (row.results) {
+          displayResult = Object.keys(row.results)[0]; 
+      }
       
-      // Генерируем уникальные ID для кнопок, чтобы функции понимали, на что жмем
       const dlId = "dl_" + row.id;
       const shId = "sh_" + row.id;
 
@@ -251,11 +255,11 @@ async function init() {
         <td style="font-weight: 600;">${row.quiz_name}</td>
         <td style="font-size: 0.9em; color: #666;">${date}</td>
         <td>
-          <span style="color: #c0392b; font-weight: bold; background: #fff5f5; padding: 4px 10px; border-radius: 20px; border: 1px solid #ffeaea;">
+          <span style="color: #c0392b; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
             ${displayResult}
           </span>
         </td>
-        <td style="display: flex; gap: 10px; align-items: center;">
+        <td style="display: flex; gap: 12px; align-items: center;">
           <button id="${dlId}" style="background:none; border:none; cursor:pointer; font-size: 1.1em;" title="Download">📥</button>
           <button id="${shId}" style="background:none; border:none; cursor:pointer; font-size: 1.1em;" title="Share">🔗</button>
           <button onclick="deleteResult('${row.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.1em;" title="Delete">🗑️</button>
@@ -263,14 +267,14 @@ async function init() {
       `;
       tbody.appendChild(tr);
 
-      // 3. Привязываем функции (теперь передаем ТЕКСТ результата вместо цифр)
+      // Привязываем функции скачивания и шаринга (передаем только ТЕКСТ)
       document.getElementById(dlId).onclick = function() { 
           downloadCard(row.quiz_name, displayResult); 
       };
       document.getElementById(shId).onclick = function() { 
           shareResult(row.quiz_name, displayResult); 
       };
-    });
+    }); // <--- Цикл закрывается ОДИН раз здесь
   }
   
   document.getElementById('loading').style.display = 'none';
