@@ -140,14 +140,6 @@
                 <h3>3. The "Golden" 16 Types</h3>
                 <p>The test sorts everyone into 16 unique types using four scales (E/I, S/N, T/F, J/P).</p>
             </div>
-            <div class="fact-card">
-                <h3>4. The Rarest Type: INFJ</h3>
-                <p>The INFJ is consistently ranked as the rarest personality type, making up only about 1-2% of the global population.</p>
-            </div>
-            <div class="fact-card">
-                <h3>5. It’s About Preference, Not Ability</h3>
-                <p>MBTI shows you which "mental hand" is your dominant one.</p>
-            </div>
         </div>
 
         <button class="btn-main" onclick="startQuiz()">Start Analysis</button>
@@ -206,15 +198,15 @@
         "ENTJ": { title: "The Commander", desc: "Born to lead and built to win.", feat: "Efficient, charismatic, confident, and strategic." },
         "ENTP": { title: "The Debater", desc: "An intellectual powerhouse. You thrive on the edge of innovation.", feat: "Quick-witted, energetic, resourceful, and charismatic." },
         "INFJ": { title: "The Advocate", desc: "You are a mystical force of inspiration.", feat: "Insightful, principled, creative, and passionate." },
-        "INFP": { title: "The Mediator", desc: "A beautiful, poetic soul. You stay true to your inner light.", feat: "Empathetic, idealistic, creative, and loyal." },
-        "ENFJ": { title: "The Protagonist", desc: "A beacon of light. Your natural charisma and care make you a leader.", feat: "Passionate, reliable, persuasive, and selfless." },
+        "INFP": { title: "The Mediator", desc: "A beautiful, poetic soul.", feat: "Empathetic, idealistic, creative, and loyal." },
+        "ENFJ": { title: "The Protagonist", desc: "A beacon of light. Your natural charisma and genuine care make you a leader.", feat: "Passionate, reliable, persuasive, and selfless." },
         "ENFP": { title: "The Campaigner", desc: "The ultimate free spirit. You bring color and energy to everything.", feat: "Enthusiastic, creative, social, and observant." },
-        "ISTJ": { title: "The Logistician", desc: "The rock of reliability. You value tradition and hard work.", feat: "Direct, dutiful, organized, and responsible." },
+        "ISTJ": { title: "The Logistician", desc: "The rock of reliability. You value tradition, honesty, and hard work.", feat: "Direct, dutiful, organized, and responsible." },
         "ISFJ": { title: "The Defender", desc: "A quiet hero. You are incredibly dedicated and warm.", feat: "Supportive, loyal, patient, and observant." },
         "ESTJ": { title: "The Executive", desc: "A master of organization. You lead by example.", feat: "Dedicated, direct, loyal, and methodical." },
         "ESFJ": { title: "The Consul", desc: "The heart of the community.", feat: "Caring, social, warm, and helpful." },
         "ISTP": { title: "The Virtuoso", desc: "A master of the physical world. Practical and calm.", feat: "Optimistic, energetic, practical, and spontaneous." },
-        "ISFP": { title: "The Adventurer", desc: "A charming artist of life. You live in a colorful world.", feat: "Artistic, sensitive, curious, and imaginative." },
+        "ISFP": { title: "The Adventurer", desc: "A charming artist of life. You live in a colorful, sensual world.", feat: "Artistic, sensitive, curious, and imaginative." },
         "ESTP": { title: "The Entrepreneur", desc: "A thrill-seeker with a sharp mind.", feat: "Bold, rational, sociable, and direct." },
         "ESFP": { title: "The Entertainer", desc: "Life is your stage. You turn every moment into a celebration.", feat: "Bold, original, practical, and playful." }
     };
@@ -266,12 +258,16 @@
         document.getElementById('result-description').innerHTML = data.desc;
         document.getElementById('features-box').innerHTML = `<strong>Key Traits:</strong> ${data.feat}`;
 
-        // Сохранение в базу
-        const finalLabel = `${type}: ${data.title}`;
-        const fakeScores = {};
-        fakeScores[finalLabel] = 20; 
+        // СОХРАНЕНИЕ В БАЗУ
+        const finalResult = `${type}: ${data.title}`;
+        const scoresForDB = {};
+        scoresForDB[finalResult] = 20; // Имитируем 100% для сохранения названия типа
 
-        saveQuizResult("Official MBTI Test", fakeScores);
+        if (typeof saveQuizResult === 'function') {
+            saveQuizResult("Official MBTI Test", scoresForDB);
+        } else {
+            console.error("Функция saveQuizResult не найдена. Проверьте подключение supabase-config.js");
+        }
     }
 </script>
 
