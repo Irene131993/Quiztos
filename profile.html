@@ -202,22 +202,28 @@ async function init() {
   document.getElementById('memberSince').textContent = '📅 Member since ' + new Date(user.created_at).toLocaleDateString();
   document.getElementById('editName').value = name;
 
-  // Загружаем результаты из Supabase
+ // Загружаем результаты из Supabase
   var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
   var rows = resultsRes.data || [];
 
+  // 1. Обновляем статистику (убираем привязку к r.score, чтобы не было ошибок)
   document.getElementById('totalQuizzes').textContent = rows.length;
+  
   var labels = {};
-  rows.forEach(function(r) { if (r.score) labels[r.score] = true; });
+  rows.forEach(function(r) { 
+    // Определяем текст результата для статистики
+    let resText = r.result_label || (r.results ? Object.keys(r.results)[0] : null);
+    if (resText) labels[resText] = true; 
+  });
   document.getElementById('uniqueResults').textContent = Object.keys(labels).length;
   document.getElementById('lastActivity').textContent = rows.length > 0 ? new Date(rows[0].created_at).toLocaleDateString() : '—';
 
   var container = document.getElementById('historyContent');
   
- if (rows.length === 0) {
+  if (rows.length === 0) {
     container.innerHTML = '<div class="empty-state">📋 No quizzes taken yet.</div>';
   } else {
-// 1. Создаем каркас таблицы
+    // 2. Создаем каркас таблицы
     var tableHTML = `
       <div style="overflow-x:auto">
         <table class="results-table">
@@ -233,17 +239,20 @@ async function init() {
         </table>
       </div>`;
     container.innerHTML = tableHTML;
-// 2. Заполняем таблицу данными
+
+    // 3. Заполняем таблицу данными
     const tbody = document.getElementById('tableBody');
     rows.forEach(row => {
       const date = new Date(row.created_at).toLocaleDateString();
       
-      // Вытаскиваем только текстовый заголовок результата
-      // Если в базе есть объект results, берем его ключи, иначе берем label
+      // ИСПРАВЛЕНИЕ: Проверяем все возможные колонки для названия квиза
+      const quizTitle = row.quiz_name || row.test_name || "Quiz";
+      
+      // ИСПРАВЛЕНИЕ: Определяем чистый текст результата
       let displayResult = "Completed";
       if (row.result_label) {
           displayResult = row.result_label;
-      } else if (row.results) {
+      } else if (row.results && typeof row.results === 'object') {
           displayResult = Object.keys(row.results)[0]; 
       }
       
@@ -252,31 +261,31 @@ async function init() {
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="font-weight: 600;">${row.quiz_name}</td>
+        <td style="font-weight: 600; color: #2d3436;">${quizTitle}</td>
         <td style="font-size: 0.9em; color: #666;">${date}</td>
         <td>
-          <span style="color: #c0392b; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
+          <span style="color: #c0392b; font-weight: bold; font-size: 13px; text-transform: uppercase; background: #fff5f5; padding: 5px 12px; border-radius: 20px; border: 1px solid #ffeaea; display: inline-block;">
             ${displayResult}
           </span>
         </td>
         <td style="display: flex; gap: 12px; align-items: center;">
-          <button id="${dlId}" style="background:none; border:none; cursor:pointer; font-size: 1.1em;" title="Download">📥</button>
-          <button id="${shId}" style="background:none; border:none; cursor:pointer; font-size: 1.1em;" title="Share">🔗</button>
-          <button onclick="deleteResult('${row.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.1em;" title="Delete">🗑️</button>
+          <button id="${dlId}" style="background:none; border:none; cursor:pointer; font-size: 1.1em; padding:0;" title="Download">📥</button>
+          <button id="${shId}" style="background:none; border:none; cursor:pointer; font-size: 1.1em; padding:0;" title="Share">🔗</button>
+          <button onclick="deleteResult('${row.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.1em; padding:0;" title="Delete">🗑️</button>
         </td>
       `;
       tbody.appendChild(tr);
 
-      // Привязываем функции скачивания и шаринга (передаем только ТЕКСТ)
-      document.getElementById(dlId).onclick = function() { 
-          downloadCard(row.quiz_name, displayResult); 
-      };
-      document.getElementById(shId).onclick = function() { 
-          shareResult(row.quiz_name, displayResult); 
-      };
-    }); // <--- Цикл закрывается ОДИН раз здесь
+      // Привязываем функции (теперь передаем только ТЕКСТ)
+      const dlBtn = document.getElementById(dlId);
+      const shBtn = document.getElementById(shId);
+      
+      if(dlBtn) dlBtn.onclick = function() { downloadCard(quizTitle, displayResult); };
+      if(shBtn) shBtn.onclick = function() { shareResult(quizTitle, displayResult); };
+    });
   }
   
+  // Показываем контент
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 }
