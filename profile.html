@@ -177,12 +177,6 @@ var quizImageMap = {
 
 var currentUser = null;
 
-// Функция для безопасного вывода текста в HTML
-function esc(s) { 
-    if(!s) return ''; 
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); 
-}
-
 function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
@@ -190,34 +184,27 @@ function showToast(msg) {
 }
 
 async function init() {
-  var res = await sb.auth.getUser();
-  var user = res.data.user;
-  if (!user) { window.location.href = 'index.html'; return; }
-  currentUser = user;
+  try {
+    var res = await sb.auth.getUser();
+    var user = res.data.user;
+    if (!user) { window.location.href = 'index.html'; return; }
+    currentUser = user;
 
-  var name = (user.user_metadata && user.user_metadata.display_name) || (user.email ? user.email.split('@')[0] : 'User');
-  document.getElementById('displayName').textContent = name;
-  document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('userEmail').textContent = user.email;
-  document.getElementById('memberSince').textContent = '📅 Member since ' + new Date(user.created_at).toLocaleDateString();
-  document.getElementById('editName').value = name;
+    var name = (user.user_metadata && user.user_metadata.display_name) || (user.email ? user.email.split('@')[0] : 'User');
+    document.getElementById('displayName').textContent = name;
+    document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('userEmail').textContent = user.email;
+    document.getElementById('memberSince').textContent = '📅 Member since ' + new Date(user.created_at).toLocaleDateString();
+    document.getElementById('editName').value = name;
 
- // Загружаем результаты из Supabase
-  var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-  var rows = resultsRes.data || [];
-
-// --- ЗАМЕНИ ВЕСЬ БЛОК ОТ ЗАГРУЗКИ ИЗ SUPABASE ДО КОНЦА ФУНКЦИИ ---
-
-// Начинаем с того, что пробуем загрузить данные
-try {
-    // 1. Загрузка из Supabase
+    // Загружаем результаты
     var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
     var rows = resultsRes.data || [];
 
-    // 2. СТАТИСТИКА
+    // --- ОБНОВЛЕННАЯ СТАТИСТИКА ---
     document.getElementById('totalQuizzes').textContent = rows.length;
-
-    // Считаем уникальные (без повторений)
+    
+    // Считаем уникальные квизы (без повторений названий)
     const uniqueQuizzes = new Set(rows.map(r => r.quiz_name || r.test_name));
     document.getElementById('uniqueResults').textContent = uniqueQuizzes.size;
 
@@ -230,12 +217,11 @@ try {
     if (rows.length === 0) {
         container.innerHTML = '<div class="empty-state">📋 No quizzes taken yet.</div>';
     } else {
-        // 3. ТАБЛИЦА
         var tableHTML = `
           <div style="overflow-x:auto">
             <table class="results-table" style="width:100%; border-collapse: collapse;">
               <thead>
-                <tr style="border-bottom: 2px solid #34495e;">
+                <tr>
                   <th style="text-align:left; padding: 12px; color: #bdc3c7;">QUIZ</th>
                   <th style="text-align:center; padding: 12px; color: #bdc3c7;">DATE</th>
                   <th style="text-align:center; padding: 12px; color: #bdc3c7;">RESULT</th>
@@ -248,12 +234,11 @@ try {
         container.innerHTML = tableHTML;
 
         const tbody = document.getElementById('tableBody');
-        
         rows.forEach(row => {
             const date = new Date(row.created_at).toLocaleDateString();
             const quizName = row.quiz_name || row.test_name || "Quiz";
             
-            // Ищем текст результата
+            // Ищем текстовый результат (например, INFP)
             let displayResult = "Done";
             if (row.result_label) {
                 displayResult = row.result_label;
@@ -265,56 +250,51 @@ try {
             const shId = "sh_" + row.id;
 
             const tr = document.createElement('tr');
-            tr.style.borderBottom = "1px solid #2c3e50";
+            tr.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
             tr.innerHTML = `
-                <td style="font-weight: 800; color: #ffffff; text-align:left; padding: 15px 12px; font-size: 14px;">${quizName}</td>
+                <td style="font-weight: 800; color: #ffffff; text-align:left; padding: 15px 12px; font-size: 15px;">
+                    ${quizName}
+                </td>
                 <td style="font-size: 0.9em; color: #bdc3c7; text-align:center;">${date}</td>
                 <td style="text-align:center;">
-                    <span style="color: #ffffff; font-weight: bold; font-size: 11px; text-transform: uppercase; background: #c0392b; padding: 6px 12px; border-radius: 4px; display: inline-block;">
+                    <span style="color: #ffffff; font-weight: bold; font-size: 11px; text-transform: uppercase; background: #c0392b; padding: 5px 12px; border-radius: 4px; display: inline-block;">
                         ${displayResult}
                     </span>
                 </td>
                 <td style="text-align:right; padding: 15px 12px;">
                     <div style="display: flex; gap: 15px; justify-content: flex-end; align-items: center;">
-                        <button id="${dlId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em;">📥</button>
-                        <button id="${shId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em;">🔗</button>
-                        <button onclick="deleteResult('${row.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.2em;">🗑️</button>
+                        <button id="${dlId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em;" title="Download">📥</button>
+                        <button id="${shId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em;" title="Share">🔗</button>
+                        <button onclick="deleteResult('${row.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.2em;" title="Delete">🗑️</button>
                     </div>
                 </td>
             `;
             tbody.appendChild(tr);
 
-            // Привязка функций
             document.getElementById(dlId).onclick = () => downloadCard(quizName, displayResult);
             document.getElementById(shId).onclick = () => shareResult(quizName, displayResult);
         });
     }
-} catch (error) {
-    console.error("Ошибка загрузки кабинета:", error);
-} finally {
-    // В ЛЮБОМ СЛУЧАЕ убираем экран загрузки
+  } catch (e) {
+    console.error("Initialization error:", e);
+  } finally {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+  }
 }
+
 async function shareResult(quizName, resultLabel) {
-  const text = "My result in '" + resultLabel + "' on " + quizName + "! Try it on QUIZTOS! 🚀";
+  const text = "My result in '" + quizName + "': " + resultLabel + "! Try it on QUIZTOS! 🚀";
   const url = window.location.origin;
 
-  // Проверяем, поддерживает ли браузер системное меню "Поделиться"
   if (navigator.share) {
     try {
-      await navigator.share({
-        title: 'Quiztos Result',
-        text: text,
-        url: url,
-      });
-    } catch (err) {
-      console.log('Share cancelled or failed', err);
-    }
+      await navigator.share({ title: 'Quiztos Result', text: text, url: url });
+    } catch (err) { console.log('Share cancelled'); }
   } else {
-    // Если браузер старый (или ПК), открываем Telegram как запасной вариант
-    const telegramUrl = "https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(text);
-    window.open(telegramUrl, '_blank');
+    // Резерв для ПК - открываем Viber
+    const viberUrl = "viber://forward?text=" + encodeURIComponent(text + " " + url);
+    window.open(viberUrl, '_blank');
   }
 }
 
@@ -378,31 +358,14 @@ async function handleSignOut() {
   await sb.auth.signOut();
   window.location.href = 'index.html';
 }
-async function shareResult(quizName, resultLabel) {
-  const text = "My result in '" + resultLabel + "' on " + quizName + "! Try it on QUIZTOS! 🚀";
-  const url = window.location.origin;
 
-  // Проверяем поддержку Web Share API (мобильные браузеры)
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'Quiztos Result',
-        text: text,
-        url: url,
-      });
-    } catch (err) {
-      // Пользователь просто закрыл меню, ничего не делаем
-      console.log('Share cancelled');
-    }
-  } else {
-    // Если это ПК или браузер без поддержки Share API — открываем Telegram
-    const telegramUrl = "https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(text);
-    window.open(telegramUrl, '_blank');
-  }
+async function deleteResult(id) {
+  if(!confirm('Delete this result?')) return;
+  await sb.from('test_results').delete().eq('id', id);
+  init();
 }
+
 init();
-  // Найдите это место в вашем коде внутри функции init:
-tr.querySelector(`#sh-${r.id}`).onclick = function() { shareResult(r.test_name, r.score); };
   </script>
 </body>
 </html>
