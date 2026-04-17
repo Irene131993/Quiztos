@@ -208,97 +208,94 @@ async function init() {
 
 // --- ЗАМЕНИ ВЕСЬ БЛОК ОТ ЗАГРУЗКИ ИЗ SUPABASE ДО КОНЦА ФУНКЦИИ ---
 
-// 1. Загружаем результаты из Supabase
-var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-var rows = resultsRes.data || [];
+// Начинаем с того, что пробуем загрузить данные
+try {
+    // 1. Загрузка из Supabase
+    var resultsRes = await sb.from('test_results').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    var rows = resultsRes.data || [];
 
-// 2. СТАТИСТИКА
-// Всего тестов
-document.getElementById('totalQuizzes').textContent = rows.length;
+    // 2. СТАТИСТИКА
+    document.getElementById('totalQuizzes').textContent = rows.length;
 
-// Тесты без повторений (считаем количество уникальных НАЗВАНИЙ тестов)
-const uniqueQuizzes = new Set(rows.map(r => r.quiz_name || r.test_name));
-document.getElementById('uniqueResults').textContent = uniqueQuizzes.size;
+    // Считаем уникальные (без повторений)
+    const uniqueQuizzes = new Set(rows.map(r => r.quiz_name || r.test_name));
+    document.getElementById('uniqueResults').textContent = uniqueQuizzes.size;
 
-// Последняя активность
-document.getElementById('lastActivity').textContent = rows.length > 0 
-    ? new Date(rows[0].created_at).toLocaleDateString() 
-    : '—';
+    document.getElementById('lastActivity').textContent = rows.length > 0 
+        ? new Date(rows[0].created_at).toLocaleDateString() 
+        : '—';
 
-var container = document.getElementById('historyContent');
+    var container = document.getElementById('historyContent');
 
-if (rows.length === 0) {
-    container.innerHTML = '<div class="empty-state">📋 No quizzes taken yet.</div>';
-} else {
-    // 3. КАРКАС ТАБЛИЦЫ
-    var tableHTML = `
-      <div style="overflow-x:auto">
-        <table class="results-table" style="width:100%; border-collapse: collapse;">
-          <thead>
-            <tr style="border-bottom: 2px solid #34495e;">
-              <th style="text-align:left; padding: 12px; color: #bdc3c7;">QUIZ</th>
-              <th style="text-align:center; padding: 12px; color: #bdc3c7;">DATE</th>
-              <th style="text-align:center; padding: 12px; color: #bdc3c7;">RESULT</th>
-              <th style="text-align:right; padding: 12px; color: #bdc3c7;">ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>`;
-    container.innerHTML = tableHTML;
+    if (rows.length === 0) {
+        container.innerHTML = '<div class="empty-state">📋 No quizzes taken yet.</div>';
+    } else {
+        // 3. ТАБЛИЦА
+        var tableHTML = `
+          <div style="overflow-x:auto">
+            <table class="results-table" style="width:100%; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 2px solid #34495e;">
+                  <th style="text-align:left; padding: 12px; color: #bdc3c7;">QUIZ</th>
+                  <th style="text-align:center; padding: 12px; color: #bdc3c7;">DATE</th>
+                  <th style="text-align:center; padding: 12px; color: #bdc3c7;">RESULT</th>
+                  <th style="text-align:right; padding: 12px; color: #bdc3c7;">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>`;
+        container.innerHTML = tableHTML;
 
-    const tbody = document.getElementById('tableBody');
-    
-    rows.forEach(row => {
-        const date = new Date(row.created_at).toLocaleDateString();
-        const quizName = row.quiz_name || row.test_name || "Quiz";
+        const tbody = document.getElementById('tableBody');
         
-        // 4. ОПРЕДЕЛЯЕМ РЕЗУЛЬТАТ (INFP, ARIES И Т.Д.)
-        let displayResult = "Done";
-        if (row.result_label && row.result_label !== "") {
-            displayResult = row.result_label;
-        } else if (row.results && typeof row.results === 'object') {
-            // Если в базе старый формат объекта, берем первый ключ (название результата)
-            displayResult = Object.keys(row.results)[0]; 
-        }
+        rows.forEach(row => {
+            const date = new Date(row.created_at).toLocaleDateString();
+            const quizName = row.quiz_name || row.test_name || "Quiz";
+            
+            // Ищем текст результата
+            let displayResult = "Done";
+            if (row.result_label) {
+                displayResult = row.result_label;
+            } else if (row.results && typeof row.results === 'object') {
+                displayResult = Object.keys(row.results)[0]; 
+            }
 
-        const dlId = "dl_" + row.id;
-        const shId = "sh_" + row.id;
+            const dlId = "dl_" + row.id;
+            const shId = "sh_" + row.id;
 
-        const tr = document.createElement('tr');
-        tr.style.borderBottom = "1px solid #2c3e50";
-        tr.innerHTML = `
-            <td style="font-weight: 800; color: #ffffff; text-align:left; padding: 15px 12px; font-size: 15px; line-height: 1.2;">
-                ${quizName}
-            </td>
-            <td style="font-size: 0.9em; color: #bdc3c7; text-align:center;">${date}</td>
-            <td style="text-align:center;">
-                <span style="color: #ffffff; font-weight: bold; font-size: 11px; text-transform: uppercase; background: #c0392b; padding: 6px 12px; border-radius: 4px; display: inline-block; white-space: nowrap;">
-                    ${displayResult}
-                </span>
-            </td>
-            <td style="text-align:right; padding: 15px 12px;">
-                <div style="display: flex; gap: 15px; justify-content: flex-end; align-items: center;">
-                    <button id="${dlId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em; filter: brightness(1.5);" title="Download Card">📥</button>
-                    <button id="${shId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em; filter: brightness(1.5);" title="Share">🔗</button>
-                    <button onclick="deleteResult('${row.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.2em;" title="Delete">🗑️</button>
-                </div>
-            </td>
-        `;
-        tbody.appendChild(tr);
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid #2c3e50";
+            tr.innerHTML = `
+                <td style="font-weight: 800; color: #ffffff; text-align:left; padding: 15px 12px; font-size: 14px;">${quizName}</td>
+                <td style="font-size: 0.9em; color: #bdc3c7; text-align:center;">${date}</td>
+                <td style="text-align:center;">
+                    <span style="color: #ffffff; font-weight: bold; font-size: 11px; text-transform: uppercase; background: #c0392b; padding: 6px 12px; border-radius: 4px; display: inline-block;">
+                        ${displayResult}
+                    </span>
+                </td>
+                <td style="text-align:right; padding: 15px 12px;">
+                    <div style="display: flex; gap: 15px; justify-content: flex-end; align-items: center;">
+                        <button id="${dlId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em;">📥</button>
+                        <button id="${shId}" style="background:none; border:none; cursor:pointer; font-size: 1.2em;">🔗</button>
+                        <button onclick="deleteResult('${row.id}')" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size: 1.2em;">🗑️</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
 
-        // 5. ПРИВЯЗКА ФУНКЦИЙ КНОПОК
-        document.getElementById(dlId).onclick = () => downloadCard(quizName, displayResult);
-        document.getElementById(shId).onclick = () => shareResult(quizName, displayResult);
-    });
+            // Привязка функций
+            document.getElementById(dlId).onclick = () => downloadCard(quizName, displayResult);
+            document.getElementById(shId).onclick = () => shareResult(quizName, displayResult);
+        });
+    }
+} catch (error) {
+    console.error("Ошибка загрузки кабинета:", error);
+} finally {
+    // В ЛЮБОМ СЛУЧАЕ убираем экран загрузки
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
 }
-
-// Показываем контент после загрузки
-document.getElementById('loading').style.display = 'none';
-document.getElementById('app').style.display = 'block';
-
-// --- КОНЕЦ БЛОКА ---
-
 async function shareResult(quizName, resultLabel) {
   const text = "My result in '" + resultLabel + "' on " + quizName + "! Try it on QUIZTOS! 🚀";
   const url = window.location.origin;
